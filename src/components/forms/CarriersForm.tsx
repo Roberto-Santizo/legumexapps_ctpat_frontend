@@ -5,6 +5,7 @@ import type { createCarrierFormSchema } from "../../schemas/types";
 type CarrierFormProps= {
   register: UseFormRegister<createCarrierFormSchema>;
   errors: FieldErrors<createCarrierFormSchema>
+  
 }
 
 export default function CarrierForm({register, errors}: CarrierFormProps) {

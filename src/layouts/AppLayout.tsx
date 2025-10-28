@@ -29,10 +29,9 @@ export default function AppLayout() {
       </main>
       <ToastContainer
         position="top-right"
+        autoClose={5000}
         pauseOnHover={false}
         pauseOnFocusLoss={false}
-        theme="colored"
-        style={{ zIndex: 999999 }}
       />
     </div>
   );

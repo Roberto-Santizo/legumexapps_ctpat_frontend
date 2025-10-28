@@ -1,15 +1,16 @@
 import { ErrorMessage } from "../utilities-components/ErrorMessage";
 import type { UseFormRegister, FieldErrors } from "react-hook-form";
-import type { CreateDriverFormData } from "../../schemas/types";
 import { useEffect, useState } from "react";
 import { getCarriersAPI } from "@/api/CarriersAPI";
+import type {DriverFormData} from "@/schemas/types";
 
 type DriverFormProps = {
-  register: UseFormRegister<CreateDriverFormData>;
-  errors: FieldErrors<CreateDriverFormData>;
+  register:UseFormRegister<DriverFormData>
+  errors:FieldErrors<DriverFormData>
+  showCarrierField?: boolean;
 };
 
-export default function DriverForm({ register, errors }: DriverFormProps) {
+export default function DriverForm({errors, register, showCarrierField = true}:DriverFormProps) {
   const [carriers, setCarriers] = useState<{ id: number; name: string }[]>([]);
   const [loadingCarriers, setLoadingCarriers] = useState<boolean>(true);
 
@@ -33,7 +34,6 @@ export default function DriverForm({ register, errors }: DriverFormProps) {
         <label htmlFor="name" className="form-label">
           Nombre del Piloto <span className="required">*</span>
         </label>
-
         <div className="input-icon-wrapper">
           <svg
             className="w-5 h-5 text-gray-400 absolute left-3 top-3"
@@ -43,8 +43,7 @@ export default function DriverForm({ register, errors }: DriverFormProps) {
             strokeWidth={2}
             strokeLinecap="round"
             strokeLinejoin="round"
-          >
-          </svg>
+          ></svg>
           <input
             id="name"
             type="text"
@@ -55,9 +54,7 @@ export default function DriverForm({ register, errors }: DriverFormProps) {
             {...register("name", { required: "El nombre es obligatorio" })}
           />
         </div>
-        {errors.name && (
-            <ErrorMessage>{errors.name.message}</ErrorMessage>
-        )}
+        {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
       </div>
 
       <div className="form-group">
@@ -84,7 +81,7 @@ export default function DriverForm({ register, errors }: DriverFormProps) {
           />
         </div>
         {errors.identification && (
-            <ErrorMessage>{errors.identification.message}</ErrorMessage>
+          <ErrorMessage>{errors.identification.message}</ErrorMessage>
         )}
       </div>
 
@@ -107,36 +104,38 @@ export default function DriverForm({ register, errors }: DriverFormProps) {
           />
         </div>
         {errors.license && (
-            <ErrorMessage>{errors.license.message}</ErrorMessage>
+          <ErrorMessage>{errors.license.message}</ErrorMessage>
         )}
       </div>
 
-      <div className="form-group">
-        <label htmlFor="carrier_id" className="form-label">
-          Transportista <span className="required">*</span>
-        </label>
+      {showCarrierField && (
+        <div className="form-group">
+          <label htmlFor="carrier_id" className="form-label">
+            Transportista <span className="required">*</span>
+          </label>
 
-        <select
-          id="carrier_id"
-          className={`form-input ${
-            errors.carrier_id ? "form-input-error" : "form-input-normal"
-          }`}
-          {...register("carrier_id", {
-            required: "El transportista es obligatorio",
-          })}
-          disabled={loadingCarriers}
-        >
-          <option value="">Selecciona un transportista</option>
-          {carriers.map((carrier) => (
-            <option key={carrier.id} value={carrier.id}>
-              {carrier.name}
-            </option>
-          ))}
-        </select>
-        {errors.carrier_id && (
-          <ErrorMessage>{errors.carrier_id.message}</ErrorMessage>
-        )}
-      </div>
+          <select
+            id="carrier_id"
+            className={`form-input ${
+              errors.carrier_id ? "form-input-error" : "form-input-normal"
+            }`}
+            {...register("carrier_id", {
+              required: "El transportista es obligatorio",
+            })}
+            disabled={loadingCarriers}
+          >
+            <option value="">Selecciona un transportista</option>
+            {carriers.map((carrier) => (
+              <option key={carrier.id} value={carrier.id}>
+                {carrier.name}
+              </option>
+            ))}
+          </select>
+          {errors.carrier_id && (
+            <ErrorMessage>{errors.carrier_id.message}</ErrorMessage>
+          )}
+        </div>
+      )}
     </div>
   );
 }

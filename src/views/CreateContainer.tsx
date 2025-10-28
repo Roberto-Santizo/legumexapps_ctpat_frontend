@@ -8,7 +8,6 @@ import { createContainerAPI } from "@/api/ContainerAPI.ts";
 
 export default function CreateContainer() {
   const navigate = useNavigate();
-
   const initialValues: CreateContainerFormData = {
     container: "",
     seal: 0,
@@ -86,14 +85,17 @@ export default function CreateContainer() {
             onSubmit={handleSubmit(handleForm)}
             noValidate
           >
-            <ContainersForm register={register} errors={errors} />
+            <ContainersForm
+              register={register}
+              errors={errors}
+              initialValues={initialValues}
+            />
 
-            <button
+            <input
               type="submit"
+              value= "Crear Contenedor"
               className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
-            >
-              Crear Contenedor
-            </button>
+            />
           </form>
         </div>
 

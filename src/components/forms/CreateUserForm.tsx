@@ -1,14 +1,14 @@
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { ErrorMessage } from "@/components/utilities-components/ErrorMessage";
-import type { createUserFormData } from "@/schemas/typesAdmin";
+import type { UserFormDataSchema } from "@/schemas/typesAdmin";
 import { useState } from "react";
 import { getRoleAPI } from "@/api/RolAPI";
 import type { Rol } from "@/schemas/typesAdmin";
 import { useEffect } from "react";
 
 type CreateUserFormProps = {
-  register: UseFormRegister<createUserFormData>;
-  errors: FieldErrors<createUserFormData>;
+  register: UseFormRegister<UserFormDataSchema>;
+  errors: FieldErrors<UserFormDataSchema>;
 };
 
 export default function CreateUserForm({
@@ -111,8 +111,7 @@ export default function CreateUserForm({
         )}
       </div>
 
-      {/* Rol */}
-      <div className="form-group">
+     <div className="form-group">
         <label htmlFor="role_id" className="form-label">
           Rol <span className="required">*</span>
         </label>

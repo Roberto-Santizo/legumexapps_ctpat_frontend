@@ -41,24 +41,25 @@ export default function TableDriver() {
               <table className="table">
                 <thead>
                   <tr>
-                    <th className="table-cell-center">ID</th>
-                    <th className="table-cell-center">Nombre del transportista</th>
-                    <th className="table-cell-center">Acciones</th>
+                    <th>ID</th>
+                    <th>Nombre del piloto</th>
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {drivers.map((driver) => (
                     <tr key={driver.id}>
-                      <td className="table-cell-center">{driver.id}</td>
-                      <td className="table-cell-center">{driver.name}</td>
-                      <td className="table-cell-center">
+                      <td>{driver.id}</td>
+                      <td >{driver.name}</td>
+                      <td>
                         <div className="table-actions justify-center">
-                          <button
+                          <Link
+                            to={`/driver/${driver.id}/edit`}
                             className="btn-icon btn-icon-primary"
                             title="Editar"
                           >
                             <Pencil size={16} />
-                          </button>
+                          </Link>
                           <button
                             className="btn-icon"
                             style={{

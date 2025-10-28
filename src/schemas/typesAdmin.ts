@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { paginationSchema } from "./paginateSchemas";
 
 //login
 export const loginRequestSchema = z.object({
@@ -45,24 +46,31 @@ export type Rol = z.infer<typeof rolSchema>;
 export type CreateRolFormData = z.infer<typeof createRolSchema>;
 
 // crete user
-export const createUserSchema = z.object({
+export const baseUserSchema = z.object({
+  id: z.number(),
   name: z.string(),
   username: z.string(),
-  password: z
-    .string()
-    .min(6, "La contraseña debe tener al menos 6 caracteres")
-    .regex(/[A-Za-z]/, "Debe contener al menos una letra")
-    .regex(/\d/, "Debe contener al menos un número")
-    .refine(
-      (val) =>
-        !["123", "1234", "12345", "password", "admin", "luis"].includes(
-          val.toLowerCase()
-        ),
-      {
-        message: "La contraseña es demasiado común o insegura",
-      }
-    ),
-  role_id: z.number()
 });
 
-export type createUserFormData = z.infer<typeof createUserSchema>
+export const createUserSchema = baseUserSchema.extend({
+  password: z.string(),
+  role_id: z.number(),
+});
+
+export const userSchema = baseUserSchema.extend({
+  password: z.string().optional(),
+  role_id: z.number().optional(),
+  role: rolSchema,
+});
+
+export const userListSchema = userSchema.transform((user) => ({
+  id: user.id,
+  name: user.name,
+  username: user.username,
+  role: user.role.name,
+}));
+
+
+export type CreateUserSchema = z.infer<typeof userSchema>;
+export type UserFormDataSchema = Pick<CreateUserSchema, "name" | "username" | "password" | "role_id">;
+export const getUserSchema = paginationSchema(userListSchema);

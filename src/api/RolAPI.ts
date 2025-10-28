@@ -1,7 +1,6 @@
 import api from "../components/config/axios";
 import { isAxiosError } from "axios";
-import type { CreateRolFormData } from "../schemas/typesAdmin";
-import type { GetRolesResponse } from "../schemas/typesAdmin";
+import type { CreateRolFormData, GetRolesResponse } from "../schemas/typesAdmin";
 import { getRoleSchema } from "../schemas/typesAdmin";
 
 export async function createRoleAPI(formData: CreateRolFormData) {

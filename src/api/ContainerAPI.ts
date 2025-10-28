@@ -35,3 +35,17 @@ export async function getContainerAPI(page: number = 1): Promise<GetContainersRe
     throw error;
   }
 }
+
+export async function getContainerByIdAPI(id: number) {
+  try {
+    const { data } = await api.get(`/containers/${id}`);
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      console.error("Error en getContainerByIdAPI", error.response.data);
+    } else {
+      console.error("Error desconocido en getContainerByIdAPI:", error);
+    }
+    throw error;
+  }
+}

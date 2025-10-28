@@ -1,5 +1,16 @@
-import { Menu, X, Bell, Settings, User, TrendingUp, UserCircle, LogOut, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import {
+  Menu,
+  X,
+  Bell,
+  Settings,
+  User,
+  TrendingUp,
+  UserCircle,
+  LogOut,
+  ChevronRight,
+} from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { useUserLogout } from "@/hooks/UserLogout";
 
 type HeaderProps = {
   sidebarOpen: boolean;
@@ -15,20 +26,43 @@ export default function Header({
   setMobileMenuOpen,
 }: HeaderProps) {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
-
-  const handleLogout = () => {
-    console.log("Cerrando sesión...");
-  };
-
+  const profileRef = useRef<HTMLDivElement>(null);
+  const { logout } = useUserLogout();
+  useEffect(() => {
+    const handlePointerOutside = (e: MouseEvent | TouchEvent) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(e.target as Node)
+      ) {
+        setProfileDropdownOpen(false);
+      }
+    };
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setProfileDropdownOpen(false);
+    };
+    document.addEventListener("mousedown", handlePointerOutside);
+    document.addEventListener("touchstart", handlePointerOutside, {
+      passive: true,
+    });
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerOutside);
+      document.removeEventListener("touchstart", handlePointerOutside);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, []);
   const handleProfile = () => {
     console.log("Ir a perfil...");
     setProfileDropdownOpen(false);
+  };
+  const handleLogout = () => {
+    setProfileDropdownOpen(false);
+    logout();
   };
 
   return (
     <header className="fixed top-0 left-0 right-0 h-16 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-b border-slate-700 z-50 shadow-xl">
       <div className="h-full flex items-center justify-between px-4 lg:px-6">
-        {/* Botón menú + Logo */}
         <div className="flex items-center gap-4">
           <button
             onClick={() => {
@@ -50,16 +84,15 @@ export default function Header({
             </div>
             <div className="hidden sm:block">
               <h1 className="text-lg font-bold text-white tracking-tight">
-                Legumex Apps
+                Departamento de calidad
               </h1>
               <p className="text-xs text-slate-400 font-medium">
-                Departamento de calidad
+                “La calidad es el reflejo del trabajo en equipo y la pasión por mejorar”
               </p>
             </div>
           </div>
         </div>
 
-        {/* Notificaciones + Perfil */}
         <div className="flex items-center gap-2">
           <button className="p-2.5 hover:bg-slate-700/50 rounded-lg transition-all relative group">
             <Bell className="w-5 h-5 text-slate-300 group-hover:text-white transition-colors" />
@@ -70,11 +103,15 @@ export default function Header({
             <Settings className="w-5 h-5 text-slate-300 group-hover:text-white transition-colors" />
           </button>
 
-          {/* Dropdown Perfil */}
-          <div className="relative ml-2 pl-2 border-l border-slate-700">
+          <div
+            className="relative ml-2 pl-2 border-l border-slate-700"
+            ref={profileRef}
+          >
             <button
-              onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+              onClick={() => setProfileDropdownOpen((v) => !v)}
               className="flex items-center gap-3 hover:bg-slate-700/50 rounded-lg pl-3 pr-2 py-1.5 transition-all group"
+              aria-haspopup="menu"
+              aria-expanded={profileDropdownOpen}
             >
               <div className="hidden lg:block text-right">
                 <p className="text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
@@ -90,7 +127,10 @@ export default function Header({
             </button>
 
             {profileDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div
+                className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-200 py-2 animate-in fade-in slide-in-from-top-2 duration-200"
+                role="menu"
+              >
                 <div className="px-4 py-3 border-b border-slate-100">
                   <p className="text-sm font-semibold text-slate-900">
                     Juan Pérez

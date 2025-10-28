@@ -11,11 +11,18 @@ const routes = [
   { path: "/user/create", component: lazy(() => import("@/views/adminPanel/CreateUser")), roles: [] },
   { path: "/driver", component: lazy(() => import("../views/TableDriver")), roles: [] },
   { path: "/driver/create", component: lazy(() => import("../views/CreateDriver")), roles: [] },
+  { path: "/driver/:driverId/edit", component: lazy(() => import("@/views/EditDriverView")), roles: [] },
   { path: "/carriers", component: lazy(() => import("../views/TableCarriers")), roles: [] },
   { path: "/carriers/create", component: lazy(() => import("../views/CreateCarrier")), roles: [] },
+  { path: "/carriers/:carriersId/edit", component: lazy(() => import("@/views/EditCarrierView")), roles: [] },
   { path: "/container", component: lazy(() => import("../views/TableContainer")), roles: [] },
   { path: "/container/create", component: lazy(() => import("@/views/CreateContainer")), roles: [] },
-  { path: "/ctpats", component: lazy(() => import("@/components/forms/CtpatsForm")), roles: [] },
+
+  { path: "/container/:containerId/edit", component: lazy(() => import("@/views/EditContainerView")), roles: [] },
+  
+  { path: "/ctpats", component: lazy(() => import("@/views/TableCtpat")), roles: [] },
+  { path: "/ctpats/create", component: lazy(() => import("@/views/CreateCtpats")), roles: [] },
+
 
 ];
 

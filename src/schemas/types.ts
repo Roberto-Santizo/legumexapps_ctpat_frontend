@@ -1,47 +1,23 @@
 import z from "zod";
-
+import { paginationSchema } from "./paginateSchemas";
 //driver
-export const createDriverSchema = z.object({
-  name: z.string(),
-  identification: z.number(),
-  license: z.number(),
-  carrier_id: z.number(),
-});
-
-export const createDriverResponseSchema = z.object({
-  statusCode: z.number(),
-  message: z.string(),
-  response: z.object({
-    id: z.number(),
-    name: z.string(),
-    identification: z.string(),
-    license: z.string(),
-  }).optional(), // opcional porque en error no habrá response
-});
-
 export const driverSchema = z.object({
-  id: z.number(),
+  id:z.number(),
   name: z.string(),
-});
+  identification: z.string(),
+  license: z.string(),
+  carrier_id: z.number(),
+})
 
-export const getDriverSchema = z.object({
-  statusCode: z.number(),
-  response: z.array(driverSchema),
-  page: z.number(),
-  total: z.number(),
-  lastPage: z.number(),
-});
-
-export type CreateDriverFormData = z.infer<typeof createDriverSchema>;
-export type GetDriverResponse = z.infer<typeof getDriverSchema>;
-export type CreateDriverResponse = z.infer<typeof createDriverResponseSchema>;
+export type CreateDriver = z.infer<typeof driverSchema>;
+export type DriverFormData = Pick<CreateDriver, "name" | "identification" | "license" | "carrier_id">;
+export const getDriversSchema = paginationSchema(driverSchema)
 
 
 //carriers
 export const carrierSchema = z.object({
   name: z.string(),
 });
-
 export const createCarrierResponseSchema = z.object({
   statusCode: z.number(),
   message: z.string(),
@@ -51,9 +27,8 @@ export const createCarrierResponseSchema = z.object({
       name: z.string(),
       createdAt: z.string(),
     })
-    .optional(), //optional, may or may not be included
+    .optional(),
 });
-
 export const getCarrierSchema = z.object({
   response: z.array(
     z.object({
@@ -66,6 +41,15 @@ export const getCarrierSchema = z.object({
   lastPage: z.number(),
 });
 
+export const getCarrierByIdSchema = z.object({
+  statusCode: z.number(),
+  response: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
+});
+
+export type GetCarrierByIdResponse = z.infer<typeof getCarrierByIdSchema>;
 export type createCarrierFormSchema = z.infer<typeof carrierSchema>;
 export type CreateCarrierResponse = z.infer<typeof createCarrierResponseSchema>;
 export type CarrierFormData = z.infer<typeof getCarrierSchema>;
@@ -77,7 +61,6 @@ export const ContainerSchema = z.object({
   sensor: z.number(),
   type: z.string(),
 });
-
 export const containerItemSchema = z.object({
   id: z.number(),
   container: z.string(),
@@ -85,7 +68,6 @@ export const containerItemSchema = z.object({
   sensor: z.number(),
   type: z.string(),
 });
-
 export const getContainersResponseSchema = z.object({
   statusCode: z.number(),
   response: z.array(containerItemSchema),
@@ -94,6 +76,17 @@ export const getContainersResponseSchema = z.object({
   lastPage: z.number(),
 });
 
+export const getContainerByIdSchema = z.object({
+  statusCode: z.number(),
+  response: z.object({
+    id: z.number(),
+    container: z.string(),
+    seal: z.number(),
+    sensor: z.number(),
+    type: z.string(),
+  }),
+});
+export type GetContainerByIdResponse = z.infer<typeof getContainerByIdSchema>;
 export type GetContainersResponse = z.infer<typeof getContainersResponseSchema>;
 export type CreateContainerFormData = z.infer<typeof ContainerSchema>;
 
@@ -103,10 +96,9 @@ const ImageSchema = z.object({
   type: z.string(),
   description: z.string(),
 });
-
 export const ctpatResponseSchema = z.object({
   statusCode: z.literal(200),
-  message: z.literal("Ctpat Creado Correctamente")
+  message: z.literal("Ctpat Creado Correctamente"),
 });
 
 export const CtpatSchema = z.object({
@@ -117,4 +109,25 @@ export const CtpatSchema = z.object({
 });
 
 export type CreateCtpatFormData = z.infer<typeof CtpatSchema>;
-export type CtpatResponseData = z.infer<typeof ctpatResponseSchema>
+export type CtpatResponseData = z.infer<typeof ctpatResponseSchema>;
+
+export const ctpat = z.object({
+  id: z.number(),
+  destination: z.string(),
+  user: z.string(),
+  departure_site: z.string(),
+  container: z.string(),
+  createdAt: z.string(),
+})
+
+export const ctpatListSchema = ctpat.pick({
+  id: true,
+  destination: true,
+  user: true,
+  departure_site: true,
+  container: true,
+  createdAt: true,
+})
+
+export const getCtpatsSchema = paginationSchema(ctpatListSchema)
+export type GetCtpatResponse = z.infer<typeof getCtpatsSchema>;

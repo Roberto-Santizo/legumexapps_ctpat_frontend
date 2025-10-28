@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Pencil, Trash2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import PaginationComponent from "../components/utilities-components/PaginationComponent";
-import {getContainerAPI} from "../api/ContainerAPI"
+import { getContainerAPI } from "../api/ContainerAPI";
 import { useState } from "react";
 
 export default function TableContainer() {
@@ -55,19 +55,20 @@ export default function TableContainer() {
                 <tbody>
                   {containers.map((container) => (
                     <tr key={container.id}>
-                      <td className="table-cell-center">{container.id}</td>
+                      <td >{container.id}</td>
                       <td>{container.container}</td>
                       <td>{container.seal}</td>
                       <td>{container.sensor}</td>
                       <td>{container.type}</td>
                       <td className="table-cell-center">
                         <div className="table-actions justify-center">
-                          <button
+                          <Link
+                            to={`/container/${container.id}/edit`}
                             className="btn-icon btn-icon-primary"
                             title="Editar"
                           >
                             <Pencil size={16} />
-                          </button>
+                          </Link>
                           <button
                             className="btn-icon"
                             style={{
@@ -90,7 +91,7 @@ export default function TableContainer() {
               </p>
             )}
           </div>
-          
+
           <PaginationComponent
             currentPage={currentPage}
             totalPages={totalPages}

@@ -5,39 +5,26 @@ import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import DriverForm from "../components/forms/DriverForm";
 import { createDriverAPI } from "../api/DriversAPI.ts";
-import type {CreateDriverResponse} from "@/schemas/types.ts"
-import {createDriverResponseSchema} from "@/schemas/types.ts"
-
 
 export default function CreateDriver() {
-
+  
   const navigate = useNavigate();
-  const initialValues: CreateDriverFormData = {
+  const initialValues = {
     name: "",
-    identification: 0,
-    license: 0,
+    identification: "",
+    license: "",
     carrier_id: 0,
   };
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CreateDriverFormData>({
-    defaultValues: initialValues,
-    mode: "onChange",
-  });
+  const {register,handleSubmit,formState: { errors }, } = useForm<CreateDriverFormData>({defaultValues: initialValues, mode: "onChange"});
 
-  const { mutate } = useMutation<CreateDriverResponse, never, CreateDriverFormData>({
-    mutationFn: async (data) => {
-      const response = await createDriverAPI(data);
-      return createDriverResponseSchema.parse(response);
-    },
+  const { mutate } = useMutation({
+    mutationFn: (data: CreateDriverFormData) => createDriverAPI(data),
     onSuccess: (response) => {
       if (response.statusCode === 200) {
         toast.success(response.message);
-        setTimeout(() => navigate("/driver"), 100);
+        navigate("/driver");
       } else {
-        toast.error(response.message || "No se pudo crear el conductor. Verifica los datos.");
+        toast.error(response.message || "No se pudo crear el conductor");
       }
     },
   });
@@ -45,8 +32,6 @@ export default function CreateDriver() {
   const handleForm = async (data: CreateDriverFormData) => {
     const parsedData = {
       ...data,
-      identification: Number(data.identification),
-      license: Number(data.license),
       carrier_id: Number(data.carrier_id),
     };
     mutate(parsedData);
@@ -92,13 +77,11 @@ export default function CreateDriver() {
             noValidate
           >
             <DriverForm register={register} errors={errors} />
-
-            <button
+            <input
               type="submit"
+              value="Crear Conductor"
               className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
-            >
-              Crear Conductor
-            </button>
+            />
           </form>
         </div>
 

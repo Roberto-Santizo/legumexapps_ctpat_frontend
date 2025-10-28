@@ -35,7 +35,13 @@
       "@/products/*": ["products/*"],
       "@/routes/*": ["routes/*"],
       "@/utilities-components/*": ["utilities-components/*"],
-      "@/auth/*": ["auth/*"]
+      "@/auth/*": ["auth/*"],
+      "@/ui/*": ["ui/*"],
+      "@/modalWindows/*": ["modalWindows/*"],
+      "@/hooks/*": ["hooks/*"],
+
+
+
     }
   },
   "include": ["src"]

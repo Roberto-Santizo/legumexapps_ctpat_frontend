@@ -1,48 +1,44 @@
-import { useMutation } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
-import CrearRolForm from "../../components/forms/CreateRolForm";
-import { createRoleAPI } from "../../api/RolAPI";
-import type { RoleApiResponse, CreateRolFormData } from "@/schemas/typesAdmin";
-import {rolResponseApiSchema} from "@/schemas/typesAdmin"
+import type {
+  GetCarrierByIdResponse,
+  createCarrierFormSchema,
+} from "@/schemas/types";
+import CarrierForm from "../forms/CarriersForm";
 
-export default function CreateRol() {
-  const navigate = useNavigate();
-  const initialValues: CreateRolFormData = { name: "" };
+type EditCarrierFormProps = {
+  data: GetCarrierByIdResponse;
+};
+export default function EditCarrierForm({ data }: EditCarrierFormProps) {
+  const carrier = data.response;
+  const initialValues: createCarrierFormSchema = {
+    name: carrier.name,
+  };
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateRolFormData>({
+  } = useForm<createCarrierFormSchema>({
     defaultValues: initialValues,
     mode: "onChange",
   });
 
-  const { mutate } = useMutation<RoleApiResponse, Error, CreateRolFormData>({
-    mutationFn: async (data) => {
-      const response = await createRoleAPI(data);
-      return rolResponseApiSchema.parse(response);
-    },
-    onSuccess: (response) => {
-      toast.success(response.message); // mostramos solo el message
-      navigate("/rol"); // redirigimos después
-    },
-  });
+  const handleForm = (formData: createCarrierFormSchema) => {
+    console.log("Datos editados:", formData);
+  };
 
-  const handleForm = async (data: CreateRolFormData) => mutate(data);
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] bg-clip-text text-transparent mb-3">
-            Crear Nuevo Rol
+            Editar Transportista
           </h1>
         </div>
 
         <div className="mb-6">
           <Link
-            to="/rol"
+            to="/carriers"
             className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[var(--color-primary-dark)] font-semibold rounded-xl shadow-md hover:shadow-lg hover:bg-[var(--color-bg-secondary)] transition-all duration-200 border border-[var(--color-border-light)]"
           >
             <svg
@@ -64,23 +60,27 @@ export default function CreateRol() {
 
         <div className="bg-white rounded-2xl shadow-xl border border-[var(--color-border-light)] overflow-hidden">
           <div className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] h-2"></div>
+
           <form
             className="p-8 space-y-6"
             onSubmit={handleSubmit(handleForm)}
             noValidate
           >
-            <CrearRolForm register={register} errors={errors} />
+            <CarrierForm register={register} errors={errors} />
             <button
               type="submit"
               className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
             >
-              Crear Rol
+              Guardar Cambios
             </button>
           </form>
         </div>
 
         <div className="mt-6 text-center text-sm text-[var(--color-text-tertiary)]">
-          <p>Los cambios se aplicarán inmediatamente después de crear el rol</p>
+          <p>
+            Los cambios se aplicarán inmediatamente después de editar el
+            transportista
+          </p>
         </div>
       </div>
     </div>

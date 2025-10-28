@@ -1,51 +1,55 @@
 
 import { Link } from "react-router-dom";
-// import { useQuery } from "@tanstack/react-query";
-// import { getRoleAPI } from "../../api/AdminAPI";
+import PaginationComponent from "../../components/utilities-components/PaginationComponent";
 import { Pencil, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getUsersAPI } from "@/api/UserAPI.js";
 
 export default function UserTableView() {
-  // const { data, isLoading, isError } = useQuery({
-  //   queryKey: ["roles"],
-  //   queryFn: getRoleAPI,
-  // });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(10);
 
-  // if (isLoading) return <p>Cargando roles...</p>;
-  // if (isError) return <p>Error al cargar los datos.</p>;
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["users", currentPage, pageSize],
+    queryFn: () => getUsersAPI(currentPage),
+  });
 
-  // const roles = data?.response || [];
+  const handlePageChange = (page: number) => setCurrentPage(page);
+  if (isLoading) return <p>Cargando usuarios...</p>;
+  if (isError) return <p>Error al cargar los datos.</p>;
+  const users = data?.response || [];
+  const totalPages = data?.lastPage || 1;
 
-  return (
+  if(data) return (
     <div className="flex items-center justify-center min-h-screen bg-slate-100 p-4">
       <div className="max-w-6xl w-full">
-        {/* Contenedor de la tabla */}
         <div className="table-container">
-          {/* Header de tabla con botón */}
           <div className="table-header flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <h2 className="table-title">Lista de Roles</h2>
+            <h2 className="table-title">Lista de Usuarios</h2>
             <Link to="/user/create" className="btn-primary whitespace-nowrap">
               Crear usuario
             </Link>
           </div>
-
-          {/* Wrapper para scroll horizontal en móviles */}
           <div className="overflow-x-auto">
-            {/* Tabla */}
-            {/* {roles.length > 0 ? ( */}
+            {users.length > 0 ? (
               <table className="table">
                 <thead>
                   <tr>
-                    <th className="table-cell-center">Nombre</th>
+                    <th>Id</th>
+                    <th>Nombre</th>
                     <th>Usuario</th>
-                    <th className="table-cell-center">Rol</th>
+                    <th>Rol</th>
                     <th className="table-cell-center">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {/* {roles.map((rol) => ( */}
-                    <tr>
-                      <td className="table-cell-center"></td>
-                      <td></td>
+                  {users.map((user) => (
+                    <tr key={user.id}>
+                      <td>{user.id}</td>
+                      <td>{user.name}</td>
+                      <td>{user.username}</td>
+                      <td>{user.role}</td>
                       <td className="table-cell-center">
                         <div className="table-actions justify-center">
                           <button
@@ -67,15 +71,20 @@ export default function UserTableView() {
                         </div>
                       </td>
                     </tr>
-                  {/* // ))} */}
+                  ))}
                 </tbody>
               </table>
-            {/* ) : (
+            ) : (
               <p className="text-center py-10 text-gray-500">
-                No hay roles registrados.
+                No hay usuarios registrados.
               </p>
-            )} */}
+            )}
           </div>
+          <PaginationComponent
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
         </div>
       </div>
     </div>

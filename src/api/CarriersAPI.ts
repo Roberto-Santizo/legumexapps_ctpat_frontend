@@ -29,6 +29,7 @@ export async function getCarriersAPI(
       params: { limit, offset },
     });
     const parsedData = getCarrierSchema.parse(data);
+    console.log("Data recibida en getCarriersAPI:", parsedData);
     return parsedData;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
@@ -39,3 +40,18 @@ export async function getCarriersAPI(
     throw error;
   }
 }
+
+export async function getCarrierByIdAPI(id: number){
+  try {
+    const {data} = await api.get(`/carriers/${id}`);
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      console.error("Error en getCarrierByIdAPI", error.response.data);
+    }else{
+      console.error("Error en getCarrierById", error);
+    }
+    throw error;
+  }
+}
+

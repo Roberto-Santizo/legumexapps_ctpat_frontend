@@ -5,9 +5,13 @@ import { ErrorMessage } from "../utilities-components/ErrorMessage";
 type ContainerFormProps = {
   register: UseFormRegister<CreateContainerFormData>;
   errors: FieldErrors<CreateContainerFormData>;
+  initialValues: CreateContainerFormData;
 };
 
-export default function ContainersForm({ register, errors }: ContainerFormProps) {
+export default function ContainersForm({
+  register,
+  errors,
+}: ContainerFormProps) {
   return (
     <div className="form-container space-y-6">
       <div className="form-group">
@@ -29,7 +33,7 @@ export default function ContainersForm({ register, errors }: ContainerFormProps)
           />
         </div>
         {errors.container && (
-            <ErrorMessage>{errors.container.message}</ErrorMessage>
+          <ErrorMessage>{errors.container.message}</ErrorMessage>
         )}
       </div>
 
@@ -52,9 +56,7 @@ export default function ContainersForm({ register, errors }: ContainerFormProps)
             })}
           />
         </div>
-        {errors.seal && (
-            <ErrorMessage>{errors.seal.message}</ErrorMessage>
-        )}
+        {errors.seal && <ErrorMessage>{errors.seal.message}</ErrorMessage>}
       </div>
 
       <div className="form-group">
@@ -76,9 +78,7 @@ export default function ContainersForm({ register, errors }: ContainerFormProps)
             })}
           />
         </div>
-        {errors.sensor && (
-            <ErrorMessage>{errors.sensor.message}</ErrorMessage>
-        )}
+        {errors.sensor && <ErrorMessage>{errors.sensor.message}</ErrorMessage>}
       </div>
 
       <div className="form-group">
@@ -99,9 +99,7 @@ export default function ContainersForm({ register, errors }: ContainerFormProps)
             })}
           />
         </div>
-        {errors.type && (
-            <ErrorMessage>{errors.type.message}</ErrorMessage>
-        )}
+        {errors.type && <ErrorMessage>{errors.type.message}</ErrorMessage>}
       </div>
     </div>
   );
