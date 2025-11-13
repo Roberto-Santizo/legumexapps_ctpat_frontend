@@ -1,4 +1,4 @@
-import type { CreateDriverFormData } from "../schemas/types.ts";
+import type { DriverFormData } from "../schemas/types.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -15,21 +15,21 @@ export default function CreateDriver() {
     license: "",
     carrier_id: 0,
   };
-  const {register,handleSubmit,formState: { errors }, } = useForm<CreateDriverFormData>({defaultValues: initialValues, mode: "onChange"});
+  const {register,handleSubmit,formState: { errors }, } = useForm<DriverFormData>({defaultValues: initialValues, mode: "onChange"});
 
   const { mutate } = useMutation({
-    mutationFn: (data: CreateDriverFormData) => createDriverAPI(data),
+    mutationFn: (data: DriverFormData) => createDriverAPI(data),
     onSuccess: (response) => {
-      if (response.statusCode === 200) {
+      if (response) {
         toast.success(response.message);
         navigate("/driver");
       } else {
-        toast.error(response.message || "No se pudo crear el conductor");
+        toast.error(response);
       }
     },
   });
 
-  const handleForm = async (data: CreateDriverFormData) => {
+  const handleForm = async (data: DriverFormData) => {
     const parsedData = {
       ...data,
       carrier_id: Number(data.carrier_id),
@@ -45,7 +45,6 @@ export default function CreateDriver() {
             Crear Nuevo Piloto
           </h1>
         </div>
-
         <div className="mb-6">
           <Link
             to="/driver"
@@ -67,10 +66,8 @@ export default function CreateDriver() {
             Regresar
           </Link>
         </div>
-
         <div className="bg-white rounded-2xl shadow-xl border border-[var(--color-border-light)] overflow-hidden">
           <div className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] h-2"></div>
-
           <form
             className="p-8 space-y-6"
             onSubmit={handleSubmit(handleForm)}
@@ -84,7 +81,6 @@ export default function CreateDriver() {
             />
           </form>
         </div>
-
         <div className="mt-6 text-center text-sm text-[var(--color-text-tertiary)]">
           <p>Los cambios se aplicarán inmediatamente después de crear piloto</p>
         </div>

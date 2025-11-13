@@ -1,10 +1,8 @@
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { ErrorMessage } from "@/components/utilities-components/ErrorMessage";
-import type { UserFormDataSchema } from "@/schemas/typesAdmin";
-import { useState } from "react";
+import type { UserFormDataSchema,Rol } from "@/schemas/typesAdmin";
+import { useState,useEffect } from "react";
 import { getRoleAPI } from "@/api/RolAPI";
-import type { Rol } from "@/schemas/typesAdmin";
-import { useEffect } from "react";
 
 type CreateUserFormProps = {
   register: UseFormRegister<UserFormDataSchema>;
@@ -46,7 +44,7 @@ export default function CreateUserForm({
           <input
             id="name"
             type="text"
-            placeholder="Pedro"
+            placeholder="Ej. Manuel"
             className={`form-input ${
               errors.name ? "form-input-error" : "form-input-normal"
             }`}
@@ -74,7 +72,7 @@ export default function CreateUserForm({
           <input
             id="username"
             type="text"
-            placeholder="admin"
+            placeholder="Ej. admin"
             className={`form-input ${
               errors.username ? "form-input-error" : "form-input-normal"
             }`}

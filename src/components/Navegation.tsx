@@ -1,12 +1,4 @@
-import {
-  HomeIcon,
-  UserCog,
-  User,
-  Truck,
-  CircleUserRound,
-  Container,
-  File
-} from "lucide-react";
+import {HomeIcon,UserCog,User,Truck,CircleUserRound,Container,File,Apple,TruckElectric } from "lucide-react";
 import NavLinkComponent from "../components/utilities-components/NavLinkComponent";
 
 export default function Navegation() {
@@ -15,7 +7,7 @@ export default function Navegation() {
       <NavLinkComponent url="/dashboard" text="">
         <HomeIcon />
       </NavLinkComponent>
-      <>
+      
         <NavLinkComponent url="/user" text="Usuarios">
           <User />
         </NavLinkComponent>
@@ -39,7 +31,17 @@ export default function Navegation() {
         <NavLinkComponent url="/ctpats" text="Ctpats">
           <File  />
         </NavLinkComponent>
-      </>
+         
+        {/* <NavLinkComponent url="/ctpats" text="Listado de Ctpats">
+          <FileTerminal  />
+        </NavLinkComponent> */}
+        
+        <NavLinkComponent url="/products" text="Productos">
+          <Apple  />
+        </NavLinkComponent>
+        <NavLinkComponent url="/conditions" text="Condiciones">
+          <TruckElectric  />
+        </NavLinkComponent>
     </div>
   );
 }

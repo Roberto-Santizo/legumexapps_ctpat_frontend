@@ -1,13 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import CtpatForm from "@/components/forms/CtpatsForm";
 import { createCtpatsAPI } from "@/api/CtpatsAPI";
 import type { CreateCtpatFormData } from "@/schemas/types";
 
 export default function CreateCtpat() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const {
     register,
@@ -27,14 +27,20 @@ export default function CreateCtpat() {
   const { mutate } = useMutation({
     mutationFn: createCtpatsAPI,
     onError: (error: Error) => toast.error(error.message),
-    onSuccess: () => {
-      toast.success("Ctpat Creado Correctamente");
-      navigate("/ctpats");
+    onSuccess: (data) => {
+      if (data.success) {
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+      // navigate("/ctpats");
     },
   });
 
   const handleForm = (data: CreateCtpatFormData) => {
-      console.log("Datos crudos del formulario:", data); //Delete this when all is working correctly
+      console.log("Datos que estoy tratando de enviar al backend :", data); //Delete this when all is working correctly
+
+      
     mutate({
       ...data,
       container_id: Number(data.container_id),

@@ -1,5 +1,6 @@
-import z from "zod";
+import {z} from "zod";
 import { paginationSchema } from "./paginateSchemas";
+
 //driver
 export const driverSchema = z.object({
   id:z.number(),
@@ -9,9 +10,38 @@ export const driverSchema = z.object({
   carrier_id: z.number(),
 })
 
+export const driverListSchema = (
+  driverSchema.pick({
+    id: true,
+    name: true,
+  })
+)
+
+export const getDriverByIdSchema = z.object(
+  driverSchema.pick({
+    id: true,
+    name: true,
+    license: true,
+    identification: true,
+    carrier_id: true,
+  })
+)
+export const editDriverSchema = driverSchema.pick({
+  name: true,
+  identification: true,
+  license: true,
+});
+
+export type DriverFormData = {
+  name: string;
+  identification: string;
+  license: string;
+  carrier_id?: number; 
+};
+
 export type CreateDriver = z.infer<typeof driverSchema>;
-export type DriverFormData = Pick<CreateDriver, "name" | "identification" | "license" | "carrier_id">;
-export const getDriversSchema = paginationSchema(driverSchema)
+export const getDriversSchema = paginationSchema(driverListSchema)
+export type EditDriverFormData = z.infer<typeof editDriverSchema>;
 
 
 //carriers
@@ -54,41 +84,20 @@ export type createCarrierFormSchema = z.infer<typeof carrierSchema>;
 export type CreateCarrierResponse = z.infer<typeof createCarrierResponseSchema>;
 export type CarrierFormData = z.infer<typeof getCarrierSchema>;
 
-//container
-export const ContainerSchema = z.object({
-  container: z.string(),
-  seal: z.number(),
-  sensor: z.number(),
-  type: z.string(),
-});
-export const containerItemSchema = z.object({
+// container
+export const containerSchema = z.object({
   id: z.number(),
-  container: z.string(),
-  seal: z.number(),
-  sensor: z.number(),
-  type: z.string(),
-});
-export const getContainersResponseSchema = z.object({
-  statusCode: z.number(),
-  response: z.array(containerItemSchema),
-  page: z.number(),
-  total: z.number(),
-  lastPage: z.number(),
-});
+  container:z.string(),
+  seal: z.string(),
+  sensor: z.string(),
+  type: z.string()
+})
 
-export const getContainerByIdSchema = z.object({
-  statusCode: z.number(),
-  response: z.object({
-    id: z.number(),
-    container: z.string(),
-    seal: z.number(),
-    sensor: z.number(),
-    type: z.string(),
-  }),
-});
-export type GetContainerByIdResponse = z.infer<typeof getContainerByIdSchema>;
-export type GetContainersResponse = z.infer<typeof getContainersResponseSchema>;
-export type CreateContainerFormData = z.infer<typeof ContainerSchema>;
+export const getContainerSchema = paginationSchema(containerSchema)
+export type GetContainerFormData = z.infer<typeof getContainerSchema>;
+export type Container = z.infer<typeof containerSchema>
+export type ContainerFormData = Pick<Container,'container' |'seal' |'sensor' |'type'> 
+
 
 //ctpats
 const ImageSchema = z.object({
@@ -128,6 +137,50 @@ export const ctpatListSchema = ctpat.pick({
   container: true,
   createdAt: true,
 })
-
+export type  uploadImages = z.infer<typeof ImageSchema> 
+export type uploadImagesFormData = Pick<uploadImages, "image"| "type">
 export const getCtpatsSchema = paginationSchema(ctpatListSchema)
 export type GetCtpatResponse = z.infer<typeof getCtpatsSchema>;
+
+// Product
+
+export const productSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  code: z.string(),
+  presentation: z.string(),
+  lbs_presentation: z.number(),
+})
+
+
+export const getProductSchema = paginationSchema(productSchema)
+export type GetProductFormData = z.infer<typeof getProductSchema>
+export type Product = z.infer<typeof productSchema>
+export type ProductFormData = Pick<Product, "name"|"code"|"presentation"|"lbs_presentation">
+export type EditProductFormData = Pick<Product, "name"|"code" >
+
+// packing-list
+export const packingList = z.object({
+  box_type: z.string(),
+  order: z.string(),
+  customer: z.string(),
+  thermograph_no: z.number(),
+  exit_temp: z.number()
+})
+
+export type PackingList = z.infer<typeof packingList>
+export type PackignListFormData = Pick<PackingList, "box_type"|"order"|"customer"|"thermograph_no"|"exit_temp">
+
+// conditions
+export const conditionsSchema = z.object({
+  id:z.number(),
+  name: z.string(),
+  type: z.string(),
+  status: z.boolean()
+})
+
+export const getConditionSchema = paginationSchema(conditionsSchema)
+export type GetConditionFormData = z.infer<typeof getConditionSchema>
+
+export type Condition = z.infer<typeof conditionsSchema>
+export type ConditionFormData = Pick<Condition, "name"| "type">

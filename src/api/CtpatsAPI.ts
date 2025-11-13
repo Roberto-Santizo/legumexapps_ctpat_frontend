@@ -1,31 +1,36 @@
 import api from "@/components/config/axios";
 import { isAxiosError } from "axios";
-import type { CreateCtpatFormData } from "@/schemas/types";
-import { CtpatSchema } from "@/schemas/types";
+import type { CreateCtpatFormData,uploadImagesFormData  } from "@/schemas/types";
 import { getCtpatsSchema } from "@/schemas/types";
 
 export async function createCtpatsAPI(formData: CreateCtpatFormData) {
-  console.log("Formulario recibido en API function:", formData);
+
   try {
     const { data } = await api.post("/ctpat", formData);
     console.log("Respuesta cruda del backend:", data);
 
-    const parsedData = CtpatSchema.parse(data);
-    console.log("Ctpat creado:", parsedData);
-
-    return parsedData;
+    if (data && typeof data === "object" && "message" in data) {
+      return {
+        success: data.statusCode === 200,
+        message: data.message,
+      };
+    }
+    throw new Error("Respuesta inesperada del servidor");
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       console.error("Error desde backend:", error.response.data);
-      throw new Error(error.response.data.error || "Error al crear el ctpats");
+      throw new Error(error.response.data.message || "Error al crear el CTPAT");
     }
+    console.error("Error desconocido:", error);
     throw error;
   }
 }
 
+
 export async function getDriverByIdAPI(id: number) {
   try {
     const { data } = await api.get(`/drivers/${id}`);
+    console.log(data)
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
@@ -43,8 +48,8 @@ export async function getCtpatsAPI(page: number = 1) {
     const offset = page;
 
     const { data } = await api.get("/ctpat", { params: { limit, offset } });
+    console.log(data)
     const response = getCtpatsSchema.safeParse(data);
-    console.log(response)
 
     if (response.success) {
       return response.data; // Esto contiene { response, page, total, lastPage }
@@ -58,3 +63,35 @@ export async function getCtpatsAPI(page: number = 1) {
     throw error;
   }
 }
+
+
+export async function uploadImagesAPI(ctpatId: number, formData: uploadImagesFormData) {
+  console.log("Formulario recibido en API function:", formData);
+
+  try {
+    const { data } = await api.post(`/ctpat/uploadImages/${ctpatId}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    console.log("Respuesta cruda del backend:", data);
+
+    if (data && typeof data === "object" && "message" in data) {
+      return {
+        success: data.statusCode === 200,
+        message: data.message,
+      };
+    }
+
+    throw new Error("Respuesta inesperada del servidor");
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      console.error("Error desde backend:", error.response.data);
+      throw new Error(error.response.data.message || "Error al subir imágenes del CTPAT");
+    }
+    console.error("Error desconocido:", error);
+    throw error;
+  }
+}
+

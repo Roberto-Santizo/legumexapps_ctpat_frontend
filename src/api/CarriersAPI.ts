@@ -29,7 +29,6 @@ export async function getCarriersAPI(
       params: { limit, offset },
     });
     const parsedData = getCarrierSchema.parse(data);
-    console.log("Data recibida en getCarriersAPI:", parsedData);
     return parsedData;
   } catch (error) {
     if (isAxiosError(error) && error.response) {

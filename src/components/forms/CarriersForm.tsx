@@ -20,7 +20,7 @@ export default function CarrierForm({register, errors}: CarrierFormProps) {
           <input
             id="name"
             type="text"
-            placeholder="Pedro"
+            placeholder="Ej. Manuel"
             className={`form-input ${
               errors.name ? "form-input-error" : "form-input-normal"
             }`}

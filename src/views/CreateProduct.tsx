@@ -2,44 +2,43 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-import ContainersForm from "../components/forms/ContainersForm.tsx";
-import type { ContainerFormData } from "@/schemas/types.ts";
-import { createContainerAPI } from "@/api/ContainerAPI.ts";
-
+import type { ProductFormData } from "@/schemas/types.ts";
+import ProductsForm from "@/components/forms/ProductsForm"
+import {createProdutAPI} from "@/api/ProductsAPI"
 export default function CreateContainer() {
   const navigate = useNavigate();
-  const initialValues: ContainerFormData = {
-    container: "",
-    seal: "",
-    sensor: "",
-    type: "",
+  const initialValues: ProductFormData = {
+    name: "",
+    code: "",
+    presentation: "",
+    lbs_presentation: 0,
   };
 
   const {register,handleSubmit,formState: { errors },} = useForm({defaultValues: initialValues});
 
   const { mutate } = useMutation({
-    mutationFn: createContainerAPI,
+    mutationFn: createProdutAPI,
     onError: (error) => toast.error(error.message),
     onSuccess: (response) => {
       toast.success(response.message);
-      navigate("/container");
+      navigate("/products");
     },
   });
 
-  const handleForm = (formData: ContainerFormData) => mutate(formData);
+  const handleForm = (formData: ProductFormData) => mutate(formData);
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] bg-clip-text text-transparent mb-3">
-            Crear Nuevo Contenedor
+            Crear Nuevo Producto
           </h1>
         </div>
 
         <div className="mb-6">
           <Link
-            to="/container"
+            to="/products"
             className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[var(--color-primary-dark)] font-semibold rounded-xl shadow-md hover:shadow-lg hover:bg-[var(--color-bg-secondary)] transition-all duration-200 border border-[var(--color-border-light)]"
           >
             <svg
@@ -67,7 +66,7 @@ export default function CreateContainer() {
             onSubmit={handleSubmit(handleForm)}
             noValidate
           >
-            <ContainersForm
+            <ProductsForm
               register={register}
               errors={errors}
             />
@@ -81,8 +80,7 @@ export default function CreateContainer() {
 
         <div className="mt-6 text-center text-sm text-[var(--color-text-tertiary)]">
           <p>
-            Los cambios se aplicarán inmediatamente después de crear el
-            contenedor
+            Los cambios se aplicarán inmediatamente después de crear el producto
           </p>
         </div>
       </div>

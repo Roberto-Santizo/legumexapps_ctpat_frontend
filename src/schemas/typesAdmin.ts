@@ -9,10 +9,12 @@ export const loginRequestSchema = z.object({
 
 export const loginResponseSchema = z.object({
   statusCode: z.number(),
-  id: z.number(),
-  name: z.string(),
-  username: z.string(),
-  role: z.string(),
+  response: z.object({
+    id: z.number(),
+    name: z.string(),
+    username: z.string(),
+    role: z.string(),
+  }),
   token: z.string(),
 });
 export type LoginRequest = z.infer<typeof loginRequestSchema>;

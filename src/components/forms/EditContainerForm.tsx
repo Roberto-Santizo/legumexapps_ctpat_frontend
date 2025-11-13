@@ -1,34 +1,51 @@
-import { Link } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import type {
-  CreateContainerFormData,
-  GetContainerByIdResponse,
-} from "../../schemas/types";
+import { Link, useNavigate } from 'react-router-dom'
+import { useForm} from "react-hook-form";
 import ContainersForm from "../forms/ContainersForm";
+import type { ContainerFormData,Container } from "@/schemas/types";
+import {toast} from "react-toastify"
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {updateContainerAPI} from "@/api/ContainerAPI"
+import { useEffect } from 'react';
 
 type EditContainerFormProps = {
-  data: GetContainerByIdResponse;
+  data: ContainerFormData;
+  containerId: Container['id'];
 };
+export default function EditContainerForm({data, containerId }: EditContainerFormProps) {
+   const navigate = useNavigate()
+   const {register,handleSubmit,formState: { errors }, reset} = useForm<ContainerFormData>();
 
-export default function EditContainerForm({ data }: EditContainerFormProps) {
-  const container = data.response;
-  const initialValues: CreateContainerFormData = {
-    container: container.container,
-    seal: Number(container.seal),
-    sensor: Number(container.sensor),
-    type: container.type,
-  };
+   useEffect(()=>{
+       if (data) {
+      reset({
+        container: data.container,
+        seal: data.seal,
+        sensor: data.sensor,
+        type: data.type,
+      });
+    }
+  }, [data, reset]);
+   
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CreateContainerFormData>({
-    defaultValues: initialValues,
-    mode: "onChange",
-  });
-  const handleForm = (formData: CreateContainerFormData) => {
-    console.log("Datos editados:", formData);
+   const queryClient = useQueryClient()
+       const { mutate} = useMutation({
+        mutationFn: updateContainerAPI,
+        onError: (error) => {
+           toast.error(error.message)
+        },
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({queryKey: ['containers']})
+            queryClient.invalidateQueries({queryKey: ['editContainer', containerId]})
+            toast.success(data)
+            navigate('/container')
+        }
+    })
+  const handleForm = (formData: ContainerFormData) => {
+    const data = {
+      formData,
+      containerId
+    }
+    mutate(data)
   };
 
   return (
@@ -63,6 +80,7 @@ export default function EditContainerForm({ data }: EditContainerFormProps) {
 
         <div className="bg-white rounded-2xl shadow-xl border border-[var(--color-border-light)] overflow-hidden">
           <div className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] h-2"></div>
+
           <form
             className="p-8 space-y-6"
             onSubmit={handleSubmit(handleForm)}
@@ -71,7 +89,6 @@ export default function EditContainerForm({ data }: EditContainerFormProps) {
             <ContainersForm
               register={register}
               errors={errors}
-              initialValues={initialValues}
             />
             <button
               type="submit"

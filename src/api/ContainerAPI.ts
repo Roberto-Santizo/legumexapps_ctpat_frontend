@@ -1,23 +1,31 @@
 import { isAxiosError } from "axios";
 import api from "../components/config/axios";
-import type {GetContainersResponse} from "../schemas/types"
-import type {CreateContainerFormData} from "@/schemas/types"
-import {ContainerSchema} from "@/schemas/types"
+import type {ContainerFormData,GetContainerFormData,Container} from "@/schemas/types"
 
-export async function createContainerAPI(formData:CreateContainerFormData ) {
+export async function createContainerAPI(formData: ContainerFormData) {
   try {
     const { data } = await api.post("/containers", formData);
-      const parsedData = ContainerSchema.parse(data);
-    return parsedData;
+    if ([201].includes(data.statusCode)) {
+      return {
+        success: true,
+        message: data.message || "Operación realizada correctamente",
+      };
+    }
+    throw new Error(data.message || "Error desconocido al crear el contenedor");
+
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.error || "Error al crear el contenedor");
+      const backendData = error.response.data || {};
+      const message =
+        backendData.message || backendData.error || "Error al conectar con el servidor";
+      throw new Error(message);
     }
-    throw error;
+
+    throw new Error("Error desconocido al crear el contenedor");
   }
 }
 
-export async function getContainerAPI(page: number = 1): Promise<GetContainersResponse> {
+export async function getContainerAPI(page: number = 1): Promise<GetContainerFormData> {
   try {
     const limit = 10;
     const offset = page;
@@ -36,7 +44,7 @@ export async function getContainerAPI(page: number = 1): Promise<GetContainersRe
   }
 }
 
-export async function getContainerByIdAPI(id: number) {
+export async function getContainerByIdAPI(id: Container['id']) {
   try {
     const { data } = await api.get(`/containers/${id}`);
     return data;
@@ -48,4 +56,20 @@ export async function getContainerByIdAPI(id: number) {
     }
     throw error;
   }
+}
+
+type ContainerAPIType ={
+  formData: ContainerFormData;
+  containerId: Container['id'];
+}
+export async function updateContainerAPI({formData,containerId}:ContainerAPIType ) {
+  try {
+    const { data } = await api.patch<string>(`/containers/${containerId}`, formData);
+    return data
+  } catch (error) {
+    if (isAxiosError(error) && error.response){
+      throw new Error (error.response.data.message)
+    }
+  }
+  
 }

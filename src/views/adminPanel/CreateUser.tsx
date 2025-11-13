@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import type { createUserFormData } from "@/schemas/typesAdmin";
+import type { UserFormDataSchema } from "@/schemas/typesAdmin";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { createUserAPI } from "@/api/UserAPI";
@@ -8,13 +8,13 @@ import CreateUserForm from "@/components/forms/CreateUserForm";
 
 export default function CreateUserView() {
   const navigate = useNavigate();
-  const initialValues: createUserFormData = { name:"",username:"", password:"", role_id:0};
+  const initialValues: UserFormDataSchema = { name:"",username:"", password:"", role_id:0};
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<createUserFormData>({
+  } = useForm<UserFormDataSchema>({
     defaultValues: initialValues,
     mode: "all",
     reValidateMode: "onChange",
@@ -29,7 +29,7 @@ export default function CreateUserView() {
     },
   });
 
-  const handleForm = async (data: createUserFormData) => mutate(data);
+  const handleForm = async (data: UserFormDataSchema) => mutate(data);
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4 sm:px-6 lg:px-8">

@@ -1,5 +1,4 @@
 import { User, Lock, TrendingUp, Eye, EyeOff, LogIn } from "lucide-react";
-// import { ErrorMessage } from "../../components/utilities-components/ErrorMessage";
 import { useState } from "react";
 import type { LoginRequest } from "../../schemas/typesAdmin";
 import { loginApi } from "../../api/LoginAPI";

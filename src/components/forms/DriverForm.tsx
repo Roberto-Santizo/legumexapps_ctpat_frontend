@@ -61,7 +61,6 @@ export default function DriverForm({errors, register, showCarrierField = true}:D
         <label htmlFor="identification" className="form-label">
           No. DPI <span className="required">*</span>
         </label>
-
         <div className="input-icon-wrapper">
           <input
             id="identification"

@@ -1,45 +1,61 @@
-import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
-import ContainersForm from "../components/forms/ContainersForm.tsx";
-import type { ContainerFormData } from "@/schemas/types.ts";
-import { createContainerAPI } from "@/api/ContainerAPI.ts";
+import { Link, useNavigate } from 'react-router-dom'
+import { useForm} from "react-hook-form";
+import type { ConditionFormData,Condition } from "@/schemas/types";
+import {toast} from "react-toastify"
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import ConditionForm from "@/components/forms/CreateConditionForm"
+import {updateConditionAPI} from "@/api/ConditionsAPI"
 
-export default function CreateContainer() {
-  const navigate = useNavigate();
-  const initialValues: ContainerFormData = {
-    container: "",
-    seal: "",
-    sensor: "",
-    type: "",
+type EditConditionFormProps = {
+  data: ConditionFormData;
+  conditionId: Condition['id'];
+};
+export default function EditConditionForm({data, conditionId }: EditConditionFormProps) {
+   const navigate = useNavigate()
+   const {register,handleSubmit,formState: { errors }, reset} = useForm<ConditionFormData>();
+
+   useEffect(()=>{
+       if (data) {
+      reset({
+        name: data.name,
+        type: data.type,
+      });
+    }
+  }, [data, reset]);
+   
+   const queryClient = useQueryClient()
+       const { mutate} = useMutation({
+        mutationFn: updateConditionAPI,
+        onError: (error) => {
+           toast.error(error.message)
+        },
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({queryKey: ['conditions']})
+            queryClient.invalidateQueries({queryKey: ['editCondition', conditionId]})
+            toast.success(data)
+            navigate('/conditions')
+        }
+    })
+  const handleForm = (formData: ConditionFormData) => {
+    const data = {
+      formData,
+      conditionId
+    }
+    mutate(data)
   };
-
-  const {register,handleSubmit,formState: { errors },} = useForm({defaultValues: initialValues});
-
-  const { mutate } = useMutation({
-    mutationFn: createContainerAPI,
-    onError: (error) => toast.error(error.message),
-    onSuccess: (response) => {
-      toast.success(response.message);
-      navigate("/container");
-    },
-  });
-
-  const handleForm = (formData: ContainerFormData) => mutate(formData);
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] bg-clip-text text-transparent mb-3">
-            Crear Nuevo Contenedor
+            Editar Condicion
           </h1>
         </div>
-
         <div className="mb-6">
           <Link
-            to="/container"
+            to="/conditions"
             className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[var(--color-primary-dark)] font-semibold rounded-xl shadow-md hover:shadow-lg hover:bg-[var(--color-bg-secondary)] transition-all duration-200 border border-[var(--color-border-light)]"
           >
             <svg
@@ -67,23 +83,17 @@ export default function CreateContainer() {
             onSubmit={handleSubmit(handleForm)}
             noValidate
           >
-            <ContainersForm
+            <ConditionForm
               register={register}
               errors={errors}
             />
-            <input
+            <button
               type="submit"
-              value= "Crear Contenedor"
               className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
-            />
+            >
+              Guardar Cambios
+            </button>
           </form>
-        </div>
-
-        <div className="mt-6 text-center text-sm text-[var(--color-text-tertiary)]">
-          <p>
-            Los cambios se aplicarán inmediatamente después de crear el
-            contenedor
-          </p>
         </div>
       </div>
     </div>

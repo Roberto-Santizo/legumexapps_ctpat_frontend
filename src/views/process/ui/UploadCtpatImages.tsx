@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ErrorMessage } from "../utilities-components/ErrorMessage";
+import { ErrorMessage } from "@/components/utilities-components/ErrorMessage";
 import { getContainerAPI } from "@/api/ContainerAPI";
 import { Button } from "@/components/ui/button";
 import PhotoCaptureModal from "@/components/modalWindows/PhotoCaptureModal";
