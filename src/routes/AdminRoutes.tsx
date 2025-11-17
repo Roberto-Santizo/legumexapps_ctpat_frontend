@@ -27,6 +27,8 @@ const routes = [
   
   { path: "/ctpats", component: lazy(() => import("@/views/TableCtpat")), roles: [] },
   { path: "/ctpats/create", component: lazy(() => import("@/views/CreateCtpats")), roles: [] },
+  { path: "/ctpats/uploadImagenes", component: lazy(() => import("@/views/uploadImagesCtp/CreateUploadImages")), roles: [] }, 
+  //**** */
 
   { path: "/products", component: lazy(() => import("@/views/TableProducts")), roles: [] },
   { path: "/products/create", component: lazy(() => import("@/views/CreateProduct")), roles: [] },
@@ -37,7 +39,6 @@ const routes = [
   { path: "/conditions/:conditionId/edit", component: lazy(() => import("@/views/EditConditionView")), roles: [] },
 
   { path: "/containerLoad", component: lazy(() => import("@/views/EditConditionView")), roles: [] },
-
 
 ];
 

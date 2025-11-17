@@ -2,10 +2,18 @@ import { useEffect, useState } from "react";
 import { ErrorMessage } from "../utilities-components/ErrorMessage";
 import { getContainerAPI } from "@/api/ContainerAPI";
 import { Button } from "@/components/ui/button";
-import PhotoCaptureModal from "@/components/modalWindows/PhotoCaptureModal";
-import type { UseFormRegister, FieldErrors, UseFormSetValue, UseFormWatch } from "react-hook-form";
+
+import PhotoCaptureModal, {type BuildImagePayload} from "@/components/modalWindows/PhotoCaptureModal";
+
+import type {
+  UseFormRegister,
+  FieldErrors,
+  UseFormSetValue,
+  UseFormWatch,
+} from "react-hook-form";
+
 import type { CreateCtpatFormData } from "@/schemas/types";
-import {toast} from "react-toastify"
+import { toast } from "react-toastify";
 
 type CtpatFormProps = {
   register: UseFormRegister<CreateCtpatFormData>;
@@ -14,13 +22,21 @@ type CtpatFormProps = {
   errors?: FieldErrors<CreateCtpatFormData>;
 };
 
-export default function CtpatForm({ register, errors, setValue, watch }: CtpatFormProps) {
-  const [containers, setContainers] = useState<{ id: number; container: string }[]>([]);
+export default function CtpatForm({
+  register,
+  errors,
+  setValue,
+  watch,
+}: CtpatFormProps) {
+  const [containers, setContainers] = useState<
+    { id: number; container: string }[]
+  >([]);
   const [loadingContainers, setLoadingContainers] = useState<boolean>(true);
   const [showModal, setShowModal] = useState(false);
 
   const images = watch("images") || [];
 
+  // Cargar contenedores
   useEffect(() => {
     const fetchContainers = async () => {
       try {
@@ -35,13 +51,11 @@ export default function CtpatForm({ register, errors, setValue, watch }: CtpatFo
     fetchContainers();
   }, []);
 
-    // NEW: Register custom validation for the "images" field
-  // This ensures the user cannot submit the form without adding at least one photo.
+  // Validar campo images
   useEffect(() => {
     register("images", {
       validate: (value) => {
         if (!value || value.length === 0) {
-          // Show a Toastify error when the user tries to submit without photos
           toast.error("Debes agregar al menos una foto del contenedor");
           return false;
         }
@@ -50,24 +64,28 @@ export default function CtpatForm({ register, errors, setValue, watch }: CtpatFo
     });
   }, [register]);
 
-  const handleAddImage = (newImage: { image: string; type: string; description: string }) => {
+  // ⭐ TIPADO CORRECTO PARA CTPAT (description obligatoria)
+  const handleAddImage = (newImage: BuildImagePayload<true>) => {
     console.log("Añadiendo imagen:", newImage);
-    // Trigger validation immediately after adding an image
+
     setValue("images", [...images, newImage], { shouldValidate: true });
+
     console.log("Nuevo array de imágenes:", [...images, newImage]);
+
     setShowModal(false);
-    toast.success("Foto agregada correctamente"); 
+    toast.success("Foto agregada correctamente");
   };
 
   const handleRemoveImage = (index: number) => {
     const updated = [...images];
     updated.splice(index, 1);
-    // Updated: Trigger validation again after removing an image
+
     setValue("images", updated, { shouldValidate: true });
   };
 
   return (
     <div className="form-container space-y-6">
+      {/* DESTINATION */}
       <div className="form-group">
         <label htmlFor="destination" className="form-label">
           Destino <span className="required">*</span>
@@ -76,31 +94,46 @@ export default function CtpatForm({ register, errors, setValue, watch }: CtpatFo
           id="destination"
           type="text"
           placeholder="DESTINO"
-          className={`form-input ${errors?.destination ? "form-input-error" : "form-input-normal"}`}
+          className={`form-input ${
+            errors?.destination ? "form-input-error" : "form-input-normal"
+          }`}
           {...register("destination", { required: "El destino es obligatorio" })}
         />
-        {errors?.destination && <ErrorMessage>{errors.destination.message}</ErrorMessage>}
+        {errors?.destination && (
+          <ErrorMessage>{errors.destination.message}</ErrorMessage>
+        )}
       </div>
+
+      {/* CONTAINER */}
       <div className="form-group">
         <label htmlFor="container_id" className="form-label">
           Contenedor <span className="required">*</span>
         </label>
         <select
           id="container_id"
-          className={`form-input ${errors?.container_id ? "form-input-error" : "form-input-normal"}`}
-          {...register("container_id", { required: "El contenedor es obligatorio" })}
+          className={`form-input ${
+            errors?.container_id ? "form-input-error" : "form-input-normal"
+          }`}
+          {...register("container_id", {
+            required: "El contenedor es obligatorio",
+          })}
           disabled={loadingContainers}
         >
           <option value="0">Selecciona un contenedor</option>
+
           {containers.map((container) => (
             <option key={container.id} value={container.id}>
               {container.container}
             </option>
           ))}
         </select>
-        {errors?.container_id && <ErrorMessage>{errors.container_id.message}</ErrorMessage>}
+
+        {errors?.container_id && (
+          <ErrorMessage>{errors.container_id.message}</ErrorMessage>
+        )}
       </div>
 
+      {/* DEPARTURE SITE */}
       <div className="form-group">
         <label htmlFor="departure_site" className="form-label">
           Sitio de salida <span className="required">*</span>
@@ -108,16 +141,24 @@ export default function CtpatForm({ register, errors, setValue, watch }: CtpatFo
         <input
           id="departure_site"
           type="text"
-          placeholder=" Ej. AGROINDUSTRIA LEGUMEX, EL TEJAR, CHIMALTENANGO, GUATEMALA"
-          className={`form-input ${errors?.departure_site ? "form-input-error" : "form-input-normal"}`}
-          {...register("departure_site", { required: "El sitio de salida es obligatorio" })}
+          placeholder="Ej. AGROINDUSTRIA LEGUMEX, EL TEJAR, CHIMALTENANGO, GUATEMALA"
+          className={`form-input ${
+            errors?.departure_site ? "form-input-error" : "form-input-normal"
+          }`}
+          {...register("departure_site", {
+            required: "El sitio de salida es obligatorio",
+          })}
         />
-        {errors?.departure_site && <ErrorMessage>{errors.departure_site.message}</ErrorMessage>}
+        {errors?.departure_site && (
+          <ErrorMessage>{errors.departure_site.message}</ErrorMessage>
+        )}
       </div>
 
+      {/* IMÁGENES */}
       <div>
         <div className="flex justify-between items-center mb-3">
           <h3 className="text-lg font-semibold">Fotos del Contenedor</h3>
+
           <Button type="button" onClick={() => setShowModal(true)}>
             Tomar Foto
           </Button>
@@ -126,17 +167,25 @@ export default function CtpatForm({ register, errors, setValue, watch }: CtpatFo
         {images.length === 0 && (
           <p className="text-sm text-gray-500">No se han agregado fotos aún.</p>
         )}
+
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {images.map((img, index) => (
-            <div key={index} className="relative border rounded-lg overflow-hidden shadow-sm">
+            <div
+              key={index}
+              className="relative border rounded-lg overflow-hidden shadow-sm"
+            >
               <img
                 src={img.image}
                 alt={img.description}
                 className="w-full h-32 object-cover"
               />
               <div className="p-2 text-xs bg-gray-50">
-                <p><strong>Tipo:</strong> {img.type}</p>
-                <p><strong>Desc:</strong> {img.description}</p>
+                <p>
+                  <strong>Tipo:</strong> {img.type}
+                </p>
+                <p>
+                  <strong>Desc:</strong> {img.description}
+                </p>
               </div>
               <button
                 type="button"
@@ -150,10 +199,12 @@ export default function CtpatForm({ register, errors, setValue, watch }: CtpatFo
         </div>
       </div>
 
+      {/* MODAL */}
       {showModal && (
-        <PhotoCaptureModal
+        <PhotoCaptureModal<true>
           onClose={() => setShowModal(false)}
           onSave={handleAddImage}
+          showDescription={true} // <--- descripción obligatoria
         />
       )}
     </div>

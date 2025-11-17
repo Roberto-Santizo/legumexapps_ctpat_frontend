@@ -1,0 +1,33 @@
+// /pages/UploadImages.tsx
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+
+import UploadImagesForm from "./UploadImagesForm";
+import { uploadImagesAPI } from "@/api/CtpatsAPI";
+import type { uploadImagesFormData } from "@/schemas/types";
+
+export default function UploadImages() {
+
+  const ctpatId = 1; // cambiar por params si es necesario
+
+  const { mutate } = useMutation({
+    mutationFn: (data: uploadImagesFormData) =>
+      uploadImagesAPI(ctpatId, data),
+
+    onSuccess: (res) => {
+      if (res.success) toast.success(res.message);
+      else toast.error(res.message);
+    },
+
+    onError: (err: Error) => toast.error(err.message),
+  });
+
+  return (
+    <div className="max-w-lg mx-auto p-6 space-y-6">
+
+      <h1 className="text-3xl font-bold">Subir Imágenes</h1>
+
+      <UploadImagesForm onSubmit={(data) => mutate(data)} />
+    </div>
+  );
+}

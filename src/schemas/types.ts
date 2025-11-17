@@ -100,11 +100,13 @@ export type ContainerFormData = Pick<Container,'container' |'seal' |'sensor' |'t
 
 
 //ctpats
+//ctpats
 const ImageSchema = z.object({
   image: z.string(),
   type: z.string(),
   description: z.string(),
 });
+
 export const ctpatResponseSchema = z.object({
   statusCode: z.literal(200),
   message: z.literal("Ctpat Creado Correctamente"),
@@ -127,7 +129,7 @@ export const ctpat = z.object({
   departure_site: z.string(),
   container: z.string(),
   createdAt: z.string(),
-})
+});
 
 export const ctpatListSchema = ctpat.pick({
   id: true,
@@ -136,28 +138,27 @@ export const ctpatListSchema = ctpat.pick({
   departure_site: true,
   container: true,
   createdAt: true,
-})
-export type  uploadImages = z.infer<typeof ImageSchema> 
-export type uploadImagesFormData = Pick<uploadImages, "image"| "type">
-export const getCtpatsSchema = paginationSchema(ctpatListSchema)
+});
+
+export type uploadImages = z.infer<typeof ImageSchema>;
+
+
+// ✅ Nuevo esquema correcto para UploadImages
+export const UploadImageSimpleSchema = z.object({
+  image: z.string(),
+  type: z.string(),
+});
+
+export const UploadImagesFormSchema = z.object({
+  images: z.array(UploadImageSimpleSchema),
+});
+
+export type uploadImagesFormData = z.infer<typeof UploadImagesFormSchema>;
+
+
+export const getCtpatsSchema = paginationSchema(ctpatListSchema);
 export type GetCtpatResponse = z.infer<typeof getCtpatsSchema>;
 
-// Product
-
-export const productSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-  code: z.string(),
-  presentation: z.string(),
-  lbs_presentation: z.number(),
-})
-
-
-export const getProductSchema = paginationSchema(productSchema)
-export type GetProductFormData = z.infer<typeof getProductSchema>
-export type Product = z.infer<typeof productSchema>
-export type ProductFormData = Pick<Product, "name"|"code"|"presentation"|"lbs_presentation">
-export type EditProductFormData = Pick<Product, "name"|"code" >
 
 // packing-list
 export const packingList = z.object({

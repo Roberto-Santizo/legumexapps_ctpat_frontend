@@ -4,11 +4,8 @@ import type { CreateCtpatFormData,uploadImagesFormData  } from "@/schemas/types"
 import { getCtpatsSchema } from "@/schemas/types";
 
 export async function createCtpatsAPI(formData: CreateCtpatFormData) {
-
   try {
     const { data } = await api.post("/ctpat", formData);
-    console.log("Respuesta cruda del backend:", data);
-
     if (data && typeof data === "object" && "message" in data) {
       return {
         success: data.statusCode === 200,
@@ -18,7 +15,6 @@ export async function createCtpatsAPI(formData: CreateCtpatFormData) {
     throw new Error("Respuesta inesperada del servidor");
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      console.error("Error desde backend:", error.response.data);
       throw new Error(error.response.data.message || "Error al crear el CTPAT");
     }
     console.error("Error desconocido:", error);
@@ -26,11 +22,9 @@ export async function createCtpatsAPI(formData: CreateCtpatFormData) {
   }
 }
 
-
 export async function getDriverByIdAPI(id: number) {
   try {
     const { data } = await api.get(`/drivers/${id}`);
-    console.log(data)
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
@@ -48,13 +42,11 @@ export async function getCtpatsAPI(page: number = 1) {
     const offset = page;
 
     const { data } = await api.get("/ctpat", { params: { limit, offset } });
-    console.log(data)
     const response = getCtpatsSchema.safeParse(data);
 
     if (response.success) {
       return response.data; // Esto contiene { response, page, total, lastPage }
     }
-
     throw new Error("Formato de respuesta inválido");
   } catch (error) {
     if (isAxiosError(error) && error.response) {
@@ -67,23 +59,18 @@ export async function getCtpatsAPI(page: number = 1) {
 
 export async function uploadImagesAPI(ctpatId: number, formData: uploadImagesFormData) {
   console.log("Formulario recibido en API function:", formData);
-
   try {
     const { data } = await api.post(`/ctpat/uploadImages/${ctpatId}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-    });
-
-    console.log("Respuesta cruda del backend:", data);
-
+    }); 
     if (data && typeof data === "object" && "message" in data) {
       return {
         success: data.statusCode === 200,
         message: data.message,
       };
     }
-
     throw new Error("Respuesta inesperada del servidor");
   } catch (error) {
     if (isAxiosError(error) && error.response) {
