@@ -28,7 +28,18 @@ const routes = [
   { path: "/ctpats", component: lazy(() => import("@/views/TableCtpat")), roles: [] },
   { path: "/ctpats/create", component: lazy(() => import("@/views/CreateCtpats")), roles: [] },
   { path: "/ctpats/uploadImagenes", component: lazy(() => import("@/views/uploadImagesCtp/CreateUploadImages")), roles: [] }, 
-  //**** */
+
+
+{
+  path: "/steps/:id",
+  component: lazy(() => import("@/views/uploadImagesCtp/CreateUploadImages")),
+},
+
+{
+  path: "/steps",
+  component: lazy(() => import("@/views/process/ShowStates")),
+},
+
 
   { path: "/products", component: lazy(() => import("@/views/TableProducts")), roles: [] },
   { path: "/products/create", component: lazy(() => import("@/views/CreateProduct")), roles: [] },
@@ -43,15 +54,15 @@ const routes = [
 ];
 
 export default function AdminRoutes() {
- return (
+  return (
     <Route element={<AppLayout />}>
-      {routes.map(({ path, component: Component}) => (
+      {routes.map(({ path, component: Component }) => (
         <Route
           key={path}
           path={path}
           element={
             <Suspense fallback={<Spinner />}>
-                <Component />
+              <Component />
             </Suspense>
           }
         />

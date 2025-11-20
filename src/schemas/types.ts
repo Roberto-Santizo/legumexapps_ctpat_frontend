@@ -111,6 +111,10 @@ export const ctpatResponseSchema = z.object({
   statusCode: z.literal(200),
   message: z.literal("Ctpat Creado Correctamente"),
 });
+export type CreateCtpatAPIResponse = {
+  success: boolean;
+  message: string;
+};
 
 export const CtpatSchema = z.object({
   destination: z.string(),

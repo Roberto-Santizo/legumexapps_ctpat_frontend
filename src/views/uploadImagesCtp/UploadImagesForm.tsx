@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import PhotoCaptureModal from "@/components/modalWindows/PhotoCaptureModal";
 import type { uploadImagesFormData } from "@/schemas/types";
-import { toast } from "react-toastify";  // ✅ IMPORTACIÓN CORRECTA
+import { toast } from "react-toastify";  
 
 type Props = {
   onSubmit: (data: uploadImagesFormData) => void;
@@ -24,13 +24,13 @@ export default function UploadImagesForm({ onSubmit }: Props) {
 
   const handleSubmit = () => {
     if (images.length === 0) {
-      toast.error("Debes agregar al menos una imagen");  // ✅ AHORA FUNCIONA
+      toast.error("Debes agregar al menos una imagen");
       return;
     }
 
     const formatted: uploadImagesFormData = {
       images: images.map((img) => ({
-        image: img.image,
+        image: img.image.replace(/^data:image\/\w+;base64,/, ""),
         type: img.type,
       })),
     };

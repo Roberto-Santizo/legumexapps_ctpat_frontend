@@ -1,5 +1,5 @@
+// showStates.tsx
 import { Link } from "react-router-dom";
-import { Pencil, Trash2 } from "lucide-react";
 import PaginationComponent from "@/components/utilities-components/PaginationComponent.js";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -40,52 +40,38 @@ export default function UserTableView() {
                   <tr>
                     <th>Id</th>
                     <th>Destino</th>
-                    <th>Usuario</th>
                     <th>Sitio de salida</th>
                     <th>Contenedor</th>
                     <th>Fecha de creación</th>
                     <th>Estado</th>
-                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {ctpats.map((ctpat) => (
+                {ctpats.map((ctpat) => (
                     <tr key={ctpat.id}>
-                      <td>{ctpat.id}</td>
-                      <td>{ctpat.destination}</td>
-                      <td>{ctpat.user}</td>
-                      <td>{ctpat.departure_site}</td>
-                      <td>{ctpat.container}</td>
-                      <td>
+                    <td>{ctpat.id}</td>
+                    <td>{ctpat.destination}</td>
+                    <td>{ctpat.departure_site}</td>
+                    <td>{ctpat.container}</td>
+                    <td>
                         {new Date(ctpat.createdAt).toLocaleDateString("es-ES", {
-                          year: "numeric",
-                          month: "2-digit",
-                          day: "2-digit",
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
                         })}
-                      </td>
-                      <td className="table-cell-center">
-                        <div className="table-actions justify-center">
-                          <button
-                            className="btn-icon btn-icon-primary"
-                            title="Editar"
-                          >
-                            <Pencil size={16} />
-                          </button>
-                          <button
-                            className="btn-icon"
-                            style={{
-                              borderColor: "#dc2626",
-                              color: "#dc2626",
-                            }}
-                            title="Eliminar"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </td>
+                    </td>
+                    <td>
+                        <Link
+                        to={`/steps/${ctpat.id}`}
+                        className="px-3 py-2 bg-blue-600 text-white rounded-md"
+                        >
+                        Cargar images 
+                        </Link>
+                    </td>
                     </tr>
-                  ))}
+                ))}
                 </tbody>
+
               </table>
             ) : (
               <p className="text-center py-10 text-gray-500">

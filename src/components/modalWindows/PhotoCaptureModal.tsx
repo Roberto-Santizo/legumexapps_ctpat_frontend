@@ -45,7 +45,6 @@ export default function PhotoCaptureModal<T extends boolean>({
       return;
     }
 
-    // 🔥 Gracias al tipo discriminado NO usamos any
     const result = {
       image: preview,
       type,
