@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import PhotoCaptureModal from "@/components/modalWindows/PhotoCaptureModal";
 import type { uploadImagesFormData } from "@/schemas/types";
-import { toast } from "react-toastify";  
+import { toast } from "react-toastify";
 
 type Props = {
   onSubmit: (data: uploadImagesFormData) => void;
@@ -30,11 +30,13 @@ export default function UploadImagesForm({ onSubmit }: Props) {
 
     const formatted: uploadImagesFormData = {
       images: images.map((img) => ({
-        image: img.image.replace(/^data:image\/\w+;base64,/, ""),
+        // image: img.image.replace(/^data:image\/\w+;base64,/, ""),
+        image: img.image,
+
         type: img.type,
       })),
     };
-
+    console.log("📤 Datos enviados al backend:", formatted); //this helps 
     onSubmit(formatted);
   };
 
@@ -71,7 +73,7 @@ export default function UploadImagesForm({ onSubmit }: Props) {
       {showModal && (
         <PhotoCaptureModal
           onClose={() => setShowModal(false)}
-          onSave={handleAddImage}
+          onSave={handleAddImage}   // ESTE onSave recibe { image, type }
           showDescription={false}
         />
       )}

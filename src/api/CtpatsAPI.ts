@@ -31,6 +31,7 @@ export async function getCtpatsAPI(page: number = 1) {
     const { data } = await api.get("/ctpat", { params: { limit, offset } });
     const response = getCtpatsSchema.safeParse(data);
 
+
     if (response.success) {
       return response.data; 
     }
@@ -38,6 +39,18 @@ export async function getCtpatsAPI(page: number = 1) {
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       throw new Error(error.response.data.error);
+    }
+    throw error;
+  }
+}
+
+export async function getCtpatByIdAPI(id: number) {
+  try {
+    const { data } = await api.get(`/ctpat/${id}`);
+    return data; 
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
     }
     throw error;
   }
@@ -61,5 +74,25 @@ export async function uploadImagesAPI(ctpatId: number, formData: uploadImagesFor
   }
 }
 
+export async function updateCtpatStatusAPI(id: number, status: number) {
+  try {
+    const body = { status }; 
+    const { data } = await api.patch(`/ctpat/${id}`, body);
+
+    if (data && typeof data === "object" && "message" in data) {
+      return {
+        success: data.statusCode === 200,
+        message: data.message,
+      };
+    }
+
+    throw new Error("Respuesta inesperada del servidor");
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message || "Error al actualizar el estado del CTPAT");
+    }
+    throw error;
+  }
+}
 
 

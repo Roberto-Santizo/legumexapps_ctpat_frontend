@@ -4,8 +4,11 @@ import PaginationComponent from "@/components/utilities-components/PaginationCom
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getCtpatsAPI } from "@/api/CtpatsAPI.js";
+import { useNavigate } from "react-router-dom";
+
 
 export default function UserTableView() {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
 
@@ -63,11 +66,13 @@ export default function UserTableView() {
                           day: "2-digit",
                         })}
                       </td>
+                      <td>{ctpat.status}</td>
                       <td className="table-cell-center">
                         <div className="table-actions justify-center">
                           <button
                             className="btn-icon btn-icon-primary"
                             title="Editar"
+                            onClick={() => navigate(`/steps/${ctpat.id}`)}
                           >
                             <Pencil size={16} />
                           </button>

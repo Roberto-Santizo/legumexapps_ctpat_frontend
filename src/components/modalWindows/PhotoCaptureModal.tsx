@@ -1,4 +1,3 @@
-// /components/modalWindows/PhotoCaptureModal.tsx
 import { useState, useRef, useCallback } from "react";
 import Webcam from "react-webcam";
 import { Button } from "@/components/ui/button";
@@ -13,6 +12,24 @@ type Props<T extends boolean> = {
   onSave: (img: BuildImagePayload<T>) => void;
   showDescription?: T;
 };
+const IMAGE_LABELS = {
+  CONTAINER_PICTURES: "IMÁGENES DEL CONTENEDOR",
+  CONTAINER_LOAD: "CARGA DEL CONTENEDOR",
+  PRODUCTS: "PRODUCTOS",
+  LOADING_TEMPERATURE: "TEMPERATURA DE CARGA",
+  FINAL_CONTAINER: "CONTENEDOR FINAL",
+  DRIVER_IDENTIFICATION: "IDENTIFICACIÓN DEL CONDUCTOR",
+} as const;
+
+
+const IMAGE_TYPES = [
+  "CONTAINER_PICTURES",
+  "CONTAINER_LOAD",
+  "PRODUCTS",
+  "LOADING_TEMPERATURE",
+  "FINAL_CONTAINER",
+  "DRIVER_IDENTIFICATION",
+] as const;
 
 export default function PhotoCaptureModal<T extends boolean>({
   onClose,
@@ -22,7 +39,7 @@ export default function PhotoCaptureModal<T extends boolean>({
   const webcamRef = useRef<Webcam>(null);
 
   const [preview, setPreview] = useState<string | null>(null);
-  const [type, setType] = useState("");
+  const [type, setType] = useState<string>(IMAGE_TYPES[0]);
   const [description, setDescription] = useState("");
   const [cameraActive, setCameraActive] = useState(true);
 
@@ -35,8 +52,13 @@ export default function PhotoCaptureModal<T extends boolean>({
   }, []);
 
   const handleSave = () => {
-    if (!preview || !type) {
-      alert("Debes completar el tipo antes de guardar");
+    if (!preview) {
+      alert("Error: No se ha tomado la foto");
+      return;
+    }
+
+    if (!type) {
+      alert("Debes seleccionar el tipo antes de guardar");
       return;
     }
 
@@ -47,7 +69,7 @@ export default function PhotoCaptureModal<T extends boolean>({
 
     const result = {
       image: preview,
-      type,
+      type: type.replace(/_/g, " "), //this delete the _ on the imagen types we send to the backend 
       ...(showDescription ? { description } : {}),
     } as BuildImagePayload<T>;
 
@@ -83,14 +105,23 @@ export default function PhotoCaptureModal<T extends boolean>({
           <div className="space-y-3">
             <img src={preview} className="w-full rounded-lg" />
 
-            <input
-              type="text"
-              placeholder="Tipo de imagen"
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              className="w-full border p-2 rounded-md"
-            />
+            {/* 🔥 SELECT DE TIPOS EN VEZ DE INPUT 🔥 */}
+            <div>
+              <label className="font-medium mb-1 block">Tipo de imagen</label>
+                <select
+                  className="w-full border p-2 rounded-md"
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                >
+                  {IMAGE_TYPES.map((t) => (
+                    <option key={t} value={t}>
+                      {IMAGE_LABELS[t]}
+                    </option>
+                  ))}
+                </select>
+            </div>
 
+            {/* Descripción si aplica */}
             {showDescription && (
               <input
                 type="text"

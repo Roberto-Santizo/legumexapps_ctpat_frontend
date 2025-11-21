@@ -133,6 +133,7 @@ export const ctpat = z.object({
   departure_site: z.string(),
   container: z.string(),
   createdAt: z.string(),
+  status: z.number()
 });
 
 export const ctpatListSchema = ctpat.pick({
@@ -142,6 +143,7 @@ export const ctpatListSchema = ctpat.pick({
   departure_site: true,
   container: true,
   createdAt: true,
+  status: true
 });
 
 export type uploadImages = z.infer<typeof ImageSchema>;

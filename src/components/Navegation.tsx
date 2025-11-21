@@ -32,9 +32,6 @@ export default function Navegation() {
           <ClipboardCopy  />
         </NavLinkComponent>
          
-        <NavLinkComponent url="/steps" text="Estados de Ctpats">
-          <ClipboardCopy />
-        </NavLinkComponent>
 
         <NavLinkComponent url="/products" text="Productos">
           <Apple  />
