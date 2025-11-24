@@ -100,7 +100,6 @@ export type ContainerFormData = Pick<Container,'container' |'seal' |'sensor' |'t
 
 
 //ctpats
-//ctpats
 const ImageSchema = z.object({
   image: z.string(),
   type: z.string(),
@@ -149,7 +148,7 @@ export const ctpatListSchema = ctpat.pick({
 export type uploadImages = z.infer<typeof ImageSchema>;
 
 
-// ✅ Nuevo esquema correcto para UploadImages
+//  Nuevo esquema correcto para UploadImages
 export const UploadImageSimpleSchema = z.object({
   image: z.string(),
   type: z.string(),
@@ -171,7 +170,7 @@ export const packingList = z.object({
   box_type: z.string(),
   order: z.string(),
   customer: z.string(),
-  thermograph_no: z.number(),
+  thermograph_no: z.string(),
   exit_temp: z.number()
 })
 
@@ -191,3 +190,5 @@ export type GetConditionFormData = z.infer<typeof getConditionSchema>
 
 export type Condition = z.infer<typeof conditionsSchema>
 export type ConditionFormData = Pick<Condition, "name"| "type">
+
+

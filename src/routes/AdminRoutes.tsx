@@ -42,6 +42,9 @@ const routes = [
 
   { path: "/containerLoad", component: lazy(() => import("@/views/EditConditionView")), roles: [] },
 
+  { path: "/packingList", component: lazy(() => import("@/views/CreatePackingList")), roles: [] },
+
+
 ];
 
 export default function AdminRoutes() {

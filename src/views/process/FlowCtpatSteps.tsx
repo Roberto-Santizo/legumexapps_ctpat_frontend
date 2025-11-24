@@ -2,8 +2,9 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getCtpatByIdAPI } from "@/api/CtpatsAPI";
 import { Spinner } from "@/components/utilities-components/Spinner";
+import CreatePackingList from "@/views/CreatePackingList";
 
-// Importa los pasos
+
 import CreateUploadImages from "@/views/uploadImagesCtp/CreateUploadImages";
 
 export default function FlowCtpatSteps() {
@@ -21,13 +22,13 @@ export default function FlowCtpatSteps() {
 
   const ctpat = data.response;
 
-  // --- CONTROL DE FLUJO ---
+  // --- FLOW CONTROL ---
   switch (ctpat.status) {
     case 1:
       return <CreateUploadImages />;
 
     case 2:
-      return <p>Paso 2 — Próximamente</p>;
+      return <CreatePackingList/>;
 
     case 3:
       return <p>Paso 3 — Próximamente</p>;
