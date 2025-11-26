@@ -1,6 +1,6 @@
 import type { DriverFormData } from "../schemas/types.ts";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { useForm,FormProvider } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import DriverForm from "../components/forms/DriverForm";
@@ -9,13 +9,17 @@ import { createDriverAPI } from "../api/DriversAPI.ts";
 export default function CreateDriver() {
   
   const navigate = useNavigate();
-  const initialValues = {
-    name: "",
-    identification: "",
-    license: "",
-    carrier_id: 0,
-  };
-  const {register,handleSubmit,formState: { errors }, } = useForm<DriverFormData>({defaultValues: initialValues, mode: "onChange"});
+  const methods = useForm<DriverFormData>({
+    defaultValues: {
+      name: "",
+      identification: "",
+      license: "",
+      carrier_id: 0,
+      identification_image: "",
+      license_image: "",
+    },
+    mode: "onChange",
+  });
 
   const { mutate } = useMutation({
     mutationFn: (data: DriverFormData) => createDriverAPI(data),
@@ -29,13 +33,22 @@ export default function CreateDriver() {
     },
   });
 
-  const handleForm = async (data: DriverFormData) => {
-    const parsedData = {
-      ...data,
-      carrier_id: Number(data.carrier_id),
-    };
-    mutate(parsedData);
+const handleForm = async (data: DriverFormData) => {
+
+  // Validate that at least ONE image has been sent
+  if (!data.identification_image && !data.license_image) {
+    toast.error("Debes agregar al menos una fotografía (DPI o Licencia)");
+    return;
+  }
+
+  const parsedData = {
+    ...data,
+    carrier_id: Number(data.carrier_id),
   };
+
+  mutate(parsedData);
+};
+
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4 sm:px-6 lg:px-8">
@@ -68,18 +81,20 @@ export default function CreateDriver() {
         </div>
         <div className="bg-white rounded-2xl shadow-xl border border-[var(--color-border-light)] overflow-hidden">
           <div className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] h-2"></div>
-          <form
-            className="p-8 space-y-6"
-            onSubmit={handleSubmit(handleForm)}
-            noValidate
-          >
-            <DriverForm register={register} errors={errors} />
-            <input
-              type="submit"
-              value="Crear Conductor"
-              className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
-            />
-          </form>
+              <FormProvider {...methods}>
+                <form
+                  //here we can update the className to add spacing between elements
+                  className="p-8 space-y-6" 
+                  onSubmit={methods.handleSubmit(handleForm)} noValidate>
+                    <DriverForm />
+                  <button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
+                  >
+                    Crear Piloto
+                  </button>
+                </form>
+              </FormProvider>
         </div>
         <div className="mt-6 text-center text-sm text-[var(--color-text-tertiary)]">
           <p>Los cambios se aplicarán inmediatamente después de crear piloto</p>

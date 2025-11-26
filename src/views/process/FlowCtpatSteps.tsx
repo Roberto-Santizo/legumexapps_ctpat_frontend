@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getCtpatByIdAPI } from "@/api/CtpatsAPI";
 import { Spinner } from "@/components/utilities-components/Spinner";
 import CreatePackingList from "@/views/CreatePackingList";
-
+import CreateDriver from "@/views/CreateDriver";
 
 import CreateUploadImages from "@/views/uploadImagesCtp/CreateUploadImages";
 
@@ -31,7 +31,7 @@ export default function FlowCtpatSteps() {
       return <CreatePackingList/>;
 
     case 3:
-      return <p>Paso 3 — Próximamente</p>;
+      return <CreateDriver/>;
 
     default:
       return <p>Estado desconocido</p>;

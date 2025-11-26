@@ -2,16 +2,17 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-
 import PackingListForm from "@/components/forms/CreatePackingListForm";
 import { createPackingListAPI } from "@/api/PackingListAPI";
 import type { PackignListFormData } from "@/schemas/types";
+import { useUpdateCtpatStatus } from "@/hooks/useUpdateCtpatStatus";
 
 export default function CreatePackingList() {
   const navigate = useNavigate();
   const { id } = useParams();
   const ctpatId = Number(id);
-
+  //update the ctpat status
+  const { mutate: updateStatus } = useUpdateCtpatStatus();
   // REACT HOOK FORM
   const {register,handleSubmit,formState: { errors },reset,} = useForm<PackignListFormData>();
 
@@ -21,7 +22,8 @@ export default function CreatePackingList() {
       createPackingListAPI(ctpatId, data),
 
     onSuccess: (res) => {
-      toast.success(res.message); 
+      toast.success(res.message);
+      updateStatus({ id: ctpatId, status: 3 }); 
       navigate("/ctpats");
       reset();
     },

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
@@ -8,6 +8,7 @@ import type { uploadImagesFormData } from "@/schemas/types";
 import { useUpdateCtpatStatus } from "@/hooks/useUpdateCtpatStatus";
 
 export default function CreateUploadImages() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const ctpatId = Number(id);
 
@@ -22,6 +23,8 @@ export default function CreateUploadImages() {
         toast.success(res.message);
 
         updateStatus({ id: ctpatId, status: 2 });
+        navigate("/ctpats");
+
       } else {
         toast.error(res.message);
       }

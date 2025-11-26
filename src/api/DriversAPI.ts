@@ -23,6 +23,7 @@ export async function createDriverAPI(formData: DriverFormData) {
     throw new Error("Error al conectar con el servidor");
   }
 }
+
 export async function getDriverAPI(page: number = 1) {
   try {
     const limit = 10;

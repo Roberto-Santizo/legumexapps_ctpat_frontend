@@ -2,16 +2,13 @@ import { useEffect, useState } from "react";
 import { ErrorMessage } from "../utilities-components/ErrorMessage";
 import { getContainerAPI } from "@/api/ContainerAPI";
 import { Button } from "@/components/ui/button";
-
 import PhotoCaptureModal, {type BuildImagePayload} from "@/components/modalWindows/PhotoCaptureModal";
-
 import type {
   UseFormRegister,
   FieldErrors,
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
-
 import type { CreateCtpatFormData } from "@/schemas/types";
 import { toast } from "react-toastify";
 
@@ -64,7 +61,6 @@ export default function CtpatForm({
     });
   }, [register]);
 
-  // ⭐ TIPADO CORRECTO PARA CTPAT (description obligatoria)
   const handleAddImage = (newImage: BuildImagePayload<true>) => {
     console.log("Añadiendo imagen:", newImage);
 

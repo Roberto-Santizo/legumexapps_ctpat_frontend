@@ -8,6 +8,8 @@ export const driverSchema = z.object({
   identification: z.string(),
   license: z.string(),
   carrier_id: z.number(),
+  identification_image: z.string().optional(),
+  license_image: z.string().optional(),
 })
 
 export const driverListSchema = (
@@ -16,7 +18,6 @@ export const driverListSchema = (
     name: true,
   })
 )
-
 export const getDriverByIdSchema = z.object(
   driverSchema.pick({
     id: true,
@@ -32,13 +33,16 @@ export const editDriverSchema = driverSchema.pick({
   license: true,
 });
 
-export type DriverFormData = {
-  name: string;
-  identification: string;
-  license: string;
-  carrier_id?: number; 
-};
+export const createDriverSchema =  driverSchema.pick({
+    name: true,
+    identification: true,
+    license: true,
+    carrier_id: true,
+    identification_image: true,
+    license_image: true,
+  })
 
+export type DriverFormData = z.infer<typeof createDriverSchema>;
 export type CreateDriver = z.infer<typeof driverSchema>;
 export const getDriversSchema = paginationSchema(driverListSchema)
 export type EditDriverFormData = z.infer<typeof editDriverSchema>;
@@ -159,8 +163,6 @@ export const UploadImagesFormSchema = z.object({
 });
 
 export type uploadImagesFormData = z.infer<typeof UploadImagesFormSchema>;
-
-
 export const getCtpatsSchema = paginationSchema(ctpatListSchema);
 export type GetCtpatResponse = z.infer<typeof getCtpatsSchema>;
 

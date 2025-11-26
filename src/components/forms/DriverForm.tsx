@@ -1,31 +1,37 @@
 import { ErrorMessage } from "../utilities-components/ErrorMessage";
-import type { UseFormRegister, FieldErrors } from "react-hook-form";
 import { useEffect, useState } from "react";
+import { useFormContext } from "react-hook-form";
 import { getCarriersAPI } from "@/api/CarriersAPI";
-import type {DriverFormData} from "@/schemas/types";
+import type { DriverFormData } from "@/schemas/types";
+import DriverCaptureModal from "@/components/modalWindows/PhothoDriverCaptureModal";
 
 type DriverFormProps = {
-  register:UseFormRegister<DriverFormData>
-  errors:FieldErrors<DriverFormData>
   showCarrierField?: boolean;
 };
 
-export default function DriverForm({errors, register, showCarrierField = true}:DriverFormProps) {
+export default function DriverForm({ showCarrierField = true }: DriverFormProps) {
+  const { register, setValue, formState: { errors } } = useFormContext<DriverFormData>();
+
+  const [dpiImage, setDpiImage] = useState<string | null>(null);
+  const [licenseImage, setLicenseImage] = useState<string | null>(null);
+
+  const [photoType, setPhotoType] = useState<"dpi" | "license" | null>(null);
+  const [openCamera, setOpenCamera] = useState(false);
+
   const [carriers, setCarriers] = useState<{ id: number; name: string }[]>([]);
-  const [loadingCarriers, setLoadingCarriers] = useState<boolean>(true);
+  const [loadingCarriers, setLoadingCarriers] = useState(true);
 
   useEffect(() => {
-    const fetchCarriers = async () => {
+    (async () => {
       try {
         const { response } = await getCarriersAPI();
-        setCarriers(response);
+        setCarriers(Array.isArray(response) ? response : []);
       } catch (error) {
-        console.error("Error cargando transportistas:", error);
+        console.error("Error cargando transportistas", error);
       } finally {
         setLoadingCarriers(false);
       }
-    };
-    fetchCarriers();
+    })();
   }, []);
 
   return (
@@ -34,107 +40,151 @@ export default function DriverForm({errors, register, showCarrierField = true}:D
         <label htmlFor="name" className="form-label">
           Nombre del Piloto <span className="required">*</span>
         </label>
-        <div className="input-icon-wrapper">
-          <svg
-            className="w-5 h-5 text-gray-400 absolute left-3 top-3"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          ></svg>
-          <input
-            id="name"
-            type="text"
-            placeholder="Pedro"
-            className={`form-input pl-10 ${
-              errors.name ? "form-input-error" : "form-input-normal"
-            }`}
-            {...register("name", { required: "El nombre es obligatorio" })}
-          />
-        </div>
-        {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
+        <input
+          id="name"
+          type="text"
+          placeholder="Marcos Lopez"
+          className={`form-input ${errors?.name ? "form-input-error" : "form-input-normal"}`}
+          {...register("name", { required: "El nombre es obligatorio" })}
+        />
+        {errors?.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
       </div>
 
       <div className="form-group">
         <label htmlFor="identification" className="form-label">
-          No. DPI <span className="required">*</span>
+          DPI <span className="required">*</span>
         </label>
-        <div className="input-icon-wrapper">
-          <input
-            id="identification"
-            type="number"
-            placeholder="2956452541245"
-            className={`form-input pl-10 ${
-              errors.identification ? "form-input-error" : "form-input-normal"
-            }`}
-            {...register("identification", {
+        <input
+          id="identification"
+          type="text"
+          placeholder="254885452414"
+          className={`form-input ${errors?.identification ? "form-input-error" : "form-input-normal"}`}
+          {...register("identification", { 
               required: "El número de DPI es obligatorio",
               pattern: {
-                value: /^(?!.*--)(?!.*\+)\d{13}$/,
-                message:
-                  "El DPI debe tener exactamente 13 dígitos y no puede contener '--' ni '+'",
-              },
-            })}
-          />
-        </div>
-        {errors.identification && (
-          <ErrorMessage>{errors.identification.message}</ErrorMessage>
-        )}
+                value: /^\d{13}$/,
+                message: "El DPI no tiene un formato válido"
+              }
+          })}
+        />
+        {errors?.identification && <ErrorMessage>{errors.identification.message}</ErrorMessage>}
       </div>
 
       <div className="form-group">
         <label htmlFor="license" className="form-label">
           Licencia <span className="required">*</span>
         </label>
-
-        <div className="input-icon-wrapper">
           <input
             id="license"
             type="text"
-            placeholder="P123ABC"
-            className={`form-input pl-10 ${
-              errors.license ? "form-input-error" : "form-input-normal"
-            }`}
-            {...register("license", {
-              required: "El número de licencia es obligatorio",
+            placeholder="Licencia"
+            className={`form-input ${errors?.license ? "form-input-error" : "form-input-normal"}`}
+            {...register("license", { 
+                required: "El número de licencia es obligatorio",
+                pattern: {
+                  value: /^(?:\d{6,12}|[A-Z]{1,2}-\d{6,8})$/,
+                  message: "El número de licencia no tiene un formato válido"
+                }
             })}
           />
-        </div>
-        {errors.license && (
-          <ErrorMessage>{errors.license.message}</ErrorMessage>
-        )}
+        {errors?.license && <ErrorMessage>{errors.license.message}</ErrorMessage>}
       </div>
 
+      <div className="form-group">
+        <label className="form-label font-bold">Fotografía DPI</label>
+
+        {dpiImage ? (
+          <img src={dpiImage} className="h-40 w-40 rounded-lg border mb-2 shadow" />
+        ) : (
+          <div className="h-40 w-40 border rounded-lg flex items-center justify-center text-gray-400">
+            Sin foto
+          </div>
+        )}
+
+        <button
+          type="button"
+          className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg"
+          onClick={() => {
+            setPhotoType("dpi");
+            setOpenCamera(true);
+          }}
+        >
+          Tomar foto DPI
+        </button>
+
+        <input type="hidden" {...register("identification_image")} />
+        {errors.identification_image && <ErrorMessage>{errors.identification_image.message}</ErrorMessage>}
+      </div>
+
+      <div className="form-group mt-6">
+        <label className="form-label font-bold">Fotografía Licencia</label>
+
+        {licenseImage ? (
+          <img src={licenseImage} className="h-40 w-40 rounded-lg border mb-2 shadow" />
+        ) : (
+          <div className="h-40 w-40 border rounded-lg flex items-center justify-center text-gray-400">
+            Sin foto
+          </div>
+        )}
+
+        <button
+          type="button"
+          className="mt-2 bg-green-600 text-white px-4 py-2 rounded-lg"
+          onClick={() => {
+            setPhotoType("license");
+            setOpenCamera(true);
+          }}
+        >
+          Tomar foto Licencia
+        </button>
+
+        <input type="hidden" {...register("license_image")} />
+        {errors.license_image && <ErrorMessage>{errors.license_image.message}</ErrorMessage>}
+      </div>
+
+      {/* MODAL */}
+      {openCamera && (
+        <DriverCaptureModal
+          onClose={() => setOpenCamera(false)}
+          onSave={(imgBase64) => {
+            if (photoType === "dpi") {
+              setDpiImage(imgBase64);
+              setValue("identification_image", imgBase64, { shouldValidate: true });
+            }
+
+            if (photoType === "license") {
+              setLicenseImage(imgBase64);
+              setValue("license_image", imgBase64, { shouldValidate: true });
+            }
+
+            setOpenCamera(false);
+            setPhotoType(null);
+          }}
+        />
+      )}
+
       {showCarrierField && (
-        <div className="form-group">
+        <div className="form-group mt-6">
           <label htmlFor="carrier_id" className="form-label">
             Transportista <span className="required">*</span>
           </label>
 
           <select
             id="carrier_id"
-            className={`form-input ${
-              errors.carrier_id ? "form-input-error" : "form-input-normal"
-            }`}
-            {...register("carrier_id", {
-              required: "El transportista es obligatorio",
-            })}
+            className={`form-input ${errors.carrier_id ? "form-input-error" : "form-input-normal"}`}
+            {...register("carrier_id", { required: "El transportista es obligatorio" })}
             disabled={loadingCarriers}
           >
-            <option value="">Selecciona un transportista</option>
+            <option value="">Seleccione un transportista</option>
             {carriers.map((carrier) => (
-              <option key={carrier.id} value={carrier.id}>
-                {carrier.name}
-              </option>
+              <option key={carrier.id} value={carrier.id}>{carrier.name}</option>
             ))}
           </select>
-          {errors.carrier_id && (
-            <ErrorMessage>{errors.carrier_id.message}</ErrorMessage>
-          )}
+
+          {errors.carrier_id && <ErrorMessage>{errors.carrier_id.message}</ErrorMessage>}
         </div>
       )}
+
     </div>
   );
 }
