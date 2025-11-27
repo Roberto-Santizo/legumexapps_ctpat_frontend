@@ -1,4 +1,4 @@
-import type { DriverFormData,EditDriverFormData,CreateDriver } from "@/schemas/types.ts";
+import type { DriverFormData,EditDriverFormData } from "@/schemas/types.ts";
 import { getDriversSchema } from "@/schemas/types.ts";
 import api from "../components/config/axios.ts";
 import { isAxiosError } from "axios";
@@ -6,7 +6,7 @@ import { isAxiosError } from "axios";
 export async function createDriverAPI(formData: DriverFormData) {
   try {
     const { data } = await api.post("/drivers", formData);
-    const message = data.message || "Operación realizada correctamente";
+    const message = data.message;
     if ([200, 201].includes(data.statusCode)) {
       return { success: true, message, response: data.response };
     }
@@ -16,8 +16,7 @@ export async function createDriverAPI(formData: DriverFormData) {
       const backendData = error.response.data || {};
       const message =
         backendData.message ||
-        backendData.error ||
-        "Error desconocido al crear el piloto";
+        backendData.error;
       throw new Error(message);
     }
     throw new Error("Error al conectar con el servidor");
@@ -43,7 +42,7 @@ export async function getDriverAPI(page: number = 1) {
   }
 }
 
-export async function getDriverByIdAPI(id: CreateDriver["id"]) {
+export async function getDriverByIdAPI(id: number) {
   try {
     const { data } = await api.get(`/drivers/${id}`);
     return data;
@@ -59,7 +58,7 @@ export async function getDriverByIdAPI(id: CreateDriver["id"]) {
 
 type DriverAPIType = {
   formData: EditDriverFormData
-  driverId: CreateDriver["id"]
+  driverId: number
 }
 export async function updateDriver({ formData, driverId }: DriverAPIType) {
   try {

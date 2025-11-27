@@ -1,10 +1,10 @@
-import type { ProductFormData } from "@/schemas/types";
+import type { ProductCreateData } from "@/schemas/types";
 import type { UseFormRegister, FieldErrors } from "react-hook-form";
 import { ErrorMessage } from "../utilities-components/ErrorMessage";
 
 type ProductFormProps = {
-  register: UseFormRegister<ProductFormData>;
-  errors: FieldErrors<ProductFormData>;
+  register: UseFormRegister<ProductCreateData>;
+  errors: FieldErrors<ProductCreateData>;
   isEdit?: boolean;
   showCarrierField?: boolean;
 };

@@ -1,51 +1,45 @@
-import type { DriverFormData } from "../schemas/types.ts";
+
+
+import type { TruckCreateData } from "../schemas/types.ts";
 import { useMutation } from "@tanstack/react-query";
 import { useForm,FormProvider } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-import DriverForm from "../components/forms/DriverForm";
-import { createDriverAPI } from "../api/DriversAPI.ts";
+import { createTruckAPI } from "../api/TruckAPI.ts";
+import CreateTruckForm from "../components/forms/CreateTruckForm.tsx";
 
-export default function CreateDriver() {
-  
+export default function CreateTruck() {
   const navigate = useNavigate();
-  const methods = useForm<DriverFormData>({
+  const methods = useForm<TruckCreateData>({
     defaultValues: {
-      name: "",
-      identification: "",
-      license: "",
+      plate: "",
       carrier_id: 0,
-      identification_image: "",
-      license_image: "",
+      plate_image: "",
     },
     mode: "onChange",
   });
 
   const { mutate } = useMutation({
-    mutationFn: (data: DriverFormData) => createDriverAPI(data),
+    mutationFn: (data: TruckCreateData) => createTruckAPI(data),
     onSuccess: (response) => {
       if (response) {
         toast.success(response.message);
-        navigate("/driver");
+        navigate("/trucks");
       } else {
         toast.error(response);
       }
     },
   });
 
-const handleForm = async (data: DriverFormData) => {
-
-  // Validate that at least ONE image has been sent
-  if (!data.identification_image && !data.license_image) {
-    toast.error("Debes agregar al menos una fotografía (DPI o Licencia)");
+const handleForm = async (data: TruckCreateData) => {
+  if (!data.plate_image) {
+    toast.error("Debes agregar la imagen de la placa del camión");
     return;
   }
-
   const parsedData = {
     ...data,
     carrier_id: Number(data.carrier_id),
   };
-
   mutate(parsedData);
 };
 
@@ -54,12 +48,12 @@ const handleForm = async (data: DriverFormData) => {
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] bg-clip-text text-transparent mb-3">
-            Crear Nuevo Piloto
+            Crear Nuevo Camión
           </h1>
         </div>
         <div className="mb-6">
           <Link
-            to="/driver"
+            to="/trucks"
             className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[var(--color-primary-dark)] font-semibold rounded-xl shadow-md hover:shadow-lg hover:bg-[var(--color-bg-secondary)] transition-all duration-200 border border-[var(--color-border-light)]"
           >
             <svg
@@ -82,21 +76,20 @@ const handleForm = async (data: DriverFormData) => {
           <div className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] h-2"></div>
               <FormProvider {...methods}>
                 <form
-                  //here we can update the className to add spacing between elements
                   className="p-8 space-y-6" 
                   onSubmit={methods.handleSubmit(handleForm)} noValidate>
-                    <DriverForm />
+                    <CreateTruckForm />
                   <button
                     type="submit"
                     className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
                   >
-                    Crear Piloto
+                    Crear Camión
                   </button>
                 </form>
               </FormProvider>
         </div>
         <div className="mt-6 text-center text-sm text-[var(--color-text-tertiary)]">
-          <p>Los cambios se aplicarán inmediatamente después de crear piloto</p>
+          <p>Los cambios se aplicarán inmediatamente después de crear el camión</p>
         </div>
       </div>
     </div>

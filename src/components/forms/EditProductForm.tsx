@@ -5,11 +5,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
 import { updateProductAPI } from "@/api/ProductsAPI";
-import type { EditProductFormData, Product } from "@/schemas/types";
+import type { ProductUpdateData} from "@/schemas/types";
 
 type EditProductFormProps = {
-  data: EditProductFormData;
-  productId: Product["id"];
+  data: ProductUpdateData;
+  productId: number;
 };
 
 export default function EditProductForm({ data, productId }: EditProductFormProps) {
@@ -21,7 +21,7 @@ export default function EditProductForm({ data, productId }: EditProductFormProp
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<EditProductFormData>();
+  } = useForm<ProductUpdateData>();
 
   useEffect(() => {
     if (data) {
@@ -45,7 +45,7 @@ export default function EditProductForm({ data, productId }: EditProductFormProp
     },
   });
 
-  const handleForm = (formData: EditProductFormData) => {
+  const handleForm = (formData: ProductUpdateData) => {
     const payload = { formData, productId };
     mutate(payload);
   };
@@ -53,14 +53,12 @@ export default function EditProductForm({ data, productId }: EditProductFormProp
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
-        {/* Título */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] bg-clip-text text-transparent mb-3">
             Editar Producto
           </h1>
         </div>
 
-        {/* Botón regresar */}
         <div className="mb-6">
           <Link
             to="/products"
@@ -83,7 +81,6 @@ export default function EditProductForm({ data, productId }: EditProductFormProp
           </Link>
         </div>
 
-        {/* Formulario */}
         <div className="bg-white rounded-2xl shadow-xl border border-[var(--color-border-light)] overflow-hidden">
           <div className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] h-2"></div>
 
@@ -92,7 +89,6 @@ export default function EditProductForm({ data, productId }: EditProductFormProp
             onSubmit={handleSubmit(handleForm)}
             noValidate
           >
-            {/* Campo: nombre */}
             <div className="form-group">
               <label htmlFor="name" className="form-label">
                 Nombre del producto <span className="required">*</span>
@@ -115,7 +111,6 @@ export default function EditProductForm({ data, productId }: EditProductFormProp
               )}
             </div>
 
-            {/* Campo: código */}
             <div className="form-group">
               <label htmlFor="code" className="form-label">
                 Código del producto <span className="required">*</span>
@@ -138,7 +133,6 @@ export default function EditProductForm({ data, productId }: EditProductFormProp
               )}
             </div>
 
-            {/* Botón submit */}
             <button
               type="submit"
               className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"

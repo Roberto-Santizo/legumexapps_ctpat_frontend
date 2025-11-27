@@ -1,9 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import DriverForm from "../forms/DriverForm";
-import { useForm } from "react-hook-form";
-import { useMutation,useQueryClient } from "@tanstack/react-query";
+import { useForm, FormProvider } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import type { EditDriverFormData,CreateDriver } from "@/schemas/types.ts";
+import type { EditDriverFormData, CreateDriver, DriverFormData } from "@/schemas/types.ts";
 import { updateDriver } from "@/api/DriversAPI.ts";
 import { useEffect } from "react";
 
@@ -19,18 +19,15 @@ export default function EditDriverForm({
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm({
+  const methods = useForm<DriverFormData>({
     defaultValues: {
       name: data.name,
       identification: data.identification,
       license: data.license,
     },
   });
+
+  const { handleSubmit, reset } = methods;
 
   useEffect(() => {
     if (data) {
@@ -44,7 +41,7 @@ export default function EditDriverForm({
 
   const { mutate } = useMutation({
     mutationFn: updateDriver,
-    onError: (error:Error) => {
+    onError: (error: Error) => {
       toast.error(error.message);
     },
     onSuccess: (data) => {
@@ -55,12 +52,17 @@ export default function EditDriverForm({
     },
   });
 
-  const handleForm = (formData: EditDriverFormData) => {
-    const data = {
-      formData,
-      driverId,
+  const handleForm = (formData: DriverFormData) => {
+    const payload: EditDriverFormData = {
+      name: formData.name,
+      identification: formData.identification,
+      license: formData.license,
     };
-    mutate(data);
+
+    mutate({
+      formData: payload,
+      driverId,
+    });
   };
 
   return (
@@ -96,23 +98,24 @@ export default function EditDriverForm({
         <div className="bg-white rounded-2xl shadow-xl border border-[var(--color-border-light)] overflow-hidden">
           <div className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] h-2"></div>
 
-          <form
-            className="p-8 space-y-6"
-            onSubmit={handleSubmit(handleForm)}
-            noValidate
-          >
-            <DriverForm
-              register={register}
-              errors={errors}
-              showCarrierField={false} 
-            />
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
+          <FormProvider {...methods}>
+            <form
+              className="p-8 space-y-6"
+              onSubmit={handleSubmit(handleForm)}
+              noValidate
             >
-              Guardar Cambios
-            </button>
-          </form>
+              <DriverForm
+                showCarrierField={false}
+                showPhotoFields={false} 
+              />
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
+              >
+                Guardar Cambios
+              </button>
+            </form>
+          </FormProvider>
         </div>
       </div>
     </div>

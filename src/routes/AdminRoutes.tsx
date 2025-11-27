@@ -43,6 +43,10 @@ const routes = [
   { path: "/containerLoad", component: lazy(() => import("@/views/EditConditionView")), roles: [] },
 
   { path: "/packingList", component: lazy(() => import("@/views/CreatePackingList")), roles: [] },
+  
+  { path: "/trucks", component: lazy(() => import("@/views/TableTruck")), roles: [] },
+  { path: "/trucks/create", component: lazy(() => import("@/views/CreateTruck")), roles: [] },
+  { path: "/trucks/:truckId/edit", component: lazy(() => import("@/views/EditTruckView")), roles: [] },
 
 
 ];

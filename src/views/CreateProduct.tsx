@@ -2,12 +2,12 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-import type { ProductFormData } from "@/schemas/types.ts";
-import ProductsForm from "@/components/forms/ProductsForm"
+import type { ProductCreateData } from "@/schemas/types.ts";
+import ProductsForm from "@/components/forms/CreateProductsForm"
 import {createProdutAPI} from "@/api/ProductsAPI"
 export default function CreateContainer() {
   const navigate = useNavigate();
-  const initialValues: ProductFormData = {
+  const initialValues: ProductCreateData = {
     name: "",
     code: "",
     presentation: "",
@@ -25,7 +25,7 @@ export default function CreateContainer() {
     },
   });
 
-  const handleForm = (formData: ProductFormData) => mutate(formData);
+  const handleForm = (formData: ProductCreateData) => mutate(formData);
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4 sm:px-6 lg:px-8">

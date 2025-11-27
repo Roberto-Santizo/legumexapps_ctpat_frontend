@@ -7,9 +7,10 @@ import DriverCaptureModal from "@/components/modalWindows/PhothoDriverCaptureMod
 
 type DriverFormProps = {
   showCarrierField?: boolean;
+  showPhotoFields?: boolean; 
 };
 
-export default function DriverForm({ showCarrierField = true }: DriverFormProps) {
+export default function DriverForm({ showCarrierField = true, showPhotoFields = true}: DriverFormProps) {
   const { register, setValue, formState: { errors } } = useFormContext<DriverFormData>();
 
   const [dpiImage, setDpiImage] = useState<string | null>(null);
@@ -90,59 +91,62 @@ export default function DriverForm({ showCarrierField = true }: DriverFormProps)
         {errors?.license && <ErrorMessage>{errors.license.message}</ErrorMessage>}
       </div>
 
-      <div className="form-group">
-        <label className="form-label font-bold">Fotografía DPI</label>
+        {showPhotoFields && (
+          <div className="form-group">
+            <label className="form-label font-bold">Fotografía DPI</label>
 
-        {dpiImage ? (
-          <img src={dpiImage} className="h-40 w-40 rounded-lg border mb-2 shadow" />
-        ) : (
-          <div className="h-40 w-40 border rounded-lg flex items-center justify-center text-gray-400">
-            Sin foto
+            {dpiImage ? (
+              <img src={dpiImage} className="h-40 w-40 rounded-lg border mb-2 shadow" />
+            ) : (
+              <div className="h-40 w-40 border rounded-lg flex items-center justify-center text-gray-400">
+                Sin foto
+              </div>
+            )}
+
+            <button
+              type="button"
+              className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg"
+              onClick={() => {
+                setPhotoType("dpi");
+                setOpenCamera(true);
+              }}
+            >
+              Tomar foto DPI
+            </button>
+
+            <input type="hidden" {...register("identification_image")} />
+            {errors.identification_image && <ErrorMessage>{errors.identification_image.message}</ErrorMessage>}
           </div>
         )}
 
-        <button
-          type="button"
-          className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg"
-          onClick={() => {
-            setPhotoType("dpi");
-            setOpenCamera(true);
-          }}
-        >
-          Tomar foto DPI
-        </button>
+        {showPhotoFields && (
+          <div className="form-group mt-6">
+            <label className="form-label font-bold">Fotografía Licencia</label>
 
-        <input type="hidden" {...register("identification_image")} />
-        {errors.identification_image && <ErrorMessage>{errors.identification_image.message}</ErrorMessage>}
-      </div>
+            {licenseImage ? (
+              <img src={licenseImage} className="h-40 w-40 rounded-lg border mb-2 shadow" />
+            ) : (
+              <div className="h-40 w-40 border rounded-lg flex items-center justify-center text-gray-400">
+                Sin foto
+              </div>
+            )}
 
-      <div className="form-group mt-6">
-        <label className="form-label font-bold">Fotografía Licencia</label>
+            <button
+              type="button"
+              className="mt-2 bg-green-600 text-white px-4 py-2 rounded-lg"
+              onClick={() => {
+                setPhotoType("license");
+                setOpenCamera(true);
+              }}
+            >
+              Tomar foto Licencia
+            </button>
 
-        {licenseImage ? (
-          <img src={licenseImage} className="h-40 w-40 rounded-lg border mb-2 shadow" />
-        ) : (
-          <div className="h-40 w-40 border rounded-lg flex items-center justify-center text-gray-400">
-            Sin foto
+            <input type="hidden" {...register("license_image")} />
+            {errors.license_image && <ErrorMessage>{errors.license_image.message}</ErrorMessage>}
           </div>
         )}
 
-        <button
-          type="button"
-          className="mt-2 bg-green-600 text-white px-4 py-2 rounded-lg"
-          onClick={() => {
-            setPhotoType("license");
-            setOpenCamera(true);
-          }}
-        >
-          Tomar foto Licencia
-        </button>
-
-        <input type="hidden" {...register("license_image")} />
-        {errors.license_image && <ErrorMessage>{errors.license_image.message}</ErrorMessage>}
-      </div>
-
-      {/* MODAL */}
       {openCamera && (
         <DriverCaptureModal
           onClose={() => setOpenCamera(false)}
