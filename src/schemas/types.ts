@@ -243,3 +243,11 @@ export type ProductList = z.infer<typeof productListSchema>;
 export type ProductListResponse = z.infer<typeof getProductSchema>;
 export type ProductCreateData = z.infer<typeof productCreateSchema>;
 export type ProductUpdateData = z.infer<typeof productUpdateSchema>;
+
+//ctpatTruckDriverAssignment
+export const ctpatTruckDriverSchema = z.object({
+  truck_id: z.number(),
+  driver_id: z.number(),
+})
+
+export type CtpatTruckDriverAssignment = z.infer<typeof ctpatTruckDriverSchema>;
