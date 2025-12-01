@@ -21,7 +21,6 @@ export async function getProductAPI(page: number = 1) {
 
     const {data} = await api.get("/products", {params: { limit, offset }});
     const response = getProductSchema.safeParse(data);
-    console.log("Respuesta de getProductAPI:", response);
       if (response.success) {
         return response.data;
       }
