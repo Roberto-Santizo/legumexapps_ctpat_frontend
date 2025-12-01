@@ -50,7 +50,7 @@ const routes = [
 
   { path: "/observations", component: lazy(() => import("@/views/TableObservation")), roles: [] },
   { path: "/observations/create", component: lazy(() => import("@/views/CreateObservation")), roles: [] },
-
+  { path: "/observations/:observationId/edit", component: lazy(() => import("@/views/EditObservationView")), roles: [] },
 
 
 ];
