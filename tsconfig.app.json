@@ -26,22 +26,24 @@
     "paths": {
       "@/*": ["*"],
       "@/components/*": ["components/*"],
-      "@/views/*": ["views/*"],
-      "@/layouts/*": ["layouts/*"],
-      "@/schemas/*": ["schemas/*"],
-      "@/api/*": ["api/*"],
-      "@/lib/*": ["lib/*"],
-      "@/orders/*": ["orders/*"],
-      "@/products/*": ["products/*"],
-      "@/routes/*": ["routes/*"],
-      "@/utilities-components/*": ["utilities-components/*"],
+      "@/app/*": ["app/*"],
+      "@/shared/*": ["shared/*"],
+      "@/features/*": ["features/*"],
       "@/auth/*": ["auth/*"],
-      "@/ui/*": ["ui/*"],
-      "@/modalWindows/*": ["modalWindows/*"],
-      "@/hooks/*": ["hooks/*"],
-
-
-
+      "@/containers/*": ["containers/*"],
+      "@/drivers/*": ["drivers/*"],
+      "@/trucks/*": ["trucks/*"],
+      "@/routes/*": ["routes/*"],
+      "@/products/*": ["products/*"],
+      "@/observations/*": ["observations/*"],
+      "@/conditions/*": ["conditions/*"],
+      "@/checklists/*": ["checklists/*"],
+      "@/ctpats/*": ["ctpats/*"],
+      "@/roles/*": ["roles/*"],
+      "@/users/*": ["users/*"],
+      "@/upload-images/*": ["upload-images/*"],
+      "@/process/*": ["process/*"],
+      "@/not-found/*": ["not-found/*"]
     }
   },
   "include": ["src"]
