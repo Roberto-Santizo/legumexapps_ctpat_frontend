@@ -43,7 +43,8 @@
       "@/users/*": ["users/*"],
       "@/upload-images/*": ["upload-images/*"],
       "@/process/*": ["process/*"],
-      "@/not-found/*": ["not-found/*"]
+      "@/not-found/*": ["not-found/*"],
+      "@/assets/*": ["assets/*"]
     }
   },
   "include": ["src"]
