@@ -53,7 +53,6 @@ const routes = [
 
   { path: "document", component: lazy(() => import("@/features/ctpats/ctpatsDocument/CtpatDocument")), roles: [] },
 
-
 ];
 
 export default function AdminRoutes() {

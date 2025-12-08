@@ -10,11 +10,7 @@ export default function CreateUserView() {
   const navigate = useNavigate();
   const initialValues: UserFormDataSchema = { name:"",username:"", password:"", role_id:0};
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<UserFormDataSchema>({
+  const {register,handleSubmit,formState: { errors },} = useForm<UserFormDataSchema>({
     defaultValues: initialValues,
     mode: "all",
     reValidateMode: "onChange",

@@ -13,7 +13,7 @@ export default function CreatePackingList() {
   const ctpatId = Number(id);
   //update the ctpat status
   const { mutate: updateStatus } = useUpdateCtpatStatus();
-  // REACT HOOK FORM
+  // REACT HOOK FORM  
   const {register,handleSubmit,formState: { errors },reset,} = useForm<PackignListFormData>();
 
   // MUTATION

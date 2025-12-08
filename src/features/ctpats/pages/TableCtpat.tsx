@@ -5,8 +5,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getCtpatsAPI } from "@/features/ctpats/api/CtpatsAPI.js";
 import { useNavigate } from "react-router-dom";
-
-
+import {CTPAT_STATUS_MAP,CTPAT_STATUS_COLORS} from "@/features/ctpats/constants/statusCodes";
 export default function UserTableView() {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
@@ -66,7 +65,13 @@ export default function UserTableView() {
                           day: "2-digit",
                         })}
                       </td>
-                      <td>{ctpat.status}</td>
+                      <td>
+                        <span
+                          className={`px-2 py-1 text-xs font-semibold rounded-full border ${CTPAT_STATUS_COLORS[ctpat.status]}`}
+                        >
+                          {CTPAT_STATUS_MAP[ctpat.status]}
+                        </span>
+                      </td>
                       <td className="table-cell-center">
                         <div className="table-actions justify-center">
                           <button

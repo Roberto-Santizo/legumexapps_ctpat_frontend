@@ -11,10 +11,7 @@ type CreateUserFormProps = {
   errors: FieldErrors<UserFormDataSchema>;
 };
 
-export default function CreateUserForm({
-  register,
-  errors,
-}: CreateUserFormProps) {
+export default function CreateUserForm({register,errors,}: CreateUserFormProps) {
   
   const [roles, setRoles] = useState<Rol[]>([]);
   const [loadingRoles, setLoadingRoles] = useState<boolean>(true);
@@ -118,9 +115,7 @@ export default function CreateUserForm({
 
         <select
           id="role_id"
-          className={`form-input ${
-            errors.role_id ? "form-input-error" : "form-input-normal"
-          }`}
+          className={`form-input ${errors.role_id ? "form-input-error" : "form-input-normal"}`}
           {...register("role_id", { required: "El rol es obligatorio" })}
           disabled={loadingRoles}
         >

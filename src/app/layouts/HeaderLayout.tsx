@@ -4,7 +4,7 @@ import {
   Bell,
   Settings,
   User,
-  TrendingUp,
+  // TrendingUp,
   UserCircle,
   LogOut,
   ChevronRight,
@@ -79,8 +79,8 @@ export default function Header({
           </button>
 
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-gradient-to-br from-amber-400 via-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/30">
-              <TrendingUp className="w-5 h-5 text-white" />
+            <div >
+              <img src="/src/assets/images/logo.png" alt="LegumexLogo" className="w-20 h-12 text-white" />
             </div>
             <div className="hidden sm:block">
               <h1 className="text-lg font-bold text-white tracking-tight">
