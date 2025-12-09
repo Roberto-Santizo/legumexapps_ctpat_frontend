@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import LetterPage from "./LetterPage";
-
 export default function CtpatDocument() {
   const [docDate, setDocDate] = useState("");
 

@@ -38,7 +38,7 @@ export default function LetterPage({
       {/* FOOTER */}
       <div className="absolute bottom-6 left-8 right-8 text-center text-[10px] text-gray-700">
         <p>FOR-CI-18</p>
-        <p>Aprobado GCC</p>
+        <p>Approved GCC</p>
         <p>Agroindustria Legumex, Chimaltenango, Guatemala</p>
         <p>{docDate}</p> {/* ← FECHA DINÁMICA */}
       </div>
