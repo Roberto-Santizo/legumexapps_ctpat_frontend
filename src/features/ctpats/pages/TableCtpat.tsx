@@ -31,7 +31,7 @@ export default function UserTableView() {
           <div className="table-header flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <h2 className="table-title">Lista de Ctpats</h2>
             <Link to="/ctpats/create" className="btn-primary whitespace-nowrap">
-              Crear usuario
+              Crear Ctpat
             </Link>
           </div>
 

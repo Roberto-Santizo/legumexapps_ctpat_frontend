@@ -1,14 +1,4 @@
-import {
-  Menu,
-  X,
-  Bell,
-  Settings,
-  User,
-  // TrendingUp,
-  UserCircle,
-  LogOut,
-  ChevronRight,
-} from "lucide-react";
+import {Menu,X,Bell, Settings,User,UserCircle,LogOut,ChevronRight,} from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useUserLogout } from "@/shared/hooks/UserLogout";
 

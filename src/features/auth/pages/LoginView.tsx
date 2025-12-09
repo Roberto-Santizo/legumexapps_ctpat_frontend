@@ -1,4 +1,4 @@
-import { User, Lock, TrendingUp, Eye, EyeOff, LogIn } from "lucide-react";
+import { User, Lock, Eye, EyeOff, LogIn } from "lucide-react";
 import { useState } from "react";
 import type { LoginRequest } from "@/features/auth/schemas/types";
 import { loginApi } from "@/features/auth/api/LoginAPI";
@@ -44,8 +44,8 @@ export default function LoginView() {
           <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-8 py-10 text-center relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-slate-500/10 to-slate-600/10"></div>
             <div className="relative">
-              <div className="w-16 h-16 bg-gradient-to-br from-amber-400 via-amber-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-xl shadow-amber-500/30 mx-auto mb-4 animate-pulse">
-                <TrendingUp className="w-8 h-8 text-white" />
+              <div >
+                 <img src="/src/assets/images/logo.png" alt="LegumexLogo" className="w-28 h-16 text-white flex items-center justify-center mx-auto" />
               </div>
               <h1 className="text-2xl font-bold text-white tracking-tight mb-1">
                 Legumex Apps
