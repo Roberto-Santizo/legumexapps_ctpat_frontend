@@ -44,7 +44,9 @@
       "@/upload-images/*": ["upload-images/*"],
       "@/process/*": ["process/*"],
       "@/not-found/*": ["not-found/*"],
-      "@/assets/*": ["assets/*"]
+      "@/assets/*": ["assets/*"],
+      "@/hooks/*": ["hooks/*"]
+
     }
   },
   "include": ["src"]

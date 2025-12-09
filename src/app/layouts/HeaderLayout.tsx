@@ -1,6 +1,6 @@
 import {Menu,X,Bell, Settings,User,UserCircle,LogOut,ChevronRight,} from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import { useUserLogout } from "@/shared/hooks/UserLogout";
+import {useAuth} from "@/hooks/useAuth"
 
 type HeaderProps = {
   sidebarOpen: boolean;
@@ -9,15 +9,11 @@ type HeaderProps = {
   setMobileMenuOpen: (open: boolean) => void;
 };
 
-export default function Header({
-  sidebarOpen,
-  setSidebarOpen,
-  mobileMenuOpen,
-  setMobileMenuOpen,
-}: HeaderProps) {
+export default function Header({sidebarOpen,setSidebarOpen,mobileMenuOpen,setMobileMenuOpen,}: HeaderProps) {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
-  const { logout } = useUserLogout();
+  const { user, logout } = useAuth();
+
   useEffect(() => {
     const handlePointerOutside = (e: MouseEvent | TouchEvent) => {
       if (
@@ -105,10 +101,10 @@ export default function Header({
             >
               <div className="hidden lg:block text-right">
                 <p className="text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
-                  Juan Pérez
+                  {user?.name}
                 </p>
                 <p className="text-xs text-amber-400 font-medium">
-                  Administrador
+                  {user?.role}
                 </p>
               </div>
               <div className="w-9 h-9 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg shadow-amber-500/20 group-hover:shadow-amber-500/40 transition-all">
@@ -123,10 +119,7 @@ export default function Header({
               >
                 <div className="px-4 py-3 border-b border-slate-100">
                   <p className="text-sm font-semibold text-slate-900">
-                    Juan Pérez
-                  </p>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    juan.perez@agrotech.com
+                    {user?.name}
                   </p>
                 </div>
 
