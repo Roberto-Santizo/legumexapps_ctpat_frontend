@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom"; 
 
 import { getConditionAPI } from "@/features/conditions/api/ConditionsAPI";
 import { createCheckListAPI } from "@/features/checkLists/api/CheckListAPI";
@@ -12,12 +13,12 @@ type Props = {
 };
 
 export default function CheckListPage({ ctpatId }: Props) {
-
+  const navigate = useNavigate();
   const updateStatus = useUpdateCtpatStatus();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["conditions-checklist"],
-    queryFn: () => getConditionAPI(1),
+    queryFn: () => getConditionAPI(),
   });
 
   const conditions = data?.response || [];
@@ -42,6 +43,7 @@ export default function CheckListPage({ ctpatId }: Props) {
         {
           onSuccess: () => {
             toast.success("CTPAT actualizado al estado 4");
+             navigate("/ctpats");
           },
         }
       );

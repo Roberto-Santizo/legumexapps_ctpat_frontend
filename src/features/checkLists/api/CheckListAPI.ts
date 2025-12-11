@@ -8,10 +8,7 @@ export async function createCheckListAPI(ctpatId: number, formData:CheckListCrea
     try {
         const payload = { data: formData };
         const { data } = await api.post(`/checklist/${ctpatId}`, payload);
-        return {
-            message: data.message,
-            statusCode: data.statusCode
-        }
+        return data
     } catch (error) {
         if (isAxiosError(error) && error.response) {
             throw new Error(error.response.data.message);
@@ -19,7 +16,6 @@ export async function createCheckListAPI(ctpatId: number, formData:CheckListCrea
         throw error;
     }
 }
-
 
 type CheckListAPIType = {
     formData: CheckListUpdateData;

@@ -50,6 +50,12 @@ export default function ConditionForm({register,errors,}: ConditionFormProps) {
               Selecciona un tipo
             </option>
             <option value="TRUCK_INSPECTION">INSPECCIÓN DE CONTENEDOR</option>
+            <option value="EXTERIOR_TRUCK_INSPECTION">INSPECCIÓN EXTERIOR DEL CONTENEDOR</option>
+            <option value="INTERIOR_TRUCK_INSPECTION">INSPECCIÓN INTERIOR DEL CONTENEDOR</option>
+            <option value="PEST_INSPECTION">INSPECCIÓN DE CONTROL DE PESTES</option>
+            <option value="CHEMICALS_INSPECTION">INSPECCIÓN DE CONTAMINACIÓN QUÍMICA</option>
+            <option value="PRODUCT_INSPECTION">INSPECCIÓN DE PRODUCTO</option>
+            <option value="NON-COMPLIANCE_OBSERVATIOS">OBSERVACIONES DE NO CUMPLIMIENTO</option>            
           </select>
         </div>
         {errors.type && <ErrorMessage>{errors.type.message}</ErrorMessage>}

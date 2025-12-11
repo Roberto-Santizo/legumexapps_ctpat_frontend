@@ -12,19 +12,13 @@ type closeCtpatAPIType = {
 export async function closeCtpatAPI({formData, ctpatId}:closeCtpatAPIType) {
     try {
         const {data} = await api.put(`/ctpat/closeCtpat/${ctpatId}`,formData);
-        if (data?.statusCode === 200) {
-         return data; 
-    }
-    throw new Error(data?.message || "Error desconocido en la actualización del piloto");
-        
+        return data
+            
     } catch (error) {
       if (isAxiosError(error) && error.response) {
-        const backendMessage = error.response.data?.message || "Error desconocido desde el servidor";
-      throw new Error(backendMessage);
+        throw new Error(error.response.data.error);
     }
-    throw error;
     }
-    
 }
 
 

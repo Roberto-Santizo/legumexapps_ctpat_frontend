@@ -31,13 +31,9 @@ export default function CloseCtpat({ ctpatId }: Props) {
       });
     },
     onSuccess: (data)=>{
-      if(data.success){
-        toast.success(data.message)
+        toast.success(data)
         updateStatus({ id: ctpatId, status: 7 }); 
         navigate("/ctpats");
-      }else{
-           toast.error(data.message);
-      }
     },
     onError: (error) => {
      toast.error(error.message);

@@ -4,7 +4,6 @@ import { isAxiosError } from "axios";
 export async function checkStatusAPI() {
   try {
     const { data } = await api.get("/auth/check-status");
-    console.log("Verificando login",data)
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {

@@ -7,12 +7,7 @@ import {getUserSchema } from "@/features/users/schemas/types";
 export async function createUserAPI(formData: UserFormDataSchema) {
   try {
     const { data } = await api.post("/auth/register", formData);
-    const message = data.message || data.messagge || "Operación realizada correctamente";
-    if (data.statusCode === 201) {
-      return message;
-    }
-    throw new Error(message);
-
+      return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       const backendData = error.response.data || {};

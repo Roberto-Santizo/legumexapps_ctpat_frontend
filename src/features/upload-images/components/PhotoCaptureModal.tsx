@@ -31,6 +31,17 @@ const IMAGE_TYPES = [
   "DRIVER_IDENTIFICATION",
 ] as const;
 
+const DESCRIPTION_OPTIONS = [
+  { value: "INCOMING", label: "Entrada" },
+  { value: "CEILING", label: "Techo" },
+  { value: "CARRIER", label: "Transportista" },
+  { value: "RIGHT SIDE", label: "Lado derecho" },
+  { value: "INSIDE", label: "Interior" },
+  { value: "FLOOR", label: "Piso" },
+  { value: "LICENCE PLATE No.", label: "Placa" },
+  { value: "DRIVER ID", label: "Identificación del conductor" },
+] as const;
+
 export default function PhotoCaptureModal<T extends boolean>({
   onClose,
   onSave,
@@ -62,11 +73,6 @@ export default function PhotoCaptureModal<T extends boolean>({
       return;
     }
 
-    if (showDescription && !description) {
-      alert("Debes llenar la descripción");
-      return;
-    }
-
     const result = {
       image: preview,
       type: type.replace(/_/g, " "), //this delete the _ on the imagen types we send to the backend 
@@ -81,7 +87,7 @@ export default function PhotoCaptureModal<T extends boolean>({
     setCameraActive(true);
   };
 
-  return (
+return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
       <div className="bg-white rounded-2xl p-6 w-full max-w-md">
         <h2 className="text-lg font-semibold mb-4">Tomar Foto</h2>
@@ -105,31 +111,40 @@ export default function PhotoCaptureModal<T extends boolean>({
           <div className="space-y-3">
             <img src={preview} className="w-full rounded-lg" />
 
-            {/* 🔥 SELECT DE TIPOS EN VEZ DE INPUT 🔥 */}
             <div>
               <label className="font-medium mb-1 block">Tipo de imagen</label>
+              <select
+                className="w-full border p-2 rounded-md"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+              >
+                {IMAGE_TYPES.map((t) => (
+                  <option key={t} value={t}>
+                    {IMAGE_LABELS[t]}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* 🌟 NUEVO SELECT DE DESCRIPCIÓN */}
+            {showDescription && (
+              <div>
+                <label className="font-medium mb-1 block">Descripción</label>
                 <select
                   className="w-full border p-2 rounded-md"
-                  value={type}
-                  onChange={(e) => setType(e.target.value)}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                 >
-                  {IMAGE_TYPES.map((t) => (
-                    <option key={t} value={t}>
-                      {IMAGE_LABELS[t]}
+                  {/* Opción para NO seleccionar descripción */}
+                  <option value="">-- Sin descripción --</option>
+
+                  {DESCRIPTION_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
                     </option>
                   ))}
                 </select>
-            </div>
-
-            {/* Descripción si aplica */}
-            {showDescription && (
-              <input
-                type="text"
-                placeholder="Descripción"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full border p-2 rounded-md"
-              />
+              </div>
             )}
 
             <div className="flex justify-between mt-4">

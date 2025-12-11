@@ -26,41 +26,17 @@ export default function FlowCtpatSteps() {
 
   const ctpat = data.response;
 
-  // --- FLOW CONTROL ---
-// switch (ctpat.status) {
-//   case 1:
-//     return <CreateUploadImages nextStatus={2} />;
-
-//   case 2:
-//     return <CreatePackingList />;
-
-//   case 3:
-//     return <CheckListPage ctpatId={ctpatId} />;
-
-//   case 4:
-//     return <CreateCtpatAssignment ctpatId={ctpatId} />;
-
-//   case 5:
-//     return <CreateUploadImages nextStatus={6} />;
-//   case 6:
-//     return <CloseCtpat ctpatId={ctpatId} />;
-
-//   default:
-//     return <p>Estado desconocido</p>;
-// }
-  const stepsMap = (ctpatId: number): Record<CtpatStatus, React.ReactNode> => ({
-
-    1: <CreateUploadImages nextStatus={2} />,
-    2: <CreatePackingList />,
-    3: <CheckListPage ctpatId={ctpatId} />,
-    4: <CreateCtpatAssignment ctpatId={ctpatId} />,
-    5: <CreateUploadImages nextStatus={6} />,
-    6: <CloseCtpat ctpatId={ctpatId} />,
-  });
+const stepsMap = (ctpatId: number): Record<CtpatStatus, React.ReactNode> => ({
+  1: <CreateUploadImages nextStatus={2} />,
+  2: <CreatePackingList />,
+  3: <CheckListPage ctpatId={ctpatId} />,
+  4: <CreateCtpatAssignment ctpatId={ctpatId} />,
+  5: <CreateUploadImages nextStatus={6} />,
+  6: <CloseCtpat ctpatId={ctpatId} />,
+  7: <p className="text-center text-xl font-semibold mt-10">✔️ CTPAT Cerrado</p>,
+});
 
   const status = ctpat.status as CtpatStatus;
 
   return stepsMap(ctpatId)[status] ?? <p>Estado desconocido</p>;
-
-
 }

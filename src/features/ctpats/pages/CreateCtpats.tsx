@@ -12,12 +12,7 @@ import type {
 export default function CreateCtpat() {
   const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
+  const {register,handleSubmit,setValue,watch,formState: { errors },
   } = useForm<CreateCtpatFormData>({
     defaultValues: {
       destination: "",
@@ -34,17 +29,13 @@ export default function CreateCtpat() {
     CreateCtpatFormData
   >({
     mutationFn: (formData) => createCtpatsAPI(formData),
-    async onSuccess(data) {
-      if (data.success) {
-        toast.success(data.message);
-        navigate(`/ctpats`);
-      } else {
-        toast.error(data.message);
-      }
-    },
-    onError(error) {
-      toast.error(error.message);
-    },
+      onSuccess(data) {
+            toast.success(data.message);
+            navigate(`/ctpats`);
+      },
+      onError(error) {
+        toast.error(error.message);
+      },
   });
 
   const handleForm = (data: CreateCtpatFormData) => {
@@ -57,14 +48,12 @@ export default function CreateCtpat() {
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
-        {/* TITULO */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] bg-clip-text text-transparent mb-3">
             Crear Nuevo Ctpat
           </h1>
         </div>
 
-        {/* BOTÓN DE REGRESAR (Mismo estilo que CreateDriver) */}
         <div className="mb-6">
           <Link
             to="/ctpats"
@@ -87,9 +76,7 @@ export default function CreateCtpat() {
           </Link>
         </div>
 
-        {/* CARD DEL FORMULARIO (Copiado del CreateDriver) */}
         <div className="bg-white rounded-2xl shadow-xl border border-[var(--color-border-light)] overflow-hidden">
-          {/* BARRA SUPERIOR GRADIENTE */}
           <div className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] h-2"></div>
 
           <form
@@ -103,8 +90,6 @@ export default function CreateCtpat() {
               setValue={setValue}
               watch={watch}
             />
-
-            {/* BOTÓN SUBMIT (IGUAL AL DE DRIVER) */}
             <button
               type="submit"
               className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
@@ -114,7 +99,6 @@ export default function CreateCtpat() {
           </form>
         </div>
 
-        {/* TEXTO INFERIOR */}
         <div className="mt-6 text-center text-sm text-[var(--color-text-tertiary)]">
           <p>Los cambios se aplicarán inmediatamente después de crear el CTPAT</p>
         </div>

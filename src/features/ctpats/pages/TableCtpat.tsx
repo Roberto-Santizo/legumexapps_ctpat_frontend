@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
-import { Pencil, Trash2 } from "lucide-react";
-import PaginationComponent from "@/shared/components/PaginationComponent.js";
+import { Pencil,Eye  } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getCtpatsAPI } from "@/features/ctpats/api/CtpatsAPI.js";
 import { useNavigate } from "react-router-dom";
+
+import PaginationComponent from "@/shared/components/PaginationComponent.js";
+import { getCtpatsAPI } from "@/features/ctpats/api/CtpatsAPI.js";
 import {CTPAT_STATUS_MAP,CTPAT_STATUS_COLORS} from "@/features/ctpats/constants/statusCodes";
+
 export default function UserTableView() {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
@@ -72,27 +74,30 @@ export default function UserTableView() {
                           {CTPAT_STATUS_MAP[ctpat.status]}
                         </span>
                       </td>
-                      <td className="table-cell-center">
-                        <div className="table-actions justify-center">
-                          <button
-                            className="btn-icon btn-icon-primary"
-                            title="Editar"
-                            onClick={() => navigate(`/steps/${ctpat.id}`)}
-                          >
-                            <Pencil size={16} />
-                          </button>
-                          <button
-                            className="btn-icon"
-                            style={{
-                              borderColor: "#dc2626",
-                              color: "#dc2626",
-                            }}
-                            title="Eliminar"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </td>
+                          <td className="table-cell-center">
+                            <div className="table-actions justify-center">
+
+                              {ctpat.status !== 7 && (
+                                <button
+                                  className="btn-icon btn-icon-primary"
+                                  title="Editar"
+                                  onClick={() => navigate(`/steps/${ctpat.id}`)}
+                                >
+                                  <Pencil size={16} />
+                                </button>
+                              )}
+                              <button
+                                className="btn-icon"
+                                style={{
+                                  borderColor: "#dc2626",
+                                  color: "#dc2626",
+                                }}
+                                title="Ver documento"
+                              >
+                                <Eye size={16} />
+                              </button>
+                            </div>
+                          </td>
                     </tr>
                   ))}
                 </tbody>

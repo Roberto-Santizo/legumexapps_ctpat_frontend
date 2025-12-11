@@ -6,10 +6,7 @@ import { getTruckSchema } from "@/features/trucks/schemas/types";
 export async function createTruckAPI(formData: TruckCreateData) {
   try {
     const { data } = await api.post("/truck", formData);
-    return {
-      message: data.message,
-      statusCode: data.statusCode
-    };
+    return data
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message);

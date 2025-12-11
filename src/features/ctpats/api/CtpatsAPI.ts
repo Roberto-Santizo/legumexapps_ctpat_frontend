@@ -2,36 +2,24 @@ import api from "@/shared/api/axios";
 import { isAxiosError } from "axios";
 import type { CreateCtpatFormData,uploadImagesFormData  } from "@/features/ctpats/schemas/types";
 import { getCtpatsSchema } from "@/features/ctpats/schemas/types";
-import type {CreateCtpatAPIResponse} from "@/features/ctpats/schemas/types"
 
-export async function createCtpatsAPI(formData: CreateCtpatFormData): Promise<CreateCtpatAPIResponse> {
-  try {
-    const { data } = await api.post("/ctpat", formData);
-
-    if (data && typeof data === "object" && "message" in data) {
-      return {
-        success: data.statusCode === 200,
-        message: data.message,
-      };
+export async function createCtpatsAPI(formData: CreateCtpatFormData){
+ try {
+  const { data } = await api.post("/ctpat", formData);
+  return data
+ } catch (error) {
+    if(isAxiosError(error)&& error.response){
+      throw new Error(error.response.data.error)
     }
-    throw new Error("Respuesta inesperada del servidor");
-  } catch (error) {
-    if (isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.message || "Error al crear el CTPAT");
-    }
-    throw error;
-  }
+ }
 }
 
 export async function getCtpatsAPI(page: number = 1) {
   try {
     const limit = 10;
     const offset = page;
-
     const { data } = await api.get("/ctpat", { params: { limit, offset } });
     const response = getCtpatsSchema.safeParse(data);
-
-
     if (response.success) {
       return response.data; 
     }
@@ -61,8 +49,8 @@ export async function uploadImagesAPI(ctpatId: number, formData: uploadImagesFor
     const { data } = await api.post(`/ctpat/uploadImages/${ctpatId}`, formData);
     
     return {
-      success: data.statusCode === 201,
-      message: data.message,
+        success: true,
+        message: data.message,
     };
   } catch (error) {
     if (isAxiosError(error) && error.response) {
@@ -81,7 +69,7 @@ export async function updateCtpatStatusAPI(id: number, status: number) {
 
     if (data && typeof data === "object" && "message" in data) {
       return {
-        success: data.statusCode === 200,
+        success: true,
         message: data.message,
       };
     }

@@ -37,7 +37,10 @@ export default function CreateCarrier() {
     },
   });
 
-  const handleForm = async (data: createCarrierFormSchema) => mutate(data);
+  const handleForm = async (data: createCarrierFormSchema) =>{
+      console.log("📤 Datos que se envían al backend:", data);
+    mutate(data);
+  } 
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4 sm:px-6 lg:px-8">

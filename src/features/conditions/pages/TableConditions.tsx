@@ -3,7 +3,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import PaginationComponent from "../../../shared/components/PaginationComponent";
 import { useState } from "react";
-import {getConditionAPI} from "@/features/conditions/api/ConditionsAPI"
+import {getPaginatedConditionAPI} from "@/features/conditions/api/ConditionsAPI"
 
 export default function TableCondition() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -11,7 +11,7 @@ export default function TableCondition() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["conditions", currentPage, pageSize],
-    queryFn: () => getConditionAPI(currentPage),
+    queryFn: () => getPaginatedConditionAPI(currentPage),
   });
 
   if (isLoading) return <p>Cargando las condiciones...</p>;

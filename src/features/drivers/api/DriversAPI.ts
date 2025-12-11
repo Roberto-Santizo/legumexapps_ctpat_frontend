@@ -6,11 +6,7 @@ import { isAxiosError } from "axios";
 export async function createDriverAPI(formData: DriverFormData) {
   try {
     const { data } = await api.post("/drivers", formData);
-    const message = data.message;
-    if ([200, 201].includes(data.statusCode)) {
-      return { success: true, message, response: data.response };
-    }
-    throw new Error(message);
+      return data
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       const backendData = error.response.data || {};

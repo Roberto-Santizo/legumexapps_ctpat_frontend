@@ -5,14 +5,7 @@ import type {ConditionFormData, GetConditionFormData,Condition} from "@/features
 export async function createConditionsAPI(formData: ConditionFormData) {
   try {
     const { data } = await api.post("/conditions", formData);
-    if ([201].includes(data.statusCode)) {
-      return {
-        success: true,
-        message: data.message,
-      };
-    }
-    throw new Error(data.message || "Error desconocido al crear la condición");
-
+    return data
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       const backendData = error.response.data || {};
@@ -24,7 +17,26 @@ export async function createConditionsAPI(formData: ConditionFormData) {
   }
 }
 
-export async function getConditionAPI(page: number = 1): Promise<GetConditionFormData> {
+
+export async function getConditionAPI(): Promise<GetConditionFormData> {
+  try {
+    // const limit = 10;
+    // const offset = page;
+    const { data } = await api.get("/conditions", {
+      // params: { limit, offset },
+    });
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      console.error("Error en getConditionAPI:", error.response.data);
+    } else {
+      console.error("Error desconocido en getConditionAPI:", error);
+    }
+    throw error;
+  }
+}
+
+export async function getPaginatedConditionAPI(page: number = 1): Promise<GetConditionFormData> {
   try {
     const limit = 10;
     const offset = page;

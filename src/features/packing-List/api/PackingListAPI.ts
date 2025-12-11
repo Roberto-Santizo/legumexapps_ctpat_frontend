@@ -7,10 +7,7 @@ export async function createPackingListAPI(ctpatId: number, formData: PackignLis
 {
   try {
     const { data } = await api.post(`/packing-list/${ctpatId}`, formData);
-    return {
-      message: data.message,
-      statusCode: data.statusCode
-    };
+    return data
   } catch (error) {
     if (isAxiosError(error) && error.response) {
        const backendMessage = error.response.data.message;
