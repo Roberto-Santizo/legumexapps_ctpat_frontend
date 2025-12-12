@@ -1,45 +1,49 @@
-import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getCtpatByIdAPI } from "@/features/ctpats/api/CtpatsAPI";
+
 import LetterPage from "./LetterPage";
+import CtpatGeneralInformationTable from "@/features/ctpats/ctpatsDocument/CtpatGeneralInformationTable";
+import CtpatImages from "@/features/ctpats/ctpatsDocument/CtpatImages"
+import PackingListTable from "@/features/ctpats/ctpatsDocument/PackingListTable"
+import ContainerInspectionTable from "@/features/ctpats/ctpatsDocument/ContainerInspectionTable"
+import FinalCtpatSignatures from "@/features/ctpats/ctpatsDocument/FinalCtpatSignatures"
+
+
 export default function CtpatDocument() {
-  const [docDate, setDocDate] = useState("");
+  const { id } = useParams();
 
-  // 📌 Fecha dinámica (solo se ejecuta AL CREAR el documento)
-  useEffect(() => {
-    const now = new Date();
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["ctpat", id],
+    queryFn: () => getCtpatByIdAPI(Number(id)),
+    enabled: !!id,
+  });
 
-    const formatted = now.toLocaleDateString("en-US", {
-      month: "numeric",
-      day: "numeric",
-      year: "numeric",
-    });
+  if (isLoading) return <p>Cargando documento...</p>;
+  if (isError) return <p>Error al cargar el documento.</p>;
 
-    setDocDate(formatted);
-  }, []);
+  const ctpat = data.response;
 
-  // 📌 Tus páginas dinámicas
   const pages = [
-    <div>
-      <h2 className="text-center font-bold bg-gray-200 py-1 mb-4">
-        GENERAL INFORMATION
-      </h2>
-      {/* tabla */}
-    </div>,
-
-    <div>
-      <h2 className="text-center font-bold bg-gray-200 py-1 mb-4">
-        CONTAINER PICTURES
-      </h2>
-    </div>,
+    <CtpatGeneralInformationTable data={ctpat} />,
+    <CtpatImages images={ctpat.images} />,
+    <PackingListTable/>,
+    <ContainerInspectionTable/>,
+    <FinalCtpatSignatures 
+      signatureC={ctpat.signature_c}
+      signatureE={ctpat.signature_e}
+  /> 
+    
   ];
 
   return (
     <div className="space-y-10">
-      {pages.map((content, i) => (
+      {pages.map((content, index) => (
         <LetterPage
-          key={i}
-          pageNumber={i + 1}
+          key={index}
+          pageNumber={index + 1}
           totalPages={pages.length}
-          docDate={docDate}  
+          docDate={ctpat.createdAt}  
         >
           {content}
         </LetterPage>

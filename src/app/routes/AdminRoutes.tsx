@@ -51,7 +51,13 @@ const routes = [
   { path: "/observations/create", component: lazy(() => import("@/features/observations/pages/CreateObservation")), roles: [] },
   { path: "/observations/:observationId/edit", component: lazy(() => import("@/features/observations/pages/EditObservationView")), roles: [] },
 
-  { path: "document", component: lazy(() => import("@/features/ctpats/ctpatsDocument/CtpatDocument")), roles: [] },
+ {
+  path: "/ctpats/document/:id",
+  component: lazy(() => import("@/features/ctpats/ctpatsDocument/CtpatDocument")),
+  roles: [],
+},
+
+
 
 ];
 

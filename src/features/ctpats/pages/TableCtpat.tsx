@@ -86,16 +86,15 @@ export default function UserTableView() {
                                   <Pencil size={16} />
                                 </button>
                               )}
-                              <button
-                                className="btn-icon"
-                                style={{
-                                  borderColor: "#dc2626",
-                                  color: "#dc2626",
-                                }}
-                                title="Ver documento"
-                              >
-                                <Eye size={16} />
-                              </button>
+<Link
+  className="btn-icon"
+  style={{ borderColor: "#dc2626", color: "#dc2626" }}
+  title="Ver documento"
+  to={`/ctpats/document/${ctpat.id}`}
+>
+  <Eye size={16} />
+</Link>
+
                             </div>
                           </td>
                     </tr>
