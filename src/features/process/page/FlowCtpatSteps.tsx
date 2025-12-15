@@ -33,7 +33,7 @@ const stepsMap = (ctpatId: number): Record<CtpatStatus, React.ReactNode> => ({
   4: <CreateCtpatAssignment ctpatId={ctpatId} />,
   5: <CreateUploadImages nextStatus={6} />,
   6: <CloseCtpat ctpatId={ctpatId} />,
-  7: <p className="text-center text-xl font-semibold mt-10">✔️ CTPAT Cerrado</p>,
+  7: <p className="text-center text-xl font-semibold mt-10">CTPAT Cerrado</p>,
 });
 
   const status = ctpat.status as CtpatStatus;
