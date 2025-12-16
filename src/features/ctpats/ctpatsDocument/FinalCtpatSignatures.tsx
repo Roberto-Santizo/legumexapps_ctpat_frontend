@@ -6,7 +6,6 @@ interface Props {
 
 export default function FinalCtpatSignatures({ signatureC, signatureE }: Props) {
   const baseUrl = import.meta.env.VITE_IMAGES_BACKEND_URL;
-
   const signatures = [
     { label: "Quality Control and Food Safety", img: signatureC },
     { label: "Shipping Supervisor Signature", img: signatureE },

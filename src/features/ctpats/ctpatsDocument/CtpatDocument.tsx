@@ -6,8 +6,9 @@ import LetterPage from "./LetterPage";
 import CtpatGeneralInformationTable from "@/features/ctpats/ctpatsDocument/CtpatGeneralInformationTable";
 import CtpatImages from "@/features/ctpats/ctpatsDocument/CtpatImages"
 import PackingListTable from "@/features/ctpats/ctpatsDocument/PackingListTable"
-import ContainerInspectionTable from "@/features/ctpats/ctpatsDocument/ContainerInspectionTable"
+import DriverTable from "@/features/ctpats/ctpatsDocument/DriverTable"
 import FinalCtpatSignatures from "@/features/ctpats/ctpatsDocument/FinalCtpatSignatures"
+import ChecklistTables from "@/features/ctpats/ctpatsDocument/ChecklistTables"
 
 
 export default function CtpatDocument() {
@@ -27,12 +28,13 @@ export default function CtpatDocument() {
   const pages = [
     <CtpatGeneralInformationTable data={ctpat} />,
     <CtpatImages images={ctpat.images} />,
-    <PackingListTable/>,
-    <ContainerInspectionTable/>,
+    <PackingListTable data={ctpat.packingList}/>,
+    <DriverTable driver={ctpat.driver}  ctpat={ctpat} />,
+    <ChecklistTables items={ctpat.checklist.items} />,
     <FinalCtpatSignatures 
       signatureC={ctpat.signature_c}
       signatureE={ctpat.signature_e}
-  /> 
+     /> 
     
   ];
 

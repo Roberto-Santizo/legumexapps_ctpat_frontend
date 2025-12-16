@@ -1,56 +1,62 @@
 import { z } from "zod";
 
+/* =========================
+   CTPAT IMAGES SCHEMA
+========================= */
 export const CtpatImageSchema = z.object({
   id: z.number(),
   image: z.string(),
   type: z.string(),
-  description: z.string(),
+  description: z.string().optional().nullable(),
 });
-export type CtpatImage = z.infer<typeof CtpatImageSchema>; // 👈 NECESARIO
+
+export type CtpatImage = z.infer<typeof CtpatImageSchema>;
 
 
+/* =========================
+   TRUCK SCHEMA
+========================= */
 export const CtpatTruckSchema = z.object({
   id: z.number(),
   plate: z.string(),
   plate_image: z.string(),
 });
+
 export type CtpatTruck = z.infer<typeof CtpatTruckSchema>;
 
 
-export const CtpatDriverSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-  identification: z.string(),
-  license: z.string(),
-  identification_image: z.string(),
-  license_image: z.string(),
-});
-export type CtpatDriver = z.infer<typeof CtpatDriverSchema>;
 
 
+
+
+/* =========================
+   OBSERVATIONS SCHEMA
+========================= */
 export const CtpatObservationSchema = z.object({
   id: z.number(),
   observation: z.string(),
   data: z.string(),
 });
+
 export type CtpatObservation = z.infer<typeof CtpatObservationSchema>;
 
 
-export const CtpatSchema = z.object({
+/* =========================
+   CHECKLIST SCHEMA
+========================= */
+export const CtpatChecklistItemSchema = z.object({
   id: z.number(),
-  destination: z.string(),
-  departure_site: z.string(),
-  user: z.string(),
-  container: z.string(),
-  status: z.number(),
-  signature_c: z.string(),
-  signature_e: z.string(),
-  createdAt: z.string(),
-
-  images: z.array(CtpatImageSchema),
-  truck: CtpatTruckSchema,
-  driver: CtpatDriverSchema,
-  observations: z.array(CtpatObservationSchema),
+  condition: z.string(),
+  status: z.boolean(),
 });
 
-export type Ctpat = z.infer<typeof CtpatSchema>;
+export const CtpatChecklistSchema = z.object({
+  id: z.number(),
+  createdAt: z.string(),
+  items: z.array(CtpatChecklistItemSchema),
+});
+
+export type CtpatChecklist = z.infer<typeof CtpatChecklistSchema>;
+
+
+

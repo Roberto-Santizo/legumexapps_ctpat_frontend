@@ -25,7 +25,7 @@ export default function LoginView() {
     onSuccess: (response) => {
       toast.success("Login exitoso");
       localStorage.setItem("token",response.token)
-      navigate("/rol");
+      navigate("/ctpats");
     },
   });
   const onSubmit = (formData: LoginRequest) =>{
