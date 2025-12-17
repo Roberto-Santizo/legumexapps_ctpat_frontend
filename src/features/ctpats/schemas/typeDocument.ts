@@ -25,10 +25,6 @@ export const CtpatTruckSchema = z.object({
 export type CtpatTruck = z.infer<typeof CtpatTruckSchema>;
 
 
-
-
-
-
 /* =========================
    OBSERVATIONS SCHEMA
 ========================= */

@@ -52,8 +52,8 @@ const routes = [
   { path: "/observations/:observationId/edit", component: lazy(() => import("@/features/observations/pages/EditObservationView")), roles: [] },
 
   {path: "/ctpats/document/:id",component: lazy(() => import("@/features/ctpats/ctpatsDocument/CtpatDocument")),roles: [],},
-  
-  {path: "/document",component: lazy(() => import("@/features/ctpats/packingListDocument/PackingListDocument")),roles: [],},
+
+  {path: "/packingList/document/:id",component: lazy(() => import("@/features/ctpats/packingListDocument/PackingListDocument")),roles: [],},
 
 
 

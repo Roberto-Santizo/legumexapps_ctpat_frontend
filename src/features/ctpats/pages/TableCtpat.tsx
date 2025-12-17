@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Pencil,Eye  } from "lucide-react";
+import { Pencil,Eye,FileCheck  } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -90,10 +90,20 @@ export default function UserTableView() {
                                 <Link
                                   className="btn-icon"
                                   style={{ borderColor: "#dc2626", color: "#dc2626" }}
-                                  title="Ver documento"
+                                  title="Documento Ctpat"
                                   to={`/ctpats/document/${ctpat.id}`}
                                 >
                                   <Eye size={16} />
+                                </Link>
+                              )}
+                              {ctpat.status === 7 && (
+                                <Link
+                                  className="btn-icon"
+                                  style={{ borderColor: "#dc2626", color: "#dc2626" }}
+                                  title="Packing List"
+                                  to={`/packingList/document/${ctpat.id}`}
+                                >
+                                  <FileCheck size={16} />
                                 </Link>
                               )}
                             </div>
