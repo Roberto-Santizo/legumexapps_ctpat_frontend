@@ -4,6 +4,7 @@ import { getCtpatByIdAPI } from "@/features/ctpats/api/CtpatsAPI";
 import { Spinner } from "@/shared/components/Spinner";
 import React from "react";
 import CreatePackingList from "@/features/packing-List/pages/CreatePackingList";
+// import PackingListDetailPage from "@/features/packing-List/components/PackingListDetailPage"
 import CreateCtpatAssignment from "@/features/ctpats/pages/CreateCtpatAssignment";
 import CreateUploadImages from "@/features/upload-images/pages/CreateUploadImages";
 import CheckListPage  from "@/features/checkLists/pages/CheckListPage";
@@ -29,6 +30,7 @@ export default function FlowCtpatSteps() {
 const stepsMap = (ctpatId: number): Record<CtpatStatus, React.ReactNode> => ({
   1: <CreateUploadImages nextStatus={2} />,
   2: <CreatePackingList />,
+  // 3: <PackingListDetailPage packingList={ctpat.packingList} />,
   3: <CheckListPage ctpatId={ctpatId} />,
   4: <CreateCtpatAssignment ctpatId={ctpatId} />,
   5: <CreateUploadImages nextStatus={6} />,
@@ -37,6 +39,5 @@ const stepsMap = (ctpatId: number): Record<CtpatStatus, React.ReactNode> => ({
 });
 
   const status = ctpat.status as CtpatStatus;
-
   return stepsMap(ctpatId)[status] ?? <p>Estado desconocido</p>;
 }

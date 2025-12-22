@@ -12,10 +12,7 @@ type EditDriverFormProps = {
   driverId: CreateDriver["id"];
 };
 
-export default function EditDriverForm({
-  data,
-  driverId,
-}: EditDriverFormProps) {
+export default function EditDriverForm({data,driverId,}: EditDriverFormProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 

@@ -6,26 +6,29 @@ import PackingListForm from "@/features/packing-List/components/CreatePackingLis
 import { createPackingListAPI } from "@/features/packing-List/api/PackingListAPI";
 import type { PackignListFormData } from "@/features/packing-List/schemas/types";
 import { useUpdateCtpatStatus } from "@/features/ctpats/hooks/useUpdateCtpatStatus";
+// import { useQueryClient } from "@tanstack/react-query";
+
 
 export default function CreatePackingList() {
   const navigate = useNavigate();
+  // const queryClient = useQueryClient();
+
   const { id } = useParams();
   const ctpatId = Number(id);
   //update the ctpat status
   const { mutate: updateStatus } = useUpdateCtpatStatus();
   // REACT HOOK FORM  
-  const {register,handleSubmit,formState: { errors },reset,} = useForm<PackignListFormData>();
+  const {register,handleSubmit,formState: { errors }} = useForm<PackignListFormData>();
 
   // MUTATION
   const { mutate: createPackingList } = useMutation({
     mutationFn: (data: PackignListFormData) =>
       createPackingListAPI(ctpatId, data),
 
-    onSuccess: (res) => {
+    onSuccess: async (res) => {
       toast.success(res.message);
-      updateStatus({ id: ctpatId, status: 3 }); 
-      navigate("/ctpats");
-      reset();
+      updateStatus({ id: ctpatId, status: 3 });
+       navigate("/ctpats");
     },
 
     onError: (error: Error) => {

@@ -2,7 +2,7 @@ import api from "@/shared/api/axios.ts";
 import type { CarrierFormData } from "@/features/carriers/schemas/types.ts";
 import { isAxiosError } from "axios";
 import { getCarrierSchema } from "@/features/carriers/schemas/types.ts";
-import type {createCarrierFormSchema} from "@/features/carriers/schemas/types.tsx"
+import type {createCarrierFormSchema,CarrierUpdateData} from "@/features/carriers/schemas/types.tsx"
 
 export async function createCarriersAPI(formData: createCarrierFormSchema) {
   try {
@@ -46,11 +46,22 @@ export async function getCarrierByIdAPI(id: number){
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      console.error("Error en getCarrierByIdAPI", error.response.data);
-    }else{
-      console.error("Error en getCarrierById", error);
+      throw new Error(error.response.data.error);
     }
-    throw error;
   }
 }
 
+export type CarrierAPIType = {
+  formData: CarrierUpdateData;
+  id : number;
+}
+export async function updateCarrierAPI({ formData, id }: CarrierAPIType) {
+  try {
+    const {data} = await api.patch(`/carriers/${id}`, formData);
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response){
+      throw new Error (error.response.data.error);
+    }
+  }
+}

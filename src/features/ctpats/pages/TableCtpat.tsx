@@ -77,7 +77,7 @@ export default function UserTableView() {
                           <td className="table-cell-center">
                             <div className="table-actions justify-center">
 
-                              {ctpat.status !== 7 && (
+                              {ctpat.status !== 8 && (
                                 <button
                                   className="btn-icon btn-icon-primary"
                                   title="Editar"
@@ -86,7 +86,7 @@ export default function UserTableView() {
                                   <Pencil size={16} />
                                 </button>
                               )}
-                              {ctpat.status === 7 && (
+                              {ctpat.status === 8 && (
                                 <Link
                                   className="btn-icon"
                                   style={{ borderColor: "#dc2626", color: "#dc2626" }}
@@ -96,7 +96,7 @@ export default function UserTableView() {
                                   <Eye size={16} />
                                 </Link>
                               )}
-                              {ctpat.status === 7 && (
+                              
                                 <Link
                                   className="btn-icon"
                                   style={{ borderColor: "#dc2626", color: "#dc2626" }}
@@ -105,7 +105,7 @@ export default function UserTableView() {
                                 >
                                   <FileCheck size={16} />
                                 </Link>
-                              )}
+                            
                             </div>
                           </td>
                     </tr>

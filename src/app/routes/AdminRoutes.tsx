@@ -19,7 +19,7 @@ const routes = [
 
   { path: "/carriers", component: lazy(() => import("../../features/carriers/pages/TableCarriers")), roles: [] },
   { path: "/carriers/create", component: lazy(() => import("../../features/carriers/pages/CreateCarrier")), roles: [] },
-  { path: "/carriers/:carriersId/edit", component: lazy(() => import("@/features/carriers/pages/EditCarrierView")), roles: [] },
+  { path: "/carriers/:id/edit", component: lazy(() => import("@/features/carriers/pages/EditCarrierView")), roles: [] },
 
   { path: "/container", component: lazy(() => import("../../features/containers/pages/TableContainer")), roles: [] },
   { path: "/container/create", component: lazy(() => import("@/features/containers/pages/CreateContainer")), roles: [] },
@@ -54,8 +54,6 @@ const routes = [
   {path: "/ctpats/document/:id",component: lazy(() => import("@/features/ctpats/ctpatsDocument/CtpatDocument")),roles: [],},
 
   {path: "/packingList/document/:id",component: lazy(() => import("@/features/ctpats/packingListDocument/PackingListDocument")),roles: [],},
-
-
 
 ];
 

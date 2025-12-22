@@ -20,6 +20,8 @@ interface ApiPackingItem {
   presentation: string;
   temp: number;
   expiration_date: string;
+  po?: string;
+  grn?: string;
 }
 
 interface ApiPackingList {
@@ -71,6 +73,8 @@ interface ItemData {
   presentacion: string;
   temp: string;
   fechaExpiracion: string;
+  po?: string;
+  grn?: string;
 }
 
 interface Totals {
@@ -117,6 +121,8 @@ const mapItems = (
     presentacion: item.presentation,
     temp: `${item.temp}°C`,
     fechaExpiracion: new Date(item.expiration_date).toLocaleDateString(),
+    po: item.po ?? "",
+    grn: item.grn ?? "",
   }));
 
 const calculateTotals = (items: ItemData[]): Totals => ({
@@ -129,7 +135,7 @@ const calculateTotals = (items: ItemData[]): Totals => ({
   3. COMPONENTES DE TABLA
 ================================================================ */
 
-const TableHeader = () => (
+const TableHeader: React.FC<{ showPoGrn?: boolean }> = ({ showPoGrn }) => (
   <View style={[styles.tableRow, styles.tableHeader]} fixed>
     <Text style={styles.colFecha}>FECHA PRODUCCION</Text>
     <Text style={styles.colProducto}>PRODUCTO</Text>
@@ -142,10 +148,21 @@ const TableHeader = () => (
     <Text style={styles.colPresentacion}>PRESENTACION</Text>
     <Text style={styles.colTemp}>TEMP</Text>
     <Text style={styles.colFecha}>FECHA EXPIRACION</Text>
+
+    {showPoGrn && (
+      <>
+        <Text style={styles.colSmall}>PO</Text>
+        <Text style={styles.colSmall}>GRN</Text>
+      </>
+    )}
   </View>
 );
 
-const TableRow: React.FC<{ item: ItemData }> = ({ item }) => (
+
+const TableRow: React.FC<{
+  item: ItemData;
+  showPoGrn?: boolean;
+}> = ({ item, showPoGrn }) => (
   <View style={styles.tableRow}>
     <Text style={styles.colFecha}>{item.fechaProduccion}</Text>
     <Text style={styles.colProducto}>{item.producto}</Text>
@@ -158,20 +175,57 @@ const TableRow: React.FC<{ item: ItemData }> = ({ item }) => (
     <Text style={styles.colPresentacion}>{item.presentacion}</Text>
     <Text style={styles.colTemp}>{item.temp}</Text>
     <Text style={styles.colFecha}>{item.fechaExpiracion}</Text>
+
+    {showPoGrn && (
+      <>
+        <Text style={styles.colSmall}>{item.po || "-"}</Text>
+        <Text style={styles.colSmall}>{item.grn || "-"}</Text>
+      </>
+    )}
   </View>
 );
 
-const TableFooter: React.FC<{ totals: Totals }> = ({ totals }) => (
+
+const TableFooter: React.FC<{
+  totals: Totals;
+  showPoGrn?: boolean;
+}> = ({ totals, showPoGrn }) => (
   <View style={styles.tableRow}>
-    <Text style={styles.colTotalLabel}>TOTAL</Text>
-    <Text style={styles.colSmall}>{totals.totalCajas}</Text>
-    <Text style={styles.colMedium}>{totals.totalPesoBruto.toFixed(2)}</Text>
-    <Text style={styles.colMedium}>{totals.totalPesoNeto.toFixed(2)}</Text>
+    <Text
+      style={
+        showPoGrn
+          ? styles.colTotalLabelWithPoGrn
+          : styles.colTotalLabel
+      }
+    >
+      TOTAL
+    </Text>
+
+    <Text style={styles.colSmall}>
+      {totals.totalCajas}
+    </Text>
+
+    <Text style={styles.colMedium}>
+      {totals.totalPesoBruto.toFixed(2)}
+    </Text>
+
+    <Text style={styles.colMedium}>
+      {totals.totalPesoNeto.toFixed(2)}
+    </Text>
+
     <Text style={styles.colPresentacion} />
     <Text style={styles.colTemp} />
     <Text style={styles.colFecha} />
+
+    {showPoGrn && (
+      <>
+        <Text style={styles.colSmall} />
+        <Text style={styles.colSmall} />
+      </>
+    )}
   </View>
 );
+
 
 /* ===============================================================
   4. HEADER
@@ -312,27 +366,38 @@ const HeaderSection: React.FC<{ header: HeaderData }> = ({ header }) => (
 /* ===============================================================
   5. PDF DOCUMENT
 ================================================================ */
-
+type PackingListVariant = "NORMAL" | "WITH_PO_GRN";
 const PackingListDocument: React.FC<{
   header: HeaderData;
   items: ItemData[];
   totals: Totals;
-}> = ({ header, items, totals }) => (
-  <Document>
+  variant?: PackingListVariant;
+}> = ({ header, items, totals, variant = "NORMAL" }) => {
+  const showPoGrn = variant === "WITH_PO_GRN";
+
+  return (
     <Page size="LETTER" style={styles.page}>
-      <View style={styles.section}>
-        <HeaderSection header={header} />
-        <View style={styles.table}>
-          <TableHeader />
-          {items.map((item, i) => (
-            <TableRow key={i} item={item} />
-          ))}
-          <TableFooter totals={totals} />
-        </View>
-      </View>
+          <View style={styles.section}>
+            <HeaderSection header={header} />
+            <View style={styles.table}>
+              <TableHeader showPoGrn={showPoGrn} />
+              {items.map((item, i) => (
+                <TableRow
+                  key={i}
+                  item={item}
+                  showPoGrn={showPoGrn}
+                />
+              ))}
+              <TableFooter
+                totals={totals}
+                showPoGrn={showPoGrn}
+              />
+            </View>
+          </View>
     </Page>
-  </Document>
-);
+  );
+};
+
 
 /* ===============================================================
   6. GENERATOR (API + UI)
@@ -370,14 +435,25 @@ const PackingListGenerator: React.FC = () => {
       if (!header || !totals) return null;
 
       return (
-        <PackingListDocument
-          header={header}
-          items={items}
-          totals={totals}
-        />
+        <Document>
+          {/* HOJA 1 - SIN PO / GRN */}
+          <PackingListDocument
+            header={header}
+            items={items}
+            totals={totals}
+            variant="NORMAL"
+          />
+
+          {/* HOJA 2 - CON PO / GRN */}
+          <PackingListDocument
+            header={header}
+            items={items}
+            totals={totals}
+            variant="WITH_PO_GRN"
+          />
+        </Document>
       );
     }, [header, items, totals]);
-
 
     if (!header || !totals || !pdfDocument) {
       return <p>Cargando PDF...</p>;

@@ -1,27 +1,24 @@
 import type { createCarrierFormSchema } from "@/features/carriers/schemas/types";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import {createCarriersAPI} from "@/features/carriers/api/CarriersAPI"
 import CarrierForm from "@/features/carriers/components/CarriersForm"
 import type {CreateCarrierResponse} from "@/features/carriers/schemas/types"
 import {createCarrierResponseSchema} from "@/features/carriers/schemas/types"
+import { useForm, FormProvider } from "react-hook-form";
+
 
 
 export default function CreateCarrier() {
   const navigate = useNavigate();
   const initialValues: createCarrierFormSchema = { name: "" };
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<createCarrierFormSchema>({
+  const methods = useForm<createCarrierFormSchema>({
     defaultValues: initialValues,
-    mode: "onChange",
-  });
-
-  // Mutation profesional dentro del mismo componente
+    mode: "onChange"
+  })
+  const { handleSubmit } = methods;
+  
   const { mutate } = useMutation<CreateCarrierResponse, never, createCarrierFormSchema>({
     mutationFn: async (data) => {
       const response = await createCarriersAPI(data);
@@ -32,13 +29,12 @@ export default function CreateCarrier() {
         toast.success(response.message);
         setTimeout(() => navigate("/carriers"), 100);
       } else {
-        toast.error(response.message || "No se pudo crear el transportista");
+        toast.error(response.message);
       }
     },
   });
 
   const handleForm = async (data: createCarrierFormSchema) =>{
-      console.log("📤 Datos que se envían al backend:", data);
     mutate(data);
   } 
 
@@ -67,7 +63,9 @@ export default function CreateCarrier() {
           <div className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] h-2"></div>
 
           <form className="p-8 space-y-6" onSubmit={handleSubmit(handleForm)} noValidate>
-            <CarrierForm register={register} errors={errors} />
+              <FormProvider {...methods}>
+                <CarrierForm />
+              </FormProvider>
 
             <input
               type="submit"

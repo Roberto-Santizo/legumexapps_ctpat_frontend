@@ -8,12 +8,17 @@ import { AuthProvider } from "@/context/AuthProvider";
 import {BrowserRouter} from "react-router-dom"
 
 const queryClient = new QueryClient();
-
+const token = localStorage.getItem("token");
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <AuthProvider>
+        {/* 
+        The key prop forces AuthProvider to remount whenever the token changes.
+        This ensures a clean auth state reset after logout/login cycles,
+        preventing stale user data in the UI.
+      */}
+        <AuthProvider key= {token}>
           <Router />
         </AuthProvider>
       </BrowserRouter>

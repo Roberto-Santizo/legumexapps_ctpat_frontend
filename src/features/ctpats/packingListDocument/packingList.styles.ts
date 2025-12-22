@@ -126,14 +126,14 @@ export const packingListDocumentSyles = StyleSheet.create({
     alignItems: 'center',
   },
   colProducto: {
-    width: '20%',
+    width: '15%',
     borderWidth: 1,
     borderLeftWidth: 0,
     borderTopWidth: 0,
     padding: 3,
   },
   colSmall: {
-    width: '5%',
+    width: '10%',
     borderWidth: 1,
     borderLeftWidth: 0,
     borderTopWidth: 0,
@@ -167,13 +167,20 @@ export const packingListDocumentSyles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  // Totales
+  // Totals
   colTotalLabel: {
-    width: '46%',
+    width: '56%',
     padding: 3,
     textAlign: 'right',
     fontWeight: 'bold',
-    borderTopWidth: 1,
+    borderRightWidth: 1,
+  },
+  // Totals with PO / GRN
+  colTotalLabelWithPoGrn: {
+    width: '56%',
+    padding: 3,
+    textAlign: 'right',
+    fontWeight: 'bold',
     borderRightWidth: 1,
   },
 });

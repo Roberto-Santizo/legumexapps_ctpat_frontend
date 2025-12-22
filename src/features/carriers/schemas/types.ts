@@ -33,8 +33,12 @@ export const getCarrierByIdSchema = z.object({
     name: z.string(),
   }),
 });
+export const updatecarrierSchema = z.object({
+  name: z.string(),
+});
 
 export type GetCarrierByIdResponse = z.infer<typeof getCarrierByIdSchema>;
 export type createCarrierFormSchema = z.infer<typeof carrierSchema>;
 export type CreateCarrierResponse = z.infer<typeof createCarrierResponseSchema>;
 export type CarrierFormData = z.infer<typeof getCarrierSchema>;
+export type CarrierUpdateData = z.infer<typeof updatecarrierSchema>;

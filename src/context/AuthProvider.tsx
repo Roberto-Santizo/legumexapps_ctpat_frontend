@@ -7,6 +7,8 @@ import { AuthContext } from "./AuthContext";
 import type { AuthContextType } from "./AuthContext";
 import type { LoginRequest, LoginResponse } from "@/features/auth/schemas/types";
 import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
+
 
 type AuthUser = LoginResponse["response"];
 
@@ -16,6 +18,7 @@ type AuthProviderProps = {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const navigate = useNavigate();
+   const queryClient = useQueryClient();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
   const [loading, setLoading] = useState(true);
@@ -25,15 +28,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setToken(data.token);
     localStorage.setItem("token", data.token);
     setUser(data.response);
-    navigate("/dashboard");
+    navigate("/ctpats");
   };
 
   const logout = useCallback(() => {
+    queryClient.clear();
     setUser(null);
     setToken(null);
     localStorage.removeItem("token");
     navigate("/login");
-  }, [navigate]);
+  }, [navigate,queryClient]);
 
   // Verificar sesión al cargar
   useEffect(() => {

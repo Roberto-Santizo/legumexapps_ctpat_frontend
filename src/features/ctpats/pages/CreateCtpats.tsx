@@ -4,10 +4,7 @@ import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import CtpatForm from "@/features/ctpats/components/CtpatsForm";
 import { createCtpatsAPI } from "@/features/ctpats/api/CtpatsAPI";
-import type {
-  CreateCtpatFormData,
-  CreateCtpatAPIResponse,
-} from "@/features/ctpats/schemas/types";
+import type {CreateCtpatFormData,CreateCtpatAPIResponse,} from "@/features/ctpats/schemas/types";
 
 export default function CreateCtpat() {
   const navigate = useNavigate();
