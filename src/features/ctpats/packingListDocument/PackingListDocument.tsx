@@ -1,9 +1,11 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import {Document, Page,View,Text,PDFDownloadLink,PDFViewer,Image,} from "@react-pdf/renderer";
+import {Document, Page,View,Text,PDFViewer,Image,} from "@react-pdf/renderer";
 import { packingListDocumentSyles as styles } from "@/features/ctpats/packingListDocument/packingList.styles";
 import {getCtpatByIdAPI } from "@/features/ctpats/api/CtpatsAPI";
 import { useEffect } from "react";
+import { ClipLoader } from "react-spinners";
+
 
 /* ===============================================================
   1. INTERFACES
@@ -231,133 +233,94 @@ const TableFooter: React.FC<{
   4. HEADER
 ================================================================ */
 
+/* ===============================================================
+  4. HEADER (Actualizado)
+================================================================ */
+
 const HeaderSection: React.FC<{ header: HeaderData }> = ({ header }) => (
   <>
     {/* Encabezado Principal */}
     <View style={styles.headerGrid}>
       <View style={styles.logoCell}>
-        <Image
-          src="/src/assets/images/logo.png"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "contain",
-          }}
-        />
+         {/* Tu imagen ... */}
+         <Image src="/src/assets/images/logo.png" style={{width: '100%', height:'100%', objectFit:'contain'}} />
       </View>
 
       <View style={{ width: "70%" }}>
-        <View
-          style={{
-            flexDirection: "row",
-            height: 25,
-            borderBottom: "1px solid black",
-          }}
-        >
+        <View style={{ flexDirection: "row", height: 25 }}>
           <View style={styles.formatCell}>
             <Text>FORMATO</Text>
           </View>
-          <View style={styles.annexCell}>
+          {/* Quitamos borderRight al último elemento de la fila interna si el contenedor ya lo tiene */}
+          <View style={{...styles.annexCell, borderRightWidth: 0}}> 
             <Text>ANEXO:</Text>
             <Text>CTP-ET 0451 {header.containerNo}</Text>
           </View>
         </View>
 
-        <View style={{ flexDirection: "row" }}>
+        {/* Usamos el estilo headerSubRow para poner el borde superior correcto */}
+        <View style={styles.headerSubRow}>
           <View style={styles.packingListCell}>
             <Text>PACKING LIST</Text>
           </View>
-          <View style={styles.versionCell}>
+          <View style={{...styles.versionCell, borderRightWidth: 0}}>
             <Text>VERSION:01</Text>
           </View>
         </View>
       </View>
     </View>
 
-    {/* Tabla de Datos Generales */}
-    <View style={{ border: "1px solid black", borderTopWidth: 1 }}>
+    {/* Tabla de Datos Generales - AQUI ESTA EL CAMBIO CLAVE DE BORDES */}
+    {/* Usamos un contenedor que pone borde Arriba e Izquierda */}
+    <View style={styles.generalDataContainer}>
+      
       <View style={styles.dataRow}>
         <Text style={styles.dataCellLabel}>CARRIER:</Text>
         <Text style={styles.dataCellValue}>{header.carrier}</Text>
-
         <Text style={styles.dataCellLabelWide}>PRODUCT:</Text>
-        <Text style={styles.dataCellProduct}>
-          {header.productGeneral}
-        </Text>
-
+        <Text style={styles.dataCellProduct}>{header.productGeneral}</Text>
         <Text style={styles.dataCellLabel}>ORDER No.:</Text>
         <Text style={styles.dataCellNoBorder}>{header.orderNo}</Text>
       </View>
 
       <View style={styles.dataRow}>
-        <Text style={styles.dataCellLabel}>
-          CONTAINER CONDITION:
-        </Text>
-        <Text style={styles.dataCellValue}>
-          {header.containerCondition}
-        </Text>
-
+        <Text style={styles.dataCellLabel}>CONTAINER CONDITION:</Text>
+        <Text style={styles.dataCellValue}>{header.containerCondition}</Text>
         <Text style={styles.dataCellLabelWide}>BOX TYPE:</Text>
-        <Text style={styles.dataCellValueWide}>
-          {header.boxType}
-        </Text>
-
+        <Text style={styles.dataCellValueWide}>{header.boxType}</Text>
         <Text style={styles.dataCellLabel}>CONTAINER No.:</Text>
-        <Text style={styles.dataCellNoBorder}>
-          {header.containerNo}
-        </Text>
+        <Text style={styles.dataCellNoBorder}>{header.containerNo}</Text>
       </View>
 
       <View style={styles.dataRow}>
         <Text style={styles.dataCellLabel}>CONTAINER TYPE:</Text>
-        <Text style={styles.dataCellValue}>
-          {header.containerType}
-        </Text>
-
+        <Text style={styles.dataCellValue}>{header.containerType}</Text>
         <Text style={styles.dataCellLabelWide}>LBS PER BOX:</Text>
-        <Text style={styles.dataCellValueWide}>
-          {header.lbsPerBox}
-        </Text>
-
+        <Text style={styles.dataCellValueWide}>{header.lbsPerBox}</Text>
         <Text style={styles.dataCellLabel}>SEAL:</Text>
-        <Text style={styles.dataCellNoBorder}>
-          {header.seal}
-        </Text>
+        <Text style={styles.dataCellNoBorder}>{header.seal}</Text>
       </View>
 
       <View style={styles.dataRow}>
         <Text style={styles.dataCellLabel}>CLIENT:</Text>
         <Text style={styles.dataCellValue}>{header.client}</Text>
-
         <Text style={styles.dataCellLabelWide}>BOXES:</Text>
         <Text style={styles.dataCellValueWide}>
-          {header.boxesTotal.toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-          })}
+          {header.boxesTotal.toLocaleString("en-US", { minimumFractionDigits: 2 })}
         </Text>
-
         <Text style={styles.dataCellLabel}>BEGINNING DATE:</Text>
-        <Text style={styles.dataCellNoBorder}>
-          {header.beginningDate}
-        </Text>
+        <Text style={styles.dataCellNoBorder}>{header.beginningDate}</Text>
       </View>
 
-      <View style={{ flexDirection: "row" }}>
+      <View style={styles.dataRow}>
         <Text style={styles.dataCellLabel}>THERMOGRAPH No:</Text>
-        <Text style={styles.dataCellValue}>
-          {header.thermographNo}
-        </Text>
-
+        <Text style={styles.dataCellValue}>{header.thermographNo}</Text>
         <Text style={styles.dataCellLabelWide}>TEMP. EXIT:</Text>
-        <Text style={styles.dataCellValueWide}>
-          {header.tempExit}
-        </Text>
-
+        <Text style={styles.dataCellValueWide}>{header.tempExit}</Text>
         <Text style={styles.dataCellLabel}>EXIT DATE:</Text>
-        <Text style={styles.dataCellNoBorder}>
-          {header.exitDate}
-        </Text>
+        <Text style={styles.dataCellNoBorder}>{header.exitDate}</Text>
       </View>
+
     </View>
   </>
 );
@@ -459,40 +422,25 @@ const PackingListGenerator: React.FC = () => {
       return <p>Cargando PDF...</p>;
     }
 
-  return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      {/* Botón de descarga */}
-      <div className="flex justify-center mb-6">
-        <PDFDownloadLink
-          document={pdfDocument}
-          fileName={`PackingList-${id}.pdf`}
-        >
-          {({ loading }) => (
-            <button
-              disabled={loading}
-              className={`
-                px-6 py-3 rounded-xl font-semibold text-white shadow-lg transition duration-200
-                ${
-                  loading
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-green-600 hover:bg-green-700 hover:scale-105"
-                }
-              `}
-            >
-              {loading ? "Generando PDF..." : "⬇️ Descargar Packing List"}
-            </button>
-          )}
-        </PDFDownloadLink>
+    return (
+      <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
+        {!pdfDocument ? (
+          <div className="flex flex-col items-center gap-4">
+            <ClipLoader size={60} color="#16a34a" />
+            <p className="text-gray-600 font-medium">
+              Generando documento PDF...
+            </p>
+          </div>
+        ) : (
+          <div className="w-full h-[80vh] bg-white rounded-xl shadow-md overflow-hidden">
+            <PDFViewer width="100%" height="100%">
+              {pdfDocument}
+            </PDFViewer>
+          </div>
+        )}
       </div>
+    );
 
-      {/* Visor PDF */}
-      <div className="w-full h-[80vh] bg-white rounded-xl shadow-md overflow-hidden">
-        <PDFViewer width="100%" height="100%">
-          {pdfDocument}
-        </PDFViewer>
-      </div>
-    </div>
-  );
 };
 
 export default PackingListGenerator;
