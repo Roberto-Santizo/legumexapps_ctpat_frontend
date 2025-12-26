@@ -31,3 +31,15 @@ export async function addItemToPackingListAPI(id:number, formData: AddItemToPack
     throw error;
   }
 }
+
+export async function deleteItemAPI(packingListItemId:number) {
+  try {
+    const {data} = await api.delete(`/packing-list/deleteItem/${packingListItemId}`);
+    return data
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
+    }
+    throw error;
+  }
+}

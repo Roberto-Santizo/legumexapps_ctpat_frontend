@@ -9,52 +9,119 @@ type Props = {
   open: boolean;
   onClose: () => void;
   packingListId: number;
+  ctpatId: number;
 };
 
 
-export default function AddItemToPackingListModal({ open, onClose, packingListId }: Props) {
+export default function AddItemToPackingListModal({
+  open,
+  onClose,
+  packingListId,
+  ctpatId
+}: Props) {
   const queryClient = useQueryClient();
-  const { register, handleSubmit, formState: { errors }, reset } =
-    useForm<AddItemToPackingListFormData>();
 
-  const { mutate } = useMutation({
+  const {register,handleSubmit,formState: { errors },reset,} = useForm<AddItemToPackingListFormData>();
+
+  const { mutate, isPending } = useMutation({
     mutationFn: (data: AddItemToPackingListFormData) =>
       addItemToPackingListAPI(packingListId, data),
-    onSuccess: () => {
+
+    onSuccess: async () => {
       toast.success("Ítem agregado");
-      queryClient.invalidateQueries({ queryKey: ["ctpat", packingListId] });
+
+    await queryClient.invalidateQueries({ 
+          queryKey: ["ctpat", ctpatId], 
+      });
       reset();
       onClose();
     },
+
     onError: (error: Error) => toast.error(error.message),
   });
 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white w-full max-w-xl rounded-xl p-6">
-        <h2 className="text-xl font-bold mb-4">Agregar ítem</h2>
+    <div
+      className="
+        fixed inset-0 z-50
+        flex items-center justify-center
+        bg-black/50 backdrop-blur-sm
+        px-3 sm:px-4
+      "
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="
+          bg-white
+          w-full
+          sm:max-w-lg
+          md:max-w-xl
+          rounded-2xl
+          shadow-xl
+          flex flex-col
+          max-h-[90vh]
+        "
+      >
+        {/* HEADER */}
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] bg-clip-text text-transparent mb-3">
+            Agregar Ítem al Packing List
+          </h1>
+        </div>
 
-        <form onSubmit={handleSubmit((data) => mutate(data))}>
-          <AddPackingListToPackingListForm register={register} errors={errors} />
+        {/* BODY */}
+        <div className="px-5 py-4 overflow-y-auto">
+          <form onSubmit={handleSubmit((data) => mutate(data))}>
+            <AddPackingListToPackingListForm
+              register={register}
+              errors={errors}
+            />
 
-          <div className="flex justify-end gap-2 mt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 border rounded-lg"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg"
-            >
-              Guardar
-            </button>
-          </div>
-        </form>
+            {/* FOOTER */}
+            <div className="mt-6 flex flex-col-reverse sm:flex-row justify-end gap-2">
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={isPending} // Bloqueado mientras carga
+                className={`
+                  px-4 py-2
+                  rounded-lg
+                  border border-gray-300
+                  text-gray-700
+                  transition
+                  ${isPending 
+                    ? "opacity-50 cursor-not-allowed bg-gray-50" 
+                    : "hover:bg-gray-100"
+                  }
+                `}
+              >
+                Cancelar
+              </button>
+
+              <button
+                  type="submit"
+                  disabled={isPending} // Bloqueado mientras carga
+                  className={`
+                    px-4 py-2
+                    rounded-lg
+                    bg-[var(--color-primary)]
+                    text-white
+                    transition
+                    ${isPending 
+                      ? "opacity-50 cursor-not-allowed" 
+                      : "hover:opacity-90"
+                    }
+                  `}
+                >
+                  {/* Texto dinámico para feedback visual */}
+                  {isPending ? "Guardando..." : "Guardar"}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

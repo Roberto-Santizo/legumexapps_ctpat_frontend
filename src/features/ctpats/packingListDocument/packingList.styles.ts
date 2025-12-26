@@ -88,15 +88,16 @@ export const packingListDocumentSyles = StyleSheet.create({
     flexDirection: 'row',
   },
 
-dataCellLabel: {
-    width: '13%', // Etiqueta
-    borderRightWidth: BORDER_WIDTH,
-    borderBottomWidth: BORDER_WIDTH,
-    borderColor: BORDER_COLOR,
-    padding: 3,
-    backgroundColor: '#f0f0f0',
-    fontWeight: 'bold',
-  },
+  dataCellLabel: {
+      width: '13%', // Etiqueta
+      borderRightWidth: BORDER_WIDTH,
+      borderBottomWidth: BORDER_WIDTH,
+      borderColor: BORDER_COLOR,
+      padding: 3,
+      backgroundColor: '#f0f0f0',
+      fontWeight: 'bold',
+    },
+
   dataCellValue: {
     width: '17%', // Valor
     borderRightWidth: BORDER_WIDTH,
@@ -106,39 +107,39 @@ dataCellLabel: {
   },
 
 
-dataCellLabelWide: {
-    width: '10%', // Etiqueta más angosta
-    borderRightWidth: BORDER_WIDTH,
-    borderBottomWidth: BORDER_WIDTH,
-    borderColor: BORDER_COLOR,
-    padding: 3,
-    backgroundColor: '#f0f0f0',
-    fontWeight: 'bold',
-  },
+  dataCellLabelWide: {
+      width: '10%', // Etiqueta más angosta
+      borderRightWidth: BORDER_WIDTH,
+      borderBottomWidth: BORDER_WIDTH,
+      borderColor: BORDER_COLOR,
+      padding: 3,
+      backgroundColor: '#f0f0f0',
+      fontWeight: 'bold',
+    },
 
-dataCellValueWide: {
-    width: '30%', 
-    borderRightWidth: BORDER_WIDTH,
-    borderBottomWidth: BORDER_WIDTH,
-    borderColor: BORDER_COLOR,
-    padding: 3,
-  },
+  dataCellValueWide: {
+      width: '30%', 
+      borderRightWidth: BORDER_WIDTH,
+      borderBottomWidth: BORDER_WIDTH,
+      borderColor: BORDER_COLOR,
+      padding: 3,
+    },
 
-dataCellProduct: {
-    width: '30%', // Igual que ValueWide
-    borderRightWidth: BORDER_WIDTH,
-    borderBottomWidth: BORDER_WIDTH,
-    borderColor: BORDER_COLOR,
-    padding: 3,
-  },
+  dataCellProduct: {
+      width: '30%', // Igual que ValueWide
+      borderRightWidth: BORDER_WIDTH,
+      borderBottomWidth: BORDER_WIDTH,
+      borderColor: BORDER_COLOR,
+      padding: 3,
+    },
 
-dataCellNoBorder: {
-    width: '17%', 
-    padding: 3,
-    borderRightWidth: BORDER_WIDTH,
-    borderBottomWidth: BORDER_WIDTH,
-    borderColor: BORDER_COLOR,
-  },
+  dataCellNoBorder: {
+      width: '17%', 
+      padding: 3,
+      borderRightWidth: BORDER_WIDTH,
+      borderBottomWidth: BORDER_WIDTH,
+      borderColor: BORDER_COLOR,
+    },
 
   // ===============================
   // Tabla principal (Productos)
@@ -151,6 +152,7 @@ dataCellNoBorder: {
     borderLeftWidth: BORDER_WIDTH,
     borderColor: BORDER_COLOR,
   },
+
   tableRow: {
     flexDirection: 'row',
   },
@@ -161,8 +163,6 @@ dataCellNoBorder: {
   },
 
   // CELDAS DE TABLA
-  // TODAS las columnas deben tener borderRight y borderBottom
-  // NINGUNA debe tener borderTop o borderLeft (ya lo pone la tabla o la celda anterior)
 
   colFecha: {
     width: '11%',

@@ -29,7 +29,7 @@ export default function CreateCtpatAssignment({ ctpatId }: { ctpatId: number }) 
 
     onSuccess: (response) => {
       toast.success(response.message || "Asignación registrada correctamente");
-      updateStatus.mutate({ id: ctpatId, status: 5 });
+      updateStatus.mutate({ id: ctpatId, status: 6 });
       navigate("/ctpats");
     },
 

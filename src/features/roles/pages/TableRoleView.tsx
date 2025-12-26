@@ -5,6 +5,7 @@ import PaginationComponent from "../../../shared/components/PaginationComponent"
 import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 
+
 export default function UserTableView() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);

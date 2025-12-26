@@ -27,33 +27,33 @@ const routes = [
   
   { path: "/ctpats", component: lazy(() => import("@/features/ctpats/pages/TableCtpat")), roles: [] },
   { path: "/ctpats/create", component: lazy(() => import("@/features/ctpats/pages/CreateCtpats")), roles: [] },
-  {path: "/steps/:id",component: lazy(() => import("@/features/process/page/FlowCtpatSteps")),},
+  {path: "/ctpats/document/:id",component: lazy(() => import("@/features/ctpats/ctpatsDocument/CtpatDocument")),roles: [],},
+  {path: "/ctpats/filter",component: lazy(() => import("@/features/ctpats/components/CtpatFilterForm")),roles: [],},
 
-  {path: "/steps",component: lazy(() => import("@/features/process/page/FlowCtpatSteps")),},
-
+  
+  
   { path: "/products", component: lazy(() => import("@/features/products/pages/TableProducts")), roles: [] },
   { path: "/products/create", component: lazy(() => import("@/features/products/pages/CreateProduct")), roles: [] },
   { path: "/products/:productId/edit", component: lazy(() => import("@/features/products/pages/EditProduct")), roles: [] },
-
+  
   { path: "/conditions", component: lazy(() => import("@/features/conditions/pages/TableConditions")), roles: [] },
   { path: "/conditions/create", component: lazy(() => import("@/features/conditions/pages/CreateCondition")), roles: [] },
   { path: "/conditions/:conditionId/edit", component: lazy(() => import("@/features/conditions/pages/EditConditionView")), roles: [] },
-
   { path: "/containerLoad", component: lazy(() => import("@/features/conditions/pages/EditConditionView")), roles: [] },
-
+  
   { path: "/packingList", component: lazy(() => import("@/features/packing-List/pages/CreatePackingList")), roles: [] },
+  {path: "/packingList/document/:id",component: lazy(() => import("@/features/ctpats/packingListDocument/PackingListDocument")),roles: [],},
   
   { path: "/trucks", component: lazy(() => import("@/features/trucks/pages/TableTruck")), roles: [] },
   { path: "/trucks/create", component: lazy(() => import("@/features/trucks/pages/CreateTruck")), roles: [] },
   { path: "/trucks/:truckId/edit", component: lazy(() => import("@/features/trucks/pages/EditTruckView")), roles: [] },
-
+  
   { path: "/observations", component: lazy(() => import("@/features/observations/pages/TableObservation")), roles: [] },
   { path: "/observations/create", component: lazy(() => import("@/features/observations/pages/CreateObservation")), roles: [] },
   { path: "/observations/:observationId/edit", component: lazy(() => import("@/features/observations/pages/EditObservationView")), roles: [] },
-
-  {path: "/ctpats/document/:id",component: lazy(() => import("@/features/ctpats/ctpatsDocument/CtpatDocument")),roles: [],},
-
-  {path: "/packingList/document/:id",component: lazy(() => import("@/features/ctpats/packingListDocument/PackingListDocument")),roles: [],},
+  
+  {path: "/steps",component: lazy(() => import("@/features/process/page/FlowCtpatSteps")),},
+  {path: "/steps/:id",component: lazy(() => import("@/features/process/page/FlowCtpatSteps")),},
 
 ];
 

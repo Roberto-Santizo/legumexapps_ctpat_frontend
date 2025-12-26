@@ -12,6 +12,7 @@ export interface PackingListItemTable {
 
 export interface PackingListHeader {
   id: number;
+  ctpat_id: number;
   carrier: string;
   order: string;
   client: string;

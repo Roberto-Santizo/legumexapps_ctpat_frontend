@@ -1,17 +1,20 @@
 import { Link } from "react-router-dom";
-import { Pencil,Eye,FileCheck  } from "lucide-react";
+import { Pencil,Eye,FileCheck,X  } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { Filter } from "lucide-react";
 
 import PaginationComponent from "@/shared/components/PaginationComponent.js";
 import { getCtpatsAPI } from "@/features/ctpats/api/CtpatsAPI.js";
 import {CTPAT_STATUS_MAP,CTPAT_STATUS_COLORS} from "@/features/ctpats/constants/statusCodes";
+import CtpatFilterForm from "@/features/ctpats/components/CtpatFilterForm.js";
 
-export default function UserTableView() {
+export default function CtpatTableView() {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
+  const [openFilter, setOpenFilter] = useState(false);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["ctpats", currentPage, pageSize],
@@ -30,13 +33,25 @@ export default function UserTableView() {
     <div className="flex items-center justify-center min-h-screen bg-slate-100 p-4">
       <div className="max-w-6xl w-full">
         <div className="table-container">
-          <div className="table-header flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="table-header flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <h2 className="table-title">Lista de Ctpats</h2>
-            <Link to="/ctpats/create" className="btn-primary whitespace-nowrap">
-              Crear Ctpat
-            </Link>
+            <div className="flex items-center gap-3 self-end sm:self-auto">
+              <Link
+                to="/ctpats/create"
+                className="btn-primary whitespace-nowrap"
+              >
+                Crear Ctpat
+              </Link>
+              <button
+                type="button"
+                onClick={() => setOpenFilter(true)}
+                className=" flex items-center gap-2 px-4 py-4 rounded-xl transition-all duration-200 btn-primary whitespace-nowrap"
+              >
+                <Filter size={18} />
+                <span className="hidden sm:inline">Filtrar</span>
+              </button>
+            </div>
           </div>
-
           <div className="overflow-x-auto">
             {ctpats.length > 0 ? (
               <table className="table">
@@ -96,7 +111,7 @@ export default function UserTableView() {
                                   <Eye size={16} />
                                 </Link>
                               )}
-                              
+                              {ctpat.status === 8 && (
                                 <Link
                                   className="btn-icon"
                                   style={{ borderColor: "#dc2626", color: "#dc2626" }}
@@ -105,7 +120,7 @@ export default function UserTableView() {
                                 >
                                   <FileCheck size={16} />
                                 </Link>
-                            
+                               )}
                             </div>
                           </td>
                     </tr>
@@ -125,6 +140,29 @@ export default function UserTableView() {
           />
         </div>
       </div>
+
+      {openFilter && (
+        <div className="fixed inset-0 z-50 flex">
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setOpenFilter(false)}
+          />
+
+          <div className="relative ml-auto w-full max-w-md h-full bg-white shadow-2xl animate-slide-in">
+            <div className="flex justify-between items-center px-6 py-4 border-b">
+              <h3 className="font-bold text-lg">Filtros</h3>
+              <button onClick={() => setOpenFilter(false)}>
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="overflow-y-auto h-[calc(100%-64px)]">
+              <CtpatFilterForm />
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

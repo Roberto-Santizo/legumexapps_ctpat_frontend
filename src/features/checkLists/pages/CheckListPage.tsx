@@ -39,7 +39,7 @@ export default function CheckListPage({ ctpatId }: Props) {
       toast.success("Checklist guardado correctamente");
 
       updateStatus.mutate(
-        { id: ctpatId, status: 4 },
+        { id: ctpatId, status: 5 },
         {
           onSuccess: () => {
             toast.success("CTPAT actualizado al estado 4");

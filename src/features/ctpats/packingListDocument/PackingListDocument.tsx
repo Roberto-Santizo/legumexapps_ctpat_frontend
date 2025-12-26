@@ -6,11 +6,9 @@ import {getCtpatByIdAPI } from "@/features/ctpats/api/CtpatsAPI";
 import { useEffect } from "react";
 import { ClipLoader } from "react-spinners";
 
-
 /* ===============================================================
   1. INTERFACES
 ================================================================ */
-
 interface ApiPackingItem {
   product: string;
   no_tarima: number;
@@ -136,7 +134,6 @@ const calculateTotals = (items: ItemData[]): Totals => ({
 /* ===============================================================
   3. COMPONENTES DE TABLA
 ================================================================ */
-
 const TableHeader: React.FC<{ showPoGrn?: boolean }> = ({ showPoGrn }) => (
   <View style={[styles.tableRow, styles.tableHeader]} fixed>
     <Text style={styles.colFecha}>FECHA PRODUCCION</Text>
@@ -228,15 +225,9 @@ const TableFooter: React.FC<{
   </View>
 );
 
-
 /* ===============================================================
   4. HEADER
 ================================================================ */
-
-/* ===============================================================
-  4. HEADER (Actualizado)
-================================================================ */
-
 const HeaderSection: React.FC<{ header: HeaderData }> = ({ header }) => (
   <>
     {/* Encabezado Principal */}
@@ -271,7 +262,6 @@ const HeaderSection: React.FC<{ header: HeaderData }> = ({ header }) => (
     </View>
 
     {/* Tabla de Datos Generales - AQUI ESTA EL CAMBIO CLAVE DE BORDES */}
-    {/* Usamos un contenedor que pone borde Arriba e Izquierda */}
     <View style={styles.generalDataContainer}>
       
       <View style={styles.dataRow}>
