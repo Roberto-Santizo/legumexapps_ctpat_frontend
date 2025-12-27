@@ -42,7 +42,7 @@ const routes = [
   { path: "/containerLoad", component: lazy(() => import("@/features/conditions/pages/EditConditionView")), roles: [] },
   
   { path: "/packingList", component: lazy(() => import("@/features/packing-List/pages/CreatePackingList")), roles: [] },
-  {path: "/packingList/document/:id",component: lazy(() => import("@/features/ctpats/packingListDocument/PackingListDocument")),roles: [],},
+  {path: "/packingList/document/:id",component: lazy(() => import("@/features/packing-List/packingListDocument/PackingListDocument")),roles: [],},
   
   { path: "/trucks", component: lazy(() => import("@/features/trucks/pages/TableTruck")), roles: [] },
   { path: "/trucks/create", component: lazy(() => import("@/features/trucks/pages/CreateTruck")), roles: [] },

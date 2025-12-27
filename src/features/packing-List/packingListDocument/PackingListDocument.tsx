@@ -1,47 +1,15 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import {Document, Page,View,Text,PDFViewer,Image,} from "@react-pdf/renderer";
-import { packingListDocumentSyles as styles } from "@/features/ctpats/packingListDocument/packingList.styles";
-import {getCtpatByIdAPI } from "@/features/ctpats/api/CtpatsAPI";
+import { packingListDocumentSyles as styles } from "@/features/packing-List/packingListDocument/packingList.styles";
 import { useEffect } from "react";
 import { ClipLoader } from "react-spinners";
+import {getPackingListById} from "@/features/packing-List/api/PackingListAPI";
+import type {PackingListFormData} from "@/features/packing-List/schemas/types";
 
 /* ===============================================================
   1. INTERFACES
 ================================================================ */
-interface ApiPackingItem {
-  product: string;
-  no_tarima: number;
-  lote: number;
-  code: string;
-  boxes: number;
-  weight: number;
-  net_weight: number;
-  presentation: string;
-  temp: number;
-  expiration_date: string;
-  po?: string;
-  grn?: string;
-}
-
-interface ApiPackingList {
-  carrier: string;
-  products: string;
-  order: string;
-  container_condition: string;
-  box_type: string;
-  no_container: string;
-  container_type: string;
-  lbs_per_box: string;
-  seal: string;
-  client: string;
-  boxes: number;
-  beginning_date: string;
-  no_thermograph: string;
-  exit_temp: string;
-  exit_date: string;
-  items: ApiPackingItem[];
-}
 
 interface HeaderData {
   carrier: string;
@@ -87,7 +55,7 @@ interface Totals {
   2. MAPPERS (API → PDF)
 ================================================================ */
 
-const mapHeader = (api: ApiPackingList): HeaderData => ({
+const mapHeader = (api: PackingListFormData): HeaderData => ({
   carrier: api.carrier,
   productGeneral: api.products,
   orderNo: api.order,
@@ -106,7 +74,7 @@ const mapHeader = (api: ApiPackingList): HeaderData => ({
 });
 
 const mapItems = (
-  items: ApiPackingItem[],
+  items: PackingListFormData["items"],
   beginningDate: string
 ): ItemData[] =>
   items.map((item) => ({
@@ -363,26 +331,25 @@ const PackingListGenerator: React.FC = () => {
     const [items, setItems] = React.useState<ItemData[]>([]);
     const [totals, setTotals] = React.useState<Totals | null>(null);
 
-    useEffect(() => {
-      if (!id) return;
+  useEffect(() => {
+    if (!id) return;
 
-      getCtpatByIdAPI(Number(id))
-        .then(({ response }) => {
-          const packing: ApiPackingList = response.packingList;
+    getPackingListById(Number(id))
+      .then((packing: PackingListFormData) => {
+        const headerMapped = mapHeader(packing);
 
-          const headerMapped = mapHeader(packing);
-          const itemsMapped = mapItems(
-            packing.items || [],
-            headerMapped.beginningDate
-          );
-          const totalsMapped = calculateTotals(itemsMapped);
+        const itemsMapped = mapItems(
+          packing.items,
+          headerMapped.beginningDate
+        );
 
-          setHeader(headerMapped);
-          setItems(itemsMapped);
-          setTotals(totalsMapped);
-        });
-    }, [id]);
+        const totalsMapped = calculateTotals(itemsMapped);
 
+        setHeader(headerMapped);
+        setItems(itemsMapped);
+        setTotals(totalsMapped);
+      });
+  }, [id]);
 
     const pdfDocument = React.useMemo(() => {
       if (!header || !totals) return null;
