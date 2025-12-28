@@ -238,4 +238,60 @@ export const packingListDocumentSyles = StyleSheet.create({
     borderBottomWidth: BORDER_WIDTH,
     borderColor: BORDER_COLOR,
   },
+
+  // ===============================
+// Tabla de Totales (Resumen por Producto)
+// ===============================
+
+totalsSection: {
+  marginTop: 14,
+},
+
+totalsTitle: {
+  fontWeight: 'bold',
+  marginBottom: 4,
+},
+
+totalsTable: {
+  width: '100%',
+  borderTopWidth: BORDER_WIDTH,
+  borderLeftWidth: BORDER_WIDTH,
+  borderColor: BORDER_COLOR,
+},
+
+totalsHeaderRow: {
+  flexDirection: 'row',
+  backgroundColor: '#e0e0e0',
+},
+
+totalsRow: {
+  flexDirection: 'row',
+},
+
+totalsColProduct: {
+  width: '40%',
+  borderRightWidth: BORDER_WIDTH,
+  borderBottomWidth: BORDER_WIDTH,
+  borderColor: BORDER_COLOR,
+  padding: 3,
+},
+
+totalsColSmall: {
+  width: '20%',
+  borderRightWidth: BORDER_WIDTH,
+  borderBottomWidth: BORDER_WIDTH,
+  borderColor: BORDER_COLOR,
+  padding: 3,
+  textAlign: 'center',
+},
+
+totalsColMedium: {
+  width: '20%',
+  borderRightWidth: BORDER_WIDTH,
+  borderBottomWidth: BORDER_WIDTH,
+  borderColor: BORDER_COLOR,
+  padding: 3,
+  textAlign: 'right',
+},
+
 });

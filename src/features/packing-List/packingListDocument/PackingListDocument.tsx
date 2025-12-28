@@ -50,7 +50,12 @@ interface Totals {
   totalPesoBruto: number;
   totalPesoNeto: number;
 }
-
+interface TotalRow {
+  product: string;
+  totalBoxes: number;
+  weight: number;
+  netWeight: number;
+}
 /* ===============================================================
   2. MAPPERS (API → PDF)
 ================================================================ */
@@ -98,6 +103,16 @@ const calculateTotals = (items: ItemData[]): Totals => ({
   totalPesoBruto: items.reduce((a, b) => a + b.pesoBruto, 0),
   totalPesoNeto: items.reduce((a, b) => a + b.pesoNeto, 0),
 });
+
+const mapTotalsTable = (
+  totals: PackingListFormData["totals"]
+): TotalRow[] =>
+  totals.map((t) => ({
+    product: t.product,
+    totalBoxes: t.total_boxes,
+    weight: t.weight,
+    netWeight: t.net_weight,
+  }));
 
 /* ===============================================================
   3. COMPONENTES DE TABLA
@@ -193,6 +208,44 @@ const TableFooter: React.FC<{
   </View>
 );
 
+/* ---------- TABLA DE TOTALES ---------- */
+
+const TotalsTableHeader = () => (
+  <View style={styles.totalsHeaderRow}>
+    <Text style={styles.totalsColProduct}>Producto</Text>
+    <Text style={styles.totalsColSmall}>TOTAL DE CAJAS</Text>
+    <Text style={styles.totalsColMedium}>PESO</Text>
+    <Text style={styles.totalsColMedium}>PESO NETO</Text>
+  </View>
+);
+
+
+const TotalsTableRow: React.FC<{ row: TotalRow }> = ({ row }) => (
+  <View style={styles.totalsRow}>
+    <Text style={styles.totalsColProduct}>{row.product}</Text>
+    <Text style={styles.totalsColSmall}>{row.totalBoxes}</Text>
+    <Text style={styles.totalsColMedium}>{row.weight.toFixed(2)}</Text>
+    <Text style={styles.totalsColMedium}>
+      {row.netWeight.toFixed(2)}
+    </Text>
+  </View>
+);
+
+const TotalsSection: React.FC<{ totals: TotalRow[] }> = ({ totals }) => (
+  <View style={styles.totalsSection}>
+    <Text style={styles.totalsTitle}>TOTALES POR PRODUCTO</Text>
+
+    <View style={styles.totalsTable}>
+      <TotalsTableHeader />
+      {totals.map((row, i) => (
+        <TotalsTableRow key={i} row={row} />
+      ))}
+    </View>
+  </View>
+);
+
+
+
 /* ===============================================================
   4. HEADER
 ================================================================ */
@@ -283,7 +336,6 @@ const HeaderSection: React.FC<{ header: HeaderData }> = ({ header }) => (
   </>
 );
 
-
 /* ===============================================================
   5. PDF DOCUMENT
 ================================================================ */
@@ -292,31 +344,40 @@ const PackingListDocument: React.FC<{
   header: HeaderData;
   items: ItemData[];
   totals: Totals;
+  totalsTable: TotalRow[];
   variant?: PackingListVariant;
-}> = ({ header, items, totals, variant = "NORMAL" }) => {
+}> = ({ header, items, totals,totalsTable, variant = "NORMAL" }) => {
   const showPoGrn = variant === "WITH_PO_GRN";
 
-  return (
-    <Page size="LETTER" style={styles.page}>
-          <View style={styles.section}>
-            <HeaderSection header={header} />
-            <View style={styles.table}>
-              <TableHeader showPoGrn={showPoGrn} />
-              {items.map((item, i) => (
-                <TableRow
-                  key={i}
-                  item={item}
-                  showPoGrn={showPoGrn}
-                />
-              ))}
-              <TableFooter
-                totals={totals}
-                showPoGrn={showPoGrn}
-              />
-            </View>
-          </View>
-    </Page>
-  );
+return (
+  <Page size="LETTER" style={styles.page}>
+    <View style={styles.section}>
+      <HeaderSection header={header} />
+
+      {/* TABLA PRINCIPAL */}
+      <View style={styles.table}>
+        <TableHeader showPoGrn={showPoGrn} />
+
+        {items.map((item, i) => (
+          <TableRow
+            key={i}
+            item={item}
+            showPoGrn={showPoGrn}
+          />
+        ))}
+
+        <TableFooter
+          totals={totals}
+          showPoGrn={showPoGrn}
+        />
+      </View>
+
+      {/* TABLA DE TOTALES (SEPARADA) */}
+      <TotalsSection totals={totalsTable} />
+    </View>
+  </Page>
+);
+
 };
 
 
@@ -330,6 +391,8 @@ const PackingListGenerator: React.FC = () => {
     const [header, setHeader] = React.useState<HeaderData | null>(null);
     const [items, setItems] = React.useState<ItemData[]>([]);
     const [totals, setTotals] = React.useState<Totals | null>(null);
+    const [totalsTable, setTotalsTable] = React.useState<TotalRow[]>([]);
+
 
   useEffect(() => {
     if (!id) return;
@@ -344,10 +407,14 @@ const PackingListGenerator: React.FC = () => {
         );
 
         const totalsMapped = calculateTotals(itemsMapped);
+        const totalsTableMapped = mapTotalsTable(packing.totals);
+
 
         setHeader(headerMapped);
         setItems(itemsMapped);
         setTotals(totalsMapped);
+        setTotalsTable(totalsTableMapped);
+
       });
   }, [id]);
 
@@ -357,20 +424,23 @@ const PackingListGenerator: React.FC = () => {
       return (
         <Document>
           {/* HOJA 1 - SIN PO / GRN */}
-          <PackingListDocument
-            header={header}
-            items={items}
-            totals={totals}
-            variant="NORMAL"
-          />
+        <PackingListDocument
+          header={header}
+          items={items}
+          totals={totals}
+          totalsTable={totalsTable}
+          variant="NORMAL"
+        />
 
           {/* HOJA 2 - CON PO / GRN */}
           <PackingListDocument
             header={header}
             items={items}
             totals={totals}
+            totalsTable={totalsTable}
             variant="WITH_PO_GRN"
           />
+
         </Document>
       );
     }, [header, items, totals]);
