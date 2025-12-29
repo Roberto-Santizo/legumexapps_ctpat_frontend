@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import AddPackingListToPackingListForm from "./AddPackingListToPackingListForm";
+import AddItemToPackingListForm from "./AddItemToPackingListForm";
 import { addItemToPackingListAPI } from "../api/PackingListAPI";
 import type { AddItemToPackingListFormData } from "../schemas/addItemToPackingList";
 
@@ -17,7 +17,6 @@ export default function AddItemToPackingListModal({
   open,
   onClose,
   packingListId,
-  ctpatId
 }: Props) {
   const queryClient = useQueryClient();
 
@@ -30,9 +29,9 @@ export default function AddItemToPackingListModal({
     onSuccess: async () => {
       toast.success("Ítem agregado");
 
-    await queryClient.invalidateQueries({ 
-          queryKey: ["ctpat", ctpatId], 
-      });
+    await queryClient.invalidateQueries({
+      queryKey: ["packingList", packingListId],
+    });
       reset();
       onClose();
     },
@@ -75,7 +74,7 @@ export default function AddItemToPackingListModal({
         {/* BODY */}
         <div className="px-5 py-4 overflow-y-auto">
           <form onSubmit={handleSubmit((data) => mutate(data))}>
-            <AddPackingListToPackingListForm
+            <AddItemToPackingListForm
               register={register}
               errors={errors}
             />

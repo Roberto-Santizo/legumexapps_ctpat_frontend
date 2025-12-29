@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getCtpatByIdAPI, updateCtpatStatusAPI } from "@/features/ctpats/api/CtpatsAPI";
+import { useQuery } from "@tanstack/react-query";
+import {
+  getCtpatByIdAPI
+} from "@/features/ctpats/api/CtpatsAPI";
 import { Spinner } from "@/shared/components/Spinner";
 import React from "react";
 
 import CreatePackingList from "@/features/packing-List/pages/CreatePackingList";
-import PackingListDetailPage from "@/features/packing-List/components/PackingListDetailPage";
 import CreateCtpatAssignment from "@/features/ctpats/pages/CreateCtpatAssignment";
 import CreateUploadImages from "@/features/upload-images/pages/CreateUploadImages";
 import CheckListPage from "@/features/checkLists/pages/CheckListPage";
@@ -13,9 +14,10 @@ import CloseCtpat from "@/features/ctpats/pages/CloseCtpat";
 import type { CtpatStatus } from "@/features/ctpats/constants/statusCodes";
 
 export default function FlowCtpatSteps() {
-  const { id } = useParams();
+  const params = useParams();
+  const id = params.id!;
   const ctpatId = Number(id);
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["ctpat", ctpatId],
@@ -23,13 +25,12 @@ export default function FlowCtpatSteps() {
     enabled: !isNaN(ctpatId),
   });
 
-  const updateStatusMutation = useMutation({
-    mutationFn: (status: CtpatStatus) =>
-      updateCtpatStatusAPI(ctpatId, status),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["ctpat", ctpatId] });
-    },
-  });
+  // const updateStatusMutation = useMutation({
+  //   mutationFn: (status: CtpatStatus) => updateCtpatStatusAPI(ctpatId, status),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ["ctpat", ctpatId] });
+  //   },
+  // });
 
   if (isLoading) return <Spinner />;
   if (isError || !data) return <p>Error al cargar CTPAT</p>;
@@ -42,10 +43,13 @@ export default function FlowCtpatSteps() {
     2: <CreatePackingList />, // al crear, backend pasa a status 3
 
     3: (
-      <PackingListDetailPage
-        packingList={ctpat.packingList}
-        onContinue={() => updateStatusMutation.mutate(4)}
-      />
+      <>
+      </>
+      // <PackingListDetailPage
+      //   packingListId={ctpat.packingList.id}
+      //   ctpatId={ctpatId}
+      //   onContinue={() => updateStatusMutation.mutate(4)}
+      // />
     ),
 
     4: <CheckListPage ctpatId={ctpatId} />,
@@ -56,16 +60,12 @@ export default function FlowCtpatSteps() {
 
     7: <CloseCtpat ctpatId={ctpatId} />,
 
-    8: (
-      <p className="text-center text-xl font-semibold mt-10">
-        CTPAT Cerrado
-      </p>
-    ),
+    8: <p className="text-center text-xl font-semibold mt-10">CTPAT Cerrado</p>,
   });
 
   const status = ctpat.status as CtpatStatus;
 
-  return stepsMap(ctpatId)[status] ?? (
-    <p>Estado desconocido o no implementado</p>
+  return (
+    stepsMap(ctpatId)[status] ?? <p>Estado desconocido o no implementado</p>
   );
 }

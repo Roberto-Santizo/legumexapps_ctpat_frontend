@@ -10,9 +10,8 @@ export interface PackingListItemTable {
   po: string;
 }
 
-export interface PackingListHeader {
+export interface PackingListHeaderView  {
   id: number;
-  ctpat_id: number;
   carrier: string;
   order: string;
   client: string;
@@ -21,5 +20,4 @@ export interface PackingListHeader {
   seal: string;
   boxes: number;
   beginning_date: string;
-  items: PackingListItemTable[];
 }

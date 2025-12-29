@@ -21,9 +21,9 @@ export async function createPackingListAPI(ctpatId: number, formData: PackignLis
     throw error;
   }
 }
-export async function getPackingListById(id: number): Promise<PackingListFormData> {
+export async function getPackingListById(ctpatId: number): Promise<PackingListFormData> {
   try {
-    const { data } = await api.get(`packing-list/${id}`);
+    const { data } = await api.get(`packing-list/${ctpatId}`);
     const response = getPackingListSchema.safeParse(data.response);
 
     if (!response.success) {
@@ -52,6 +52,23 @@ export async function addItemToPackingListAPI(id:number, formData: AddItemToPack
     throw error;
   }
 }
+
+// export type UpdatePackingListItemAPIType = {
+//   packingListId: number;
+//   itemId: number;
+//   formData: AddItemToPackingListFormData;
+// };
+
+// export async function updatePackingListItemAPI({ packingListId,itemId,formData,}:UpdatePackingListItemAPIType) {
+//   try {
+//     const {data} = await api.patch(`/packing-list/editItem/${packingListId}/${itemId}`,formData);
+//     return data
+//   } catch (error) {
+//     if (isAxiosError(error) && error.response) {
+//       throw new Error(error.response.data.message);
+//     }
+//   }
+// }
 
 export async function deleteItemAPI(packingListItemId:number) {
   try {

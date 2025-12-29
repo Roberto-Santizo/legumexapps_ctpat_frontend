@@ -17,7 +17,7 @@ type PackingListFormProps = {
     errors: FieldErrors<AddItemToPackingListFormData>;
 }
 
-export default function AddPackingListToPackingListForm({register, errors}: PackingListFormProps) {
+export default function AddItemToPackingListForm({register, errors}: PackingListFormProps) {
     const [products, setProducts] = useState<ProductSelect[]>([]);
     const [loadingProducts, setLoadingProducts] = useState<boolean>(true);
 

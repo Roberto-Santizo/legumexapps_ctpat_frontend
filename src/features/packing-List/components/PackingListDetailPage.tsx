@@ -1,25 +1,28 @@
 import { useState } from "react";
 import PackingListHeader from "@/features/packing-List/components/PackingListHeader";
-import PackingListItemsTable from "@/features/packing-List/components/PackingListItemsTable";
+import PackingListItemsTable from "@/features/packing-List/pages/PackingListItemsTable";
 import AddItemModal from "@/features/packing-List/components/AddItemToPackingListModal";
-import type { PackingListHeader as PackingListType } from "@/features/packing-List/schemas/packingList";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient,useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { deleteItemAPI } from "@/features/packing-List/api/PackingListAPI";
+import { getPackingListById } from "@/features/packing-List/api/PackingListAPI";
 
 type Props = {
-  packingList: PackingListType;
+  packingListId: number;
   ctpatId: number;
   onContinue: () => void;
 };
 
-export default function PackingListDetailPage({ 
-  packingList, 
-  ctpatId, 
-  onContinue 
-}: Props) {
+
+export default function PackingListDetailPage({ packingListId, ctpatId, onContinue }: Props) {
   const [openModal, setOpenModal] = useState(false);
   const queryClient = useQueryClient();
+
+  const {data: packingList,isLoading,isError,} = useQuery({
+    queryKey: ["packingList", packingListId],
+    queryFn: () => getPackingListById(ctpatId),
+    enabled: !!packingListId,
+  });
 
   const deleteItemMutation = useMutation({
     mutationFn: (itemId: number) => deleteItemAPI(itemId),
@@ -29,7 +32,7 @@ export default function PackingListDetailPage({
 
       // 3. USAMOS LA PROP ctpatId (QUE SÍ TIENE VALOR)
       await queryClient.invalidateQueries({
-        queryKey: ["ctpat", ctpatId], 
+        queryKey: ["packingList", packingListId], 
       });
     },
 
@@ -42,11 +45,33 @@ export default function PackingListDetailPage({
     deleteItemMutation.mutate(itemId);
   };
 
+  
+  if (isLoading) {
+    return <p>Cargando packing list...</p>;
+  }
+  
+  if (isError || !packingList) {
+    return <p>Error al cargar la packing list</p>;
+  }
   const hasItems = packingList.items.length > 0;
+
+  const headerData = {
+    id: packingList.id,
+    carrier: packingList.carrier,
+    order: packingList.order,
+    client: packingList.client,
+    no_container: packingList.no_container,
+    container_type: packingList.container_type,
+    seal: packingList.seal,
+    boxes: packingList.boxes,
+    beginning_date: packingList.beginning_date,
+  };
+
 
   return (
     <div className="p-6 space-y-6">
-      <PackingListHeader packingList={packingList} />
+      {/* Header */}
+      <PackingListHeader packingList={headerData} />
 
       <div className="flex justify-between">
         <button
@@ -69,16 +94,18 @@ export default function PackingListDetailPage({
         </button>
       </div>
 
+      {/* Tabla */}
       <PackingListItemsTable
         items={packingList.items}
         onDelete={handleDeleteItem}
       />
 
+      {/* Modal */}
       <AddItemModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         packingListId={packingList.id}
-        ctpatId={ctpatId} 
+        ctpatId={ctpatId}
       />
     </div>
   );

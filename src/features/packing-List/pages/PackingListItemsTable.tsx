@@ -1,6 +1,6 @@
 import type { PackingListItemTable } from "@/features/packing-List/schemas/packingList";
-import {Trash2 } from "lucide-react";
-
+import {Trash2,Pencil } from "lucide-react";
+import {Link } from "react-router-dom";
 
 type Props = {
   items: PackingListItemTable[];
@@ -86,10 +86,16 @@ export default function PackingListItemsTable({ items,onDelete  }: Props) {
                 </td>
                 <td className="px-4 py-3 text-center">
                   <div className="flex justify-center gap-3">
-                    {/* Eliminar */}
+                    <Link
+                       to={`/packing-list/items/${item.id}/edit`}
+                      className="btn-icon btn-icon-primary"
+                      title="Editar"
+                      >
+                      <Pencil size={16} />
+                    </Link>
                     <button
                       onClick={() => onDelete(item.id)} 
-                      className="p-2 rounded-lg text-red-600 hover:bg-red-100 transition"
+                      className="btn-icon btn-icon-primary"
                       title="Eliminar"
                     >
                       <Trash2 size={16} />
