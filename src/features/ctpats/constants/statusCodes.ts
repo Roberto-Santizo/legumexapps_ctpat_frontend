@@ -1,5 +1,5 @@
 export const CTPAT_STATUS = {
-  1: "1) Imagenes carga de contenedor",
+  1: "1) Imagenes de la carga del contenedor",
   2: "2) Creación de Packing List",
   3: "3) Añadir ítems al Packing List",
   4: "4) Inspeción Checklist",
@@ -23,3 +23,4 @@ export const CTPAT_STATUS_COLORS: Record<number, string> = {
 7: "bg-emerald-100 text-emerald-700 border-emerald-300",
 8: "bg-green-200 text-green-800 border-green-400"
 };
+

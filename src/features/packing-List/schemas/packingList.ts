@@ -10,14 +10,14 @@ export interface PackingListItemTable {
   po: string;
 }
 
-export interface PackingListHeaderView  {
+export type PackingListHeaderView = {
   id: number;
   carrier: string;
-  order: string;
   client: string;
+  order: string;
   no_container: string;
   container_type: string;
   seal: string;
   boxes: number;
   beginning_date: string;
-}
+};

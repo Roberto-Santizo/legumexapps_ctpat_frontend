@@ -2,6 +2,7 @@ import {z} from "zod"
 
 
 export const signatureCreateSchema = z.object({
+  exit_temp: z.number(),
   signature_c: z.string(),
   signature_e: z.string(),
   observations: z.array(

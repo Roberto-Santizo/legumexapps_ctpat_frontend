@@ -12,6 +12,7 @@ import CreateUploadImages from "@/features/upload-images/pages/CreateUploadImage
 import CheckListPage from "@/features/checkLists/pages/CheckListPage";
 import CloseCtpat from "@/features/ctpats/pages/CloseCtpat";
 import type { CtpatStatus } from "@/features/ctpats/constants/statusCodes";
+import PackingListDetailPage from "@/features/packing-List/components/PackingListDetailPage";
 
 export default function FlowCtpatSteps() {
   const params = useParams();
@@ -42,16 +43,10 @@ export default function FlowCtpatSteps() {
 
     2: <CreatePackingList />, // al crear, backend pasa a status 3
 
-    3: (
-      <>
-      </>
-      // <PackingListDetailPage
-      //   packingListId={ctpat.packingList.id}
-      //   ctpatId={ctpatId}
-      //   onContinue={() => updateStatusMutation.mutate(4)}
-      // />
-    ),
-
+    3: <PackingListDetailPage
+          ctpatId={ctpat.id}
+          onContinue={() => updateStatusMutation.mutate(4)}
+        />,
     4: <CheckListPage ctpatId={ctpatId} />,
 
     5: <CreateCtpatAssignment ctpatId={ctpatId} />,

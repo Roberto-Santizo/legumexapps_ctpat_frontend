@@ -28,7 +28,7 @@ const routes = [
   { path: "/ctpats", component: lazy(() => import("@/features/ctpats/pages/TableCtpat")), roles: [] },
   { path: "/ctpats/create", component: lazy(() => import("@/features/ctpats/pages/CreateCtpats")), roles: [] },
   {path: "/ctpats/document/:id",component: lazy(() => import("@/features/ctpats/ctpatsDocument/CtpatDocument")),roles: [],},
-  {path: "/ctpats/filter",component: lazy(() => import("@/features/ctpats/components/CtpatFilterForm")),roles: [],},
+  // {path: "/ctpats/filter",component: lazy(() => import("@/features/ctpats/components/CtpatFilterForm")),roles: [],},
 
   
   

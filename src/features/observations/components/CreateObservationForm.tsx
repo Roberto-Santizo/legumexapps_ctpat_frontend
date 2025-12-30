@@ -2,6 +2,7 @@
 import { ErrorMessage } from "@/shared/components/ErrorMessage";
 import type {UseFormRegister,FieldErrors} from "react-hook-form";
 import type { ObservationCreateData } from "@/features/observations/schemas/types";
+import { toUpper } from "@/shared/helpers/textTransformUppercase";
 
 type PackingListFormProps = {
     register: UseFormRegister<ObservationCreateData>
@@ -22,7 +23,10 @@ export default function CreateObservationForm({register, errors}: PackingListFor
                     className={`form-input ${
                         errors?.name ? "form-input-error" : "form-input-normal"
                     }`}
-                    {...register("name", { required: "La observación es obligatoria" })}
+                    {...register("name", {
+                      setValueAs: toUpper, 
+                      required: "La observación es obligatoria" 
+                    })}
                 />
                 {errors?.name && (
                 <ErrorMessage>{errors.name.message}</ErrorMessage>

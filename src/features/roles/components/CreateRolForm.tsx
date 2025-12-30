@@ -1,6 +1,7 @@
 import type { CreateRolFormData } from "@/features/roles/schemas/types";
 import { ErrorMessage } from "@/shared/components/ErrorMessage";
 import type { UseFormRegister, FieldErrors } from "react-hook-form";
+import { toUpper } from "@/shared/helpers/textTransformUppercase";
 
 type RolFormProps = {
   register: UseFormRegister<CreateRolFormData>;
@@ -25,6 +26,7 @@ export default function CrearRolForm({ register, errors }: RolFormProps) {
               errors.name ? "form-input-error" : "form-input-normal"
             }`}
             {...register("name", {
+              setValueAs: toUpper,
               required: "El nombre del rol es obligatorio",
               minLength: {
                 value: 3,

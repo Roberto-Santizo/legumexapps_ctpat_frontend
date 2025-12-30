@@ -35,6 +35,27 @@ export default function CloseCtpatForm({ control, errors, register }: CloseCtpat
 
   return (
     <div className="form-container space-y-6">
+      <div className="form-group">
+          <label htmlFor="name" className="form-label">
+            Temperatura de salida<span className="required">*</span>
+          </label>
+          <div className="input-icon-wrapper relative">
+            <input
+              id="exit_temp"
+              type="number"
+              placeholder="20"
+              className={`form-input pl-10 ${
+                errors.exit_temp ? "form-input-error" : "form-input-normal"
+              }`}
+              {...register("exit_temp", {
+                required: "La temperatura de salida es obligatoria",
+              })}
+            />
+              </div>
+              {errors.exit_temp && (
+                <ErrorMessage>{errors.exit_temp.message}</ErrorMessage>
+              )}
+        </div>
       <SignatureField<CloseCtpatFormData>
         name="signature_c"
         control={control}

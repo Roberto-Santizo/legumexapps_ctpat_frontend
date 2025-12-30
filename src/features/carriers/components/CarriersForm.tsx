@@ -1,6 +1,7 @@
 import { useFormContext } from "react-hook-form";
 import { ErrorMessage } from "@/shared/components/ErrorMessage";
 import type { createCarrierFormSchema } from "@/features/carriers/schemas/types";
+import { toUpper } from "@/shared/helpers/textTransformUppercase";
 
 export default function CarrierForm() {
   const {
@@ -23,6 +24,7 @@ export default function CarrierForm() {
             errors.name ? "form-input-error" : "form-input-normal"
           }`}
           {...register("name", {
+            setValueAs: toUpper ,
             required: "El nombre es obligatorio",
           })}
         />

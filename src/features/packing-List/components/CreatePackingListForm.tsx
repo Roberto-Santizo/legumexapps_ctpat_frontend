@@ -1,6 +1,7 @@
 import { ErrorMessage } from "@/shared/components/ErrorMessage";
 import type {UseFormRegister,FieldErrors} from "react-hook-form";
 import type { PackignListFormData } from "@/features/packing-List/schemas/types";
+import { toUpper } from "@/shared/helpers/textTransformUppercase";
 
 type PackingListFormProps = {
     register: UseFormRegister<PackignListFormData>
@@ -29,7 +30,7 @@ export default function PackingListForm({register, errors}: PackingListFormProps
         </div>
 
         <div className="form-group">
-            <label htmlFor="order" className="form-label">Orden<span className="required">*</span></label>
+            <label htmlFor="order" className="form-label">Numero de Orden ET<span className="required">*</span></label>
             <input
             id="order"
             type="text"
@@ -54,6 +55,7 @@ export default function PackingListForm({register, errors}: PackingListFormProps
                     errors?.customer ? "form-input-error" : "form-input-normal"
                 }`}
                 {...register("customer", {
+                    setValueAs: toUpper,
                     required: "El cliente es obligatorio",
                 })}
             />
@@ -63,7 +65,7 @@ export default function PackingListForm({register, errors}: PackingListFormProps
      </div>
     
      <div className="form-group">
-            <label htmlFor="thermograph_no" className="form-label">Termografo <span className="required">*</span> </label>
+            <label htmlFor="thermograph_no" className="form-label">Numero de termógrafro <span className="required">*</span> </label>
             <input
                 id="thermograph_no"
                 type="text"
@@ -77,24 +79,6 @@ export default function PackingListForm({register, errors}: PackingListFormProps
             />
             {errors?.thermograph_no && (
             <ErrorMessage>{errors.thermograph_no.message}</ErrorMessage>
-            )}
-     </div>
-
-     <div className="form-group">
-            <label htmlFor="exit_temp" className="form-label">Temperatura de salida <span className="required">*</span> </label>
-            <input
-                id="exit_temp"
-                type="number"
-                placeholder="24.5"
-                className={`form-input ${
-                    errors?.exit_temp ? "form-input-error" : "form-input-normal"
-                }`}
-                {...register("exit_temp", {
-                    required: "El numero de termografo es obligatorio",
-                })}
-            />
-            {errors?.exit_temp && (
-            <ErrorMessage>{errors.exit_temp.message}</ErrorMessage>
             )}
      </div>
     </div>

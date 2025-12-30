@@ -5,7 +5,7 @@ export const packingList = z.object({
   order: z.string(),
   customer: z.string(),
   thermograph_no: z.string(),
-  exit_temp: z.number()
+  // exit_temp: z.number()
 })
 
 export const packingListTotalSchema = z.object({
@@ -55,4 +55,4 @@ export const getPackingListSchema = z.object({
 export type PackingListFormData = z.infer<typeof getPackingListSchema>
 
 export type PackingList = z.infer<typeof packingList>
-export type PackignListFormData = Pick<PackingList, "box_type"|"order"|"customer"|"thermograph_no"|"exit_temp">
+export type PackignListFormData = Pick<PackingList, "box_type"|"order"|"customer"|"thermograph_no">

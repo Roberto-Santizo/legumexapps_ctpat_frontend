@@ -32,6 +32,41 @@ export async function getCtpatsAPI(page: number = 1) {
   }
 }
 
+export async function getCtpatsWithFiltersAPI(filters: {
+  page: number;
+  container?: string;
+  product?: string;
+  order?: string;
+}) {
+  try {
+    const limit = 10;
+    const offset = filters.page;
+
+    const { data } = await api.get("/ctpat", {
+      params: {
+        limit,
+        offset,
+        container: filters.container || undefined,
+        product: filters.product || undefined,
+        order: filters.order || undefined,
+      },
+    });
+
+    const response = getCtpatsSchema.safeParse(data);
+    if (response.success) {
+      return response.data;
+    }
+
+    throw new Error("Formato de respuesta inválido");
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error);
+    }
+    throw error;
+  }
+}
+
+
 export async function getCtpatByIdAPI(id: number) {
   try {
     const { data } = await api.get(`/ctpat/${id}`);
@@ -47,7 +82,6 @@ export async function getCtpatByIdAPI(id: number) {
 export async function uploadImagesAPI(ctpatId: number, formData: uploadImagesFormData) {
   try {
     const { data } = await api.post(`/ctpat/uploadImages/${ctpatId}`, formData);
-    
     return {
         success: true,
         message: data.message,
@@ -66,14 +100,12 @@ export async function updateCtpatStatusAPI(id: number, status: number) {
   try {
     const body = { status }; 
     const { data } = await api.patch(`/ctpat/${id}`, body);
-
     if (data && typeof data === "object" && "message" in data) {
       return {
         success: true,
         message: data.message,
       };
     }
-
     throw new Error("Respuesta inesperada del servidor");
   } catch (error) {
     if (isAxiosError(error) && error.response) {

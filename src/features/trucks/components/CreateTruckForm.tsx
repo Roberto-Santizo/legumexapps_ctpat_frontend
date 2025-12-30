@@ -4,6 +4,7 @@ import { useFormContext } from "react-hook-form";
 import { getCarriersAPI } from "@/features/carriers/api/CarriersAPI";
 import type { TruckCreateData } from "@/features/trucks/schemas/types";
 import DriverCaptureModal from "@/features/upload-images/components/PhothoDriverCaptureModal";
+import { toUpper } from "@/shared/helpers/textTransformUppercase";
 
 type TruckFormProps = {
   showCarrierField?: boolean;
@@ -46,7 +47,10 @@ export default function CreateTruckForm({
           type="text"
           placeholder="ABC123"
           className={`form-input ${errors?.plate ? "form-input-error" : "form-input-normal"}`}
-          {...register("plate", { required: "La placa es obligatoria" })}
+          {...register("plate", {
+             setValueAs: toUpper,
+             required: "La placa es obligatoria" 
+            })}
         />
         {errors?.plate && <ErrorMessage>{errors.plate.message}</ErrorMessage>}
       </div>

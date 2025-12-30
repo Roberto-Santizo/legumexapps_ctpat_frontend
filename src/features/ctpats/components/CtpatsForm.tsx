@@ -3,14 +3,10 @@ import { ErrorMessage } from "../../../shared/components/ErrorMessage";
 import { getContainerAPI } from "@/features/containers/api/ContainerAPI";
 import { Button } from "@/shared/components/button";
 import PhotoCaptureModal, {type BuildImagePayload} from "@/features/upload-images/components/PhotoCaptureModal";
-import type {
-  UseFormRegister,
-  FieldErrors,
-  UseFormSetValue,
-  UseFormWatch,
-} from "react-hook-form";
+import type {UseFormRegister,FieldErrors,UseFormSetValue,UseFormWatch,} from "react-hook-form";
 import type { CreateCtpatFormData } from "@/features/ctpats/schemas/types";
 import { toast } from "react-toastify";
+import { toUpper } from "@/shared/helpers/textTransformUppercase";
 
 type CtpatFormProps = {
   register: UseFormRegister<CreateCtpatFormData>;
@@ -93,7 +89,10 @@ export default function CtpatForm({
           className={`form-input ${
             errors?.destination ? "form-input-error" : "form-input-normal"
           }`}
-          {...register("destination", { required: "El destino es obligatorio" })}
+          {...register("destination", {
+            setValueAs: toUpper,
+            required: "El destino es obligatorio" 
+          })}
         />
         {errors?.destination && (
           <ErrorMessage>{errors.destination.message}</ErrorMessage>
@@ -142,6 +141,7 @@ export default function CtpatForm({
             errors?.departure_site ? "form-input-error" : "form-input-normal"
           }`}
           {...register("departure_site", {
+            setValueAs: toUpper,
             required: "El sitio de salida es obligatorio",
           })}
         />

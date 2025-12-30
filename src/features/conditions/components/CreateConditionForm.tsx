@@ -1,6 +1,7 @@
 import type { UseFormRegister, FieldErrors } from "react-hook-form";
 import { ErrorMessage } from "@/shared/components/ErrorMessage";
 import type {ConditionFormData} from "@/features/conditions/schemas/types"
+import { toUpper } from "@/shared/helpers/textTransformUppercase";
 
 type ConditionFormProps = {
   register: UseFormRegister<ConditionFormData>;
@@ -23,6 +24,7 @@ export default function ConditionForm({register,errors,}: ConditionFormProps) {
               errors.name ? "form-input-error" : "form-input-normal"
             }`}
             {...register("name", {
+              setValueAs: toUpper,
               required: "La descripción de la condición es obligatoria",
             })}
           />

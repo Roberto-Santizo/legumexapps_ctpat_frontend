@@ -2,40 +2,38 @@ import { useState } from "react";
 import PackingListHeader from "@/features/packing-List/components/PackingListHeader";
 import PackingListItemsTable from "@/features/packing-List/pages/PackingListItemsTable";
 import AddItemModal from "@/features/packing-List/components/AddItemToPackingListModal";
-import { useMutation, useQueryClient,useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { deleteItemAPI } from "@/features/packing-List/api/PackingListAPI";
-import { getPackingListById } from "@/features/packing-List/api/PackingListAPI";
+import {getPackingListById,deleteItemAPI} from "@/features/packing-List/api/PackingListAPI";
+import { useQuery } from "@tanstack/react-query"; 
 
 type Props = {
-  packingListId: number;
+  packingList: PackingListType;
   ctpatId: number;
   onContinue: () => void;
 };
 
-
-export default function PackingListDetailPage({ packingListId, ctpatId, onContinue }: Props) {
+export default function PackingListDetailPage({ 
+  ctpatId, 
+  onContinue 
+}: Props) {
   const [openModal, setOpenModal] = useState(false);
   const queryClient = useQueryClient();
 
   const {data: packingList,isLoading,isError,} = useQuery({
-    queryKey: ["packingList", packingListId],
+    queryKey: ["packingList", ctpatId],
     queryFn: () => getPackingListById(ctpatId),
-    enabled: !!packingListId,
+    enabled: !!ctpatId,
   });
 
   const deleteItemMutation = useMutation({
-    mutationFn: (itemId: number) => deleteItemAPI(itemId),
-
+    mutationFn: deleteItemAPI,
     onSuccess: async () => {
       toast.success("Ítem eliminado correctamente");
-
-      // 3. USAMOS LA PROP ctpatId (QUE SÍ TIENE VALOR)
       await queryClient.invalidateQueries({
-        queryKey: ["packingList", packingListId], 
+        queryKey: ["packingList", ctpatId], 
       });
     },
-
     onError: (error: Error) => {
       toast.error(error.message);
     },
@@ -45,14 +43,10 @@ export default function PackingListDetailPage({ packingListId, ctpatId, onContin
     deleteItemMutation.mutate(itemId);
   };
 
-  
-  if (isLoading) {
-    return <p>Cargando packing list...</p>;
-  }
-  
-  if (isError || !packingList) {
-    return <p>Error al cargar la packing list</p>;
-  }
+  if (isLoading) return <p>Cargando packing list...</p>;
+  if (isError || !packingList)
+    return <p>Error al cargar el packing list</p>;
+
   const hasItems = packingList.items.length > 0;
 
   const headerData = {

@@ -1,6 +1,7 @@
 import type { ContainerFormData } from "@/features/containers/schemas/types";
 import type { UseFormRegister, FieldErrors } from "react-hook-form";
 import { ErrorMessage } from "@/shared/components/ErrorMessage";
+import { toUpper } from "@/shared/helpers/textTransformUppercase";
 
 type ContainerFormProps = {
   register: UseFormRegister<ContainerFormData>;
@@ -23,6 +24,7 @@ export default function ContainersForm({register,errors,}: ContainerFormProps) {
               errors.container ? "form-input-error" : "form-input-normal"
             }`}
             {...register("container", {
+              setValueAs: toUpper,
               required: "El código del contenedor es obligatorio",
             })}
           />
@@ -45,6 +47,7 @@ export default function ContainersForm({register,errors,}: ContainerFormProps) {
               errors.seal ? "form-input-error" : "form-input-normal"
             }`}
             {...register("seal", {
+              setValueAs: toUpper,
               required: "El número de sello es obligatorio",
             })}
           />
@@ -65,6 +68,7 @@ export default function ContainersForm({register,errors,}: ContainerFormProps) {
               errors.sensor ? "form-input-error" : "form-input-normal"
             }`}
             {...register("sensor", {
+              setValueAs: toUpper,
               required: "El número de sensor es obligatorio",
             })}
           />
@@ -85,6 +89,7 @@ export default function ContainersForm({register,errors,}: ContainerFormProps) {
               errors.type ? "form-input-error" : "form-input-normal"
             }`}
             {...register("type", {
+              setValueAs: toUpper,
               required: "El tipo de contenedor es obligatorio",
             })}
           />

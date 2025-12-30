@@ -1,6 +1,7 @@
 import type { ProductCreateData } from "@/features/products/schemas/types";
 import type { UseFormRegister, FieldErrors } from "react-hook-form";
 import { ErrorMessage } from "@/shared/components/ErrorMessage";
+import { toUpper } from "@/shared/helpers/textTransformUppercase";
 
 type ProductFormProps = {
   register: UseFormRegister<ProductCreateData>;
@@ -29,6 +30,7 @@ export default function ProductForm({
               errors.name ? "form-input-error" : "form-input-normal"
             }`}
             {...register("name", {
+              setValueAs: toUpper,
               required: "El nombre del producto es obligatorio",
             })}
           />
@@ -71,6 +73,7 @@ export default function ProductForm({
                   errors.presentation ? "form-input-error" : "form-input-normal"
                 }`}
                 {...register("presentation", {
+                  setValueAs: toUpper,
                   required: "La presentación es obligatoria",
                 })}
               />

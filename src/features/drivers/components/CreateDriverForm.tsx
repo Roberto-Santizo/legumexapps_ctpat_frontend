@@ -4,6 +4,7 @@ import { useFormContext } from "react-hook-form";
 import { getCarriersAPI } from "@/features/carriers/api/CarriersAPI";
 import type { DriverFormData } from "@/features/drivers/schemas/types";
 import DriverCaptureModal from "@/features/upload-images/components/PhothoDriverCaptureModal";
+import { toUpper } from "@/shared/helpers/textTransformUppercase";
 
 type DriverFormProps = {
   showCarrierField?: boolean;
@@ -46,7 +47,10 @@ export default function DriverForm({ showCarrierField = true, showPhotoFields = 
           type="text"
           placeholder="Marcos Lopez"
           className={`form-input ${errors?.name ? "form-input-error" : "form-input-normal"}`}
-          {...register("name", { required: "El nombre es obligatorio" })}
+          {...register("name", {
+            setValueAs: toUpper, 
+            required: "El nombre es obligatorio" 
+          })}
         />
         {errors?.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
       </div>

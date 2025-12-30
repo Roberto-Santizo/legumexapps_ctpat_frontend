@@ -28,10 +28,9 @@ export default function AddItemToPackingListModal({
 
     onSuccess: async () => {
       toast.success("Ítem agregado");
-
-    await queryClient.invalidateQueries({
-      queryKey: ["packingList", packingListId],
-    });
+    await queryClient.invalidateQueries({ 
+          queryKey: ["packingList", ctpatId], 
+      });
       reset();
       onClose();
     },

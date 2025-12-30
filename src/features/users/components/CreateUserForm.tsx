@@ -5,6 +5,7 @@ import type { Rol } from "@/features/roles/schemas/types";
 
 import { useState,useEffect } from "react";
 import { getRoleAPI } from "@/features/roles/api/RolAPI";
+import { toUpper } from "@/shared/helpers/textTransformUppercase";
 
 type CreateUserFormProps = {
   register: UseFormRegister<UserFormDataSchema>;
@@ -48,6 +49,7 @@ export default function CreateUserForm({register,errors,}: CreateUserFormProps) 
               errors.name ? "form-input-error" : "form-input-normal"
             }`}
             {...register("name", {
+              setValueAs: toUpper,
               required: "El nombre es obligatorio",
               minLength: {
                 value: 3,
@@ -76,6 +78,7 @@ export default function CreateUserForm({register,errors,}: CreateUserFormProps) 
               errors.username ? "form-input-error" : "form-input-normal"
             }`}
             {...register("username", {
+              setValueAs: toUpper,
               required: "El username es obligatorio",
               minLength: {
                 value: 3,

@@ -9,25 +9,57 @@ import PaginationComponent from "@/shared/components/PaginationComponent.js";
 import { getCtpatsAPI } from "@/features/ctpats/api/CtpatsAPI.js";
 import {CTPAT_STATUS_MAP,CTPAT_STATUS_COLORS} from "@/features/ctpats/constants/statusCodes";
 import CtpatFilterForm from "@/features/ctpats/components/CtpatFilterForm.js";
+import { getCtpatsWithFiltersAPI } from "@/features/ctpats/api/CtpatsAPI.js";
+
+type AppliedFilters = {
+  container?: string;
+  product?: string;
+  order?: string;
+};
 
 export default function CtpatTableView() {
   const navigate = useNavigate();
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(10);
   const [openFilter, setOpenFilter] = useState(false);
+  const [appliedFilters, setAppliedFilters] = useState<AppliedFilters>({});
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["ctpats", currentPage, pageSize],
-    queryFn: () => getCtpatsAPI(currentPage),
-  });
+const { data, isLoading, isError } = useQuery({
+  queryKey: ["ctpats", currentPage, appliedFilters],
+  queryFn: () => {
+    if (appliedFilters) {
+      return getCtpatsWithFiltersAPI({
+        page: currentPage,
+        ...appliedFilters,
+      });
+    }
 
-  const handlePageChange = (page: number) => setCurrentPage(page);
+    return getCtpatsAPI(currentPage);
+  },
+  placeholderData: (previousData) => previousData,
+});
 
-  if (isLoading) return <p>Cargando ctpat...</p>;
-  if (isError) return <p>Error al cargar los ctpat.</p>;
 
-  const ctpats = data?.response || [];
-  const totalPages = data?.lastPage || 1;
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handleApplyFilters = (filters: AppliedFilters) => {
+    setAppliedFilters(filters);
+    setCurrentPage(1);
+    setOpenFilter(false);
+  };
+
+  const handleClearFilters = () => {
+    setAppliedFilters({});
+    setCurrentPage(1);
+  };
+
+  if (isLoading) return <p>Cargando Ctpat...</p>;
+  if (isError) return <p>Error al cargar Ctpat.</p>;
+
+  const ctpats = data?.response ?? [];
+  const totalPages = data?.lastPage ?? 1;
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-100 p-4">
@@ -35,23 +67,23 @@ export default function CtpatTableView() {
         <div className="table-container">
           <div className="table-header flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <h2 className="table-title">Lista de Ctpats</h2>
+
             <div className="flex items-center gap-3 self-end sm:self-auto">
-              <Link
-                to="/ctpats/create"
-                className="btn-primary whitespace-nowrap"
-              >
+              <Link to="/ctpats/create" className="btn-primary">
                 Crear Ctpat
               </Link>
+
               <button
                 type="button"
                 onClick={() => setOpenFilter(true)}
-                className=" flex items-center gap-2 px-4 py-4 rounded-xl transition-all duration-200 btn-primary whitespace-nowrap"
+                className="btn-primary flex items-center gap-2"
               >
                 <Filter size={18} />
                 <span className="hidden sm:inline">Filtrar</span>
               </button>
             </div>
           </div>
+
           <div className="overflow-x-auto">
             {ctpats.length > 0 ? (
               <table className="table">
@@ -76,11 +108,7 @@ export default function CtpatTableView() {
                       <td>{ctpat.departure_site}</td>
                       <td>{ctpat.container}</td>
                       <td>
-                        {new Date(ctpat.createdAt).toLocaleDateString("es-ES", {
-                          year: "numeric",
-                          month: "2-digit",
-                          day: "2-digit",
-                        })}
+                        {new Date(ctpat.createdAt).toLocaleDateString("es-ES")}
                       </td>
                       <td>
                         <span
@@ -89,40 +117,38 @@ export default function CtpatTableView() {
                           {CTPAT_STATUS_MAP[ctpat.status]}
                         </span>
                       </td>
-                          <td className="table-cell-center">
-                            <div className="table-actions justify-center">
+                      <td>
+                        <div className="table-actions justify-center">
+                          {ctpat.status !== 8 && (
+                            <button
+                              className="btn-icon btn-icon-primary"
+                              onClick={() =>
+                                navigate(`/steps/${ctpat.id}`)
+                              }
+                            >
+                              <Pencil size={16} />
+                            </button>
+                          )}
 
-                              {ctpat.status !== 8 && (
-                                <button
-                                  className="btn-icon btn-icon-primary"
-                                  title="Editar"
-                                  onClick={() => navigate(`/steps/${ctpat.id}`)}
-                                >
-                                  <Pencil size={16} />
-                                </button>
-                              )}
-                              {ctpat.status === 8 && (
-                                <Link
-                                  className="btn-icon"
-                                  style={{ borderColor: "#dc2626", color: "#dc2626" }}
-                                  title="Documento Ctpat"
-                                  to={`/ctpats/document/${ctpat.id}`}
-                                >
-                                  <Eye size={16} />
-                                </Link>
-                              )}
-                              {ctpat.status === 8 && (
-                                <Link
-                                  className="btn-icon"
-                                  style={{ borderColor: "#dc2626", color: "#dc2626" }}
-                                  title="Packing List"
-                                  to={`/packingList/document/${ctpat.id}`}
-                                >
-                                  <FileCheck size={16} />
-                                </Link>
-                               )}
-                            </div>
-                          </td>
+                          {ctpat.status === 8 && (
+                            <>
+                              <Link
+                                className="btn-icon"
+                                to={`/ctpats/document/${ctpat.id}`}
+                              >
+                                <Eye size={16} />
+                              </Link>
+
+                              <Link
+                                className="btn-icon"
+                                to={`/packingList/document/${ctpat.id}`}
+                              >
+                                <FileCheck size={16} />
+                              </Link>
+                            </>
+                          )}
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -133,6 +159,7 @@ export default function CtpatTableView() {
               </p>
             )}
           </div>
+
           <PaginationComponent
             currentPage={currentPage}
             totalPages={totalPages}
@@ -148,7 +175,7 @@ export default function CtpatTableView() {
             onClick={() => setOpenFilter(false)}
           />
 
-          <div className="relative ml-auto w-full max-w-md h-full bg-white shadow-2xl animate-slide-in">
+          <div className="relative ml-auto w-full max-w-md h-full bg-white shadow-2xl">
             <div className="flex justify-between items-center px-6 py-4 border-b">
               <h3 className="font-bold text-lg">Filtros</h3>
               <button onClick={() => setOpenFilter(false)}>
@@ -157,12 +184,14 @@ export default function CtpatTableView() {
             </div>
 
             <div className="overflow-y-auto h-[calc(100%-64px)]">
-              <CtpatFilterForm />
+              <CtpatFilterForm
+                onApply={handleApplyFilters}
+                onClear={handleClearFilters}
+              />
             </div>
           </div>
         </div>
       )}
-
     </div>
   );
 }

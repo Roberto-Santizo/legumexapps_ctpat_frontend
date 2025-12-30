@@ -1,6 +1,6 @@
-import type {PackingListHeaderView } from "@/features/packing-List/schemas/packingList"
+import type {PackingListHeaderView} from "@/features/packing-List/schemas/packingList"
 type Props = {
-  packingList: PackingListHeaderView ;
+  packingList: PackingListHeaderView;
 };
 
 
