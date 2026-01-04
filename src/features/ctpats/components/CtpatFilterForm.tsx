@@ -76,7 +76,7 @@ const CtpatFilterForm = ({ onApply, onClear }: CtpatFilterFormProps) => {
                   <div className="bg-blue-600 p-1.5 rounded-lg">
                     <Calendar size={14} className="text-white" />
                   </div>
-                  NÚMERO DE ORDEN
+                  NÚMERO DE ORDEN (ET)
                 </label>
                 <input
                   type="text"

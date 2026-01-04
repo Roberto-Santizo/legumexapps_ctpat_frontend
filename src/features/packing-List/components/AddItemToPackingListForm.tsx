@@ -35,7 +35,6 @@ export default function AddItemToPackingListForm({register, errors}: PackingList
             setLoadingProducts(false);
             }
         };
-
         fetchProducts();
         }, []);
 
@@ -69,13 +68,32 @@ export default function AddItemToPackingListForm({register, errors}: PackingList
             <ErrorMessage>{errors.product_id.message}</ErrorMessage>
             )}
         </div>
+
+        <div className="form-group">
+            <label htmlFor="no_pallet" className="form-label">
+                Numero de Palet <span className="required">*</span>
+                </label>
+                <input
+                    id="no_pallet"
+                    type="number"
+                    placeholder="1"
+                    className={`form-input ${
+                        errors?.no_pallet ? "form-input-error" : "form-input-normal"
+                    }`}
+                    {...register("no_pallet", { required: "El numero de palet es obligatorio" })}
+                />
+                {errors?.no_pallet && (
+                <ErrorMessage>{errors.no_pallet.message}</ErrorMessage>
+                )}
+        </div>
+
         <div className="form-group">
             <label htmlFor="lote" className="form-label">
                 Lote <span className="required">*</span>
                 </label>
                 <input
                     id="lote"
-                    type="number"
+                    type="text"
                     placeholder="1"
                     className={`form-input ${
                         errors?.lote ? "form-input-error" : "form-input-normal"
@@ -101,9 +119,9 @@ export default function AddItemToPackingListForm({register, errors}: PackingList
             {errors?.boxes && (
             <ErrorMessage>{errors.boxes.message}</ErrorMessage>
             )}
-      </div>
-
-      <div className="form-group">
+        </div>
+        
+        <div className="form-group">
             <label htmlFor="temp" className="form-label">Temperatura <span className="required">*</span></label>
             <input
                 id="temp"
@@ -119,72 +137,106 @@ export default function AddItemToPackingListForm({register, errors}: PackingList
             {errors?.temp && (
             <ErrorMessage>{errors.temp.message}</ErrorMessage>
             )}
-     </div>
-    
-     <div className="form-group">
-            <label htmlFor="production_date" className="form-label">Dia de producción <span className="required">*</span> </label>
-            <input
-                id="production_date"
-                type="date"
-                placeholder="1234"
-                className={`form-input ${
-                    errors?.production_date ? "form-input-error" : "form-input-normal"
-                }`}
-                {...register("production_date", {
-                    required: "La fecha de producción es obligatoria",
-                })}
-            />
-            {errors?.production_date && (
-            <ErrorMessage>{errors.production_date.message}</ErrorMessage>
-            )}
-     </div>
+        </div>
 
-     <div className="form-group">
-            <label htmlFor="expiration_date" className="form-label">Fecha de vencimiento <span className="required">*</span> </label>
-            <input
-                id="expiration_date"
-                type="date"
-                placeholder="24.5"
+        <div className="form-group">
+                <label htmlFor="net_weight" className="form-label">PESO NETO<span className="required">*</span></label>
+                <input
+                id="net_weight"
+                type="number"
+                placeholder="2450"
                 className={`form-input ${
-                    errors?.expiration_date ? "form-input-error" : "form-input-normal"
+                    errors?.net_weight ? "form-input-error" : "form-input-normal"
                 }`}
-                {...register("expiration_date", {
-                    required: "La fecha de vencimiento es obligatoria",
-                })}
-            />
-            {errors?.expiration_date && (
-            <ErrorMessage>{errors.expiration_date.message}</ErrorMessage>
-            )}
-     </div>
-     <div className="form-group">
-            <label htmlFor="po" className="form-label">PO </label>
-            <input
-                id="po"
-                type="text"
-                placeholder="878478"
+                {...register("net_weight", { required: "El peso neto es obligatorio" })}
+                />
+                {errors?.net_weight && (
+                <ErrorMessage>{errors.net_weight.message}</ErrorMessage>
+                )}
+        </div>
+
+        <div className="form-group">
+                <label htmlFor="gross_weight" className="form-label">PESO BRUTO<span className="required">*</span></label>
+                <input
+                id="gross_weight"
+                type="number"
+                placeholder="2456"
                 className={`form-input ${
-                    errors?.po ? "form-input-error" : "form-input-normal"
+                    errors?.gross_weight ? "form-input-error" : "form-input-normal"
                 }`}
-                {...register("po")}
-            />
-     </div>
-    <div className="form-group">
-            <label htmlFor="grn" className="form-label">GRN <span className="required">*</span> </label>
-            <input
-                id="grn"
-                type="text"
-                placeholder="7162"
-                className={`form-input ${
-                    errors?.grn ? "form-input-error" : "form-input-normal"
-                }`}
-                {...register("grn", {
-                    required: "El GRN es obligatorio",
-                })}
-            />
-            {errors?.grn && (
-            <ErrorMessage>{errors.grn.message}</ErrorMessage>
-            )}
-     </div>
+                {...register("gross_weight", { required: "El peso bruto es obligatorio" })}
+                />
+                {errors?.gross_weight && (
+                <ErrorMessage>{errors.gross_weight.message}</ErrorMessage>
+                )}
+        </div>
+
+        <div className="form-group">
+                <label htmlFor="production_date" className="form-label">Dia de producción <span className="required">*</span> </label>
+                <input
+                    id="production_date"
+                    type="date"
+                    placeholder="2025-10-31"
+                    className={`form-input ${
+                        errors?.production_date ? "form-input-error" : "form-input-normal"
+                    }`}
+                    {...register("production_date", {
+                        required: "La fecha de producción es obligatoria",
+                    })}
+                />
+                {errors?.production_date && (
+                <ErrorMessage>{errors.production_date.message}</ErrorMessage>
+                )}
+        </div>
+
+        <div className="form-group">
+                <label htmlFor="expiration_date" className="form-label">Fecha de vencimiento <span className="required">*</span> </label>
+                <input
+                    id="expiration_date"
+                    type="date"
+                    placeholder="2025-10-31"
+                    className={`form-input ${
+                        errors?.expiration_date ? "form-input-error" : "form-input-normal"
+                    }`}
+                    {...register("expiration_date", {
+                        required: "La fecha de vencimiento es obligatoria",
+                    })}
+                />
+                {errors?.expiration_date && (
+                <ErrorMessage>{errors.expiration_date.message}</ErrorMessage>
+                )}
+        </div>
+
+        <div className="form-group">
+                <label htmlFor="po" className="form-label">PO </label>
+                <input
+                    id="po"
+                    type="text"
+                    placeholder="878478"
+                    className={`form-input ${
+                        errors?.po ? "form-input-error" : "form-input-normal"
+                    }`}
+                    {...register("po")}
+                />
+        </div>
+
+        <div className="form-group">
+                <label htmlFor="grn" className="form-label">GRN <span className="required">*</span> </label>
+                <input
+                    id="grn"
+                    type="text"
+                    placeholder="7162"
+                    className={`form-input ${
+                        errors?.grn ? "form-input-error" : "form-input-normal"
+                    }`}
+                    {...register("grn", {
+                        required: "El GRN es obligatorio",
+                    })}
+                />
+                {errors?.grn && (
+                <ErrorMessage>{errors.grn.message}</ErrorMessage>
+                )}
+        </div>
     </div>
   );
 }

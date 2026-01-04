@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getRoleAPI } from "@/features/roles/api/RolAPI";
 import PaginationComponent from "../../../shared/components/PaginationComponent";
-import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 
@@ -42,36 +41,15 @@ export default function UserTableView() {
               <table className="table">
                 <thead>
                   <tr>
-                    <th className="table-cell-center">ID</th>
+                    <th>ID</th>
                     <th>Nombre del Rol</th>
-                    <th className="table-cell-center">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {roles.map((rol) => (
                     <tr key={rol.id}>
-                      <td className="table-cell-center">{rol.id}</td>
+                      <td >{rol.id}</td>
                       <td>{rol.name}</td>
-                      <td className="table-cell-center">
-                        <div className="table-actions justify-center">
-                          <button
-                            className="btn-icon btn-icon-primary"
-                            title="Editar"
-                          >
-                            <Pencil size={16} />
-                          </button>
-                          <button
-                            className="btn-icon"
-                            style={{
-                              borderColor: "#dc2626",
-                              color: "#dc2626",
-                            }}
-                            title="Eliminar"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </td>
                     </tr>
                   ))}
                 </tbody>

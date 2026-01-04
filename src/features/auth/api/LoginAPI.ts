@@ -17,3 +17,4 @@ export async function loginApi(formData: LoginRequest): Promise<LoginResponse> {
     throw error;
   }
 }
+

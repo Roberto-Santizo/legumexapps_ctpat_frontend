@@ -11,23 +11,24 @@ export const packingList = z.object({
 export const packingListTotalSchema = z.object({
   product: z.string(),
   total_boxes: z.number(),
-  weight: z.number(),
+  gross_weight: z.number(),
   net_weight: z.number(),
 });
+
 export const packingListItemSchema = z.object({
-          id: z.number(),
-          product: z.string(),
-          no_tarima: z.number(),
-          lote: z.number(),
-          code: z.string(),
-          boxes: z.number(),
-          weight: z.number(),
-          net_weight: z.number(),
-          presentation: z.string(),
-          temp: z.number(),
-          expiration_date: z.string(),
-          grn:  z.string(),
-          po:  z.string(),
+      id: z.number(),
+      product: z.string(),
+      no_tarima: z.number(),
+      lote: z.number(),
+      code: z.string(),
+      boxes: z.number(),
+      gross_weight: z.number(), 
+      net_weight: z.number(),
+      presentation: z.string(),
+      temp: z.number(),
+      expiration_date: z.string(),
+      grn:  z.string(),
+      po:  z.string().optional(),
 })
 
 export const getPackingListSchema = z.object({
@@ -47,7 +48,6 @@ export const getPackingListSchema = z.object({
         no_thermograph: z.string(),
         exit_temp: z.string(),
         exit_date: z.string(),
-
         items: z.array(packingListItemSchema),
         totals: z.array(packingListTotalSchema),
 })

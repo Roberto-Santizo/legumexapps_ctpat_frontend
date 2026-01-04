@@ -27,6 +27,12 @@ export default function PackingListItemsTable({ items,onDelete  }: Props) {
                 Cajas
               </th>
               <th className="px-4 py-3 text-center font-semibold text-orange-700">
+                Peso bruto
+              </th>
+              <th className="px-4 py-3 text-center font-semibold text-orange-700">
+                Peso neto
+              </th>
+              <th className="px-4 py-3 text-center font-semibold text-orange-700">
                 Temp
               </th>
               <th className="px-4 py-3 text-center font-semibold text-orange-700">
@@ -43,7 +49,7 @@ export default function PackingListItemsTable({ items,onDelete  }: Props) {
               </th>
             </tr>
           </thead>
-
+          
           <tbody className="divide-y divide-gray-100">
             {items.map((item, index) => (
               <tr
@@ -66,6 +72,13 @@ export default function PackingListItemsTable({ items,onDelete  }: Props) {
                 <td className="px-4 py-3 text-center font-semibold">
                   {item.boxes}
                 </td>
+                <td className="px-4 py-3 text-center font-semibold">
+                  {item.gross_weight}
+                </td>
+                <td className="px-4 py-3 text-center font-semibold">
+                  {item.net_weight}
+                </td>
+
                 <td className="px-4 py-3 text-center">
                   {item.temp}°C
                 </td>
@@ -107,7 +120,6 @@ export default function PackingListItemsTable({ items,onDelete  }: Props) {
           </tbody>
         </table>
       </div>
-
       {items.length === 0 && (
         <div className="py-10 text-center text-gray-500">
           No hay items agregados a la packing list.

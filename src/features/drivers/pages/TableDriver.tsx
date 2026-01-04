@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import PaginationComponent from "../../../shared/components/PaginationComponent";
 import { useState } from "react";
@@ -52,7 +52,7 @@ export default function TableDriver() {
                       <td>{driver.id}</td>
                       <td >{driver.name}</td>
                       <td>
-                        <div className="table-actions justify-center">
+                        <div className="table-actions">
                           <Link
                             to={`/driver/${driver.id}/edit`}
                             className="btn-icon btn-icon-primary"
@@ -60,7 +60,7 @@ export default function TableDriver() {
                           >
                             <Pencil size={16} />
                           </Link>
-                          <button
+                          {/* <button
                             className="btn-icon"
                             style={{
                               borderColor: "#dc2626",
@@ -69,7 +69,7 @@ export default function TableDriver() {
                             title="Eliminar"
                           >
                             <Trash2 size={16} />
-                          </button>
+                          </button> */}
                         </div>
                       </td>
                     </tr>

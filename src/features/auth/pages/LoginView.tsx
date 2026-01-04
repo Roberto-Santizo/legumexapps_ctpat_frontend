@@ -139,7 +139,7 @@ export default function LoginView() {
         </div>
 
         <p className="text-center text-sm text-slate-500 mt-6">
-          © 2025 Legumex Apps. Todos los derechos reservados.
+          © 2026 Legumex Apps. Todos los derechos reservados.
         </p>
       </div>
     </div>

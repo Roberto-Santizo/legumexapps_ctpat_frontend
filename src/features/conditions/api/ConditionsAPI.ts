@@ -20,10 +20,7 @@ export async function createConditionsAPI(formData: ConditionFormData) {
 
 export async function getConditionAPI(): Promise<GetConditionFormData> {
   try {
-    // const limit = 10;
-    // const offset = page;
     const { data } = await api.get("/conditions", {
-      // params: { limit, offset },
     });
     return data;
   } catch (error) {

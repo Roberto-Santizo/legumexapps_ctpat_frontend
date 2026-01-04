@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
 import PaginationComponent from "../../../shared/components/PaginationComponent";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getUsersAPI } from "@/features/users/api/UserAPI.js";
@@ -52,22 +52,13 @@ export default function UserTableView() {
                       <td>{user.role}</td>
                       <td className="table-cell-center">
                         <div className="table-actions justify-center">
-                          <button
+                          <Link
+                            to={`/user/change-password/${user.id}`}
                             className="btn-icon btn-icon-primary"
                             title="Editar"
                           >
                             <Pencil size={16} />
-                          </button>
-                          <button
-                            className="btn-icon"
-                            style={{
-                              borderColor: "#dc2626",
-                              color: "#dc2626",
-                            }}
-                            title="Eliminar"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                          </Link>
                         </div>
                       </td>
                     </tr>

@@ -1,6 +1,6 @@
 import api from "@/shared/api/axios";
 import { isAxiosError } from "axios";
-import type { UserFormDataSchema} from "@/features/users/schemas/types";
+import type { UserFormDataSchema,UpdateUserPasswordSchema} from "@/features/users/schemas/types";
 import {getUserSchema } from "@/features/users/schemas/types";
 
 
@@ -41,3 +41,19 @@ export async function getUsersAPI(page: number = 1) {
     throw new Error("Error al conectar con el servidor");
   }
 }
+
+
+type UpdateUserPasswordAPI = {
+  userId: number;
+  newPassword: UpdateUserPasswordSchema;
+}
+export async function updateUserPasswordAPI({userId,newPassword}:UpdateUserPasswordAPI) {
+  try {
+    const {data} = await api.post(`/auth/change-password/${userId}`, {newPassword});
+    return data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response){
+      throw new Error (error.response.data.message);
+    }
+  }
+} 

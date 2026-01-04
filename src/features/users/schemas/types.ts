@@ -32,7 +32,11 @@ export const userListSchema = userSchema.transform((user) => ({
   role: user.role.name,
 }));
 
+export const updateUserPasswordSchema = z.object({
+  newPassword: z.string()
+})
 
 export type CreateUserSchema = z.infer<typeof userSchema>;
 export type UserFormDataSchema = Pick<CreateUserSchema, "name" | "username" | "password" | "role_id">;
 export const getUserSchema = paginationSchema(userListSchema);
+export type UpdateUserPasswordSchema = z.infer<typeof updateUserPasswordSchema>;

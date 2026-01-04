@@ -15,11 +15,10 @@ export default function CarrierForm() {
         <label htmlFor="name" className="form-label">
           Nombre del transportista <span className="required">*</span>
         </label>
-
         <input
           id="name"
           type="text"
-          placeholder="Ej. Manuel"
+          placeholder="Ej. Transportes XYZ"
           className={`form-input ${
             errors.name ? "form-input-error" : "form-input-normal"
           }`}
@@ -28,7 +27,6 @@ export default function CarrierForm() {
             required: "El nombre es obligatorio",
           })}
         />
-
         {errors.name && (
           <ErrorMessage>{errors.name.message}</ErrorMessage>
         )}

@@ -89,7 +89,7 @@ const mapItems = (
     lote: item.lote,
     codigo: item.code,
     cajas: item.boxes,
-    pesoBruto: item.weight,
+    pesoBruto: item.gross_weight,
     pesoNeto: item.net_weight,
     presentacion: item.presentation,
     temp: `${item.temp}°C`,
@@ -110,7 +110,7 @@ const mapTotalsTable = (
   totals.map((t) => ({
     product: t.product,
     totalBoxes: t.total_boxes,
-    weight: t.weight,
+    weight: t.gross_weight,
     netWeight: t.net_weight,
   }));
 
@@ -293,7 +293,6 @@ const HeaderSection: React.FC<{ header: HeaderData }> = ({ header }) => (
         <Text style={styles.dataCellLabel}>ORDER No.:</Text>
         <Text style={styles.dataCellNoBorder}>{header.orderNo}</Text>
       </View>
-
       <View style={styles.dataRow}>
         <Text style={styles.dataCellLabel}>CONTAINER CONDITION:</Text>
         <Text style={styles.dataCellValue}>{header.containerCondition}</Text>
@@ -302,7 +301,6 @@ const HeaderSection: React.FC<{ header: HeaderData }> = ({ header }) => (
         <Text style={styles.dataCellLabel}>CONTAINER No.:</Text>
         <Text style={styles.dataCellNoBorder}>{header.containerNo}</Text>
       </View>
-
       <View style={styles.dataRow}>
         <Text style={styles.dataCellLabel}>CONTAINER TYPE:</Text>
         <Text style={styles.dataCellValue}>{header.containerType}</Text>
@@ -331,7 +329,6 @@ const HeaderSection: React.FC<{ header: HeaderData }> = ({ header }) => (
         <Text style={styles.dataCellLabel}>EXIT DATE:</Text>
         <Text style={styles.dataCellNoBorder}>{header.exitDate}</Text>
       </View>
-
     </View>
   </>
 );

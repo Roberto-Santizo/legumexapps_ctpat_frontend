@@ -12,16 +12,9 @@ type Props = {
   ctpatId: number;
 };
 
-
-export default function AddItemToPackingListModal({
-  open,
-  onClose,
-  packingListId,
-}: Props) {
+export default function AddItemToPackingListModal({open,onClose,packingListId,ctpatId,}: Props) {
   const queryClient = useQueryClient();
-
   const {register,handleSubmit,formState: { errors },reset,} = useForm<AddItemToPackingListFormData>();
-
   const { mutate, isPending } = useMutation({
     mutationFn: (data: AddItemToPackingListFormData) =>
       addItemToPackingListAPI(packingListId, data),

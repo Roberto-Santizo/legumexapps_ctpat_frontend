@@ -1,22 +1,17 @@
+import { useQuery } from "@tanstack/react-query"; 
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { toast } from "react-toastify";
+
 import PackingListHeader from "@/features/packing-List/components/PackingListHeader";
 import PackingListItemsTable from "@/features/packing-List/pages/PackingListItemsTable";
 import AddItemModal from "@/features/packing-List/components/AddItemToPackingListModal";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 import {getPackingListById,deleteItemAPI} from "@/features/packing-List/api/PackingListAPI";
-import { useQuery } from "@tanstack/react-query"; 
 
-type Props = {
-  packingList: PackingListType;
-  ctpatId: number;
-  onContinue: () => void;
-};
+type Props = {ctpatId: number;onContinue: () => void;};
 
-export default function PackingListDetailPage({ 
-  ctpatId, 
-  onContinue 
-}: Props) {
+export default function PackingListDetailPage({ ctpatId, onContinue }: Props) {
+
   const [openModal, setOpenModal] = useState(false);
   const queryClient = useQueryClient();
 
@@ -38,7 +33,7 @@ export default function PackingListDetailPage({
       toast.error(error.message);
     },
   });
-
+  
   const handleDeleteItem = (itemId: number) => {
     deleteItemMutation.mutate(itemId);
   };
@@ -47,7 +42,8 @@ export default function PackingListDetailPage({
   if (isError || !packingList)
     return <p>Error al cargar el packing list</p>;
 
-  const hasItems = packingList.items.length > 0;
+  const items = packingList.items ?? [];
+  const hasItems = items.length > 0;
 
   const headerData = {
     id: packingList.id,
@@ -60,8 +56,6 @@ export default function PackingListDetailPage({
     boxes: packingList.boxes,
     beginning_date: packingList.beginning_date,
   };
-
-
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -90,11 +84,10 @@ export default function PackingListDetailPage({
 
       {/* Tabla */}
       <PackingListItemsTable
-        items={packingList.items}
+        items={items}
         onDelete={handleDeleteItem}
       />
 
-      {/* Modal */}
       <AddItemModal
         open={openModal}
         onClose={() => setOpenModal(false)}

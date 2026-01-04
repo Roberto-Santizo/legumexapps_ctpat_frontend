@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil} from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import PaginationComponent from "../../../shared/components/PaginationComponent";
 import { useState } from "react";
@@ -83,16 +83,6 @@ export default function TableCondition() {
                           >
                             <Pencil size={16} />
                           </Link>
-                          <button
-                            className="btn-icon"
-                            style={{
-                              borderColor: "#dc2626",
-                              color: "#dc2626",
-                            }}
-                            title="Eliminar"
-                          >
-                            <Trash2 size={16} />
-                          </button>
                         </div>
                       </td>
                     </tr>

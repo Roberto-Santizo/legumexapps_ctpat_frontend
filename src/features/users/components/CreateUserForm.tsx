@@ -1,11 +1,12 @@
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
-import { ErrorMessage } from "@/shared/components/ErrorMessage";
-import type { UserFormDataSchema} from "@/features/users/schemas/types";
 import type { Rol } from "@/features/roles/schemas/types";
-
+import { Eye, EyeOff } from "lucide-react";
 import { useState,useEffect } from "react";
+
 import { getRoleAPI } from "@/features/roles/api/RolAPI";
 import { toUpper } from "@/shared/helpers/textTransformUppercase";
+import { ErrorMessage } from "@/shared/components/ErrorMessage";
+import type { UserFormDataSchema} from "@/features/users/schemas/types";
 
 type CreateUserFormProps = {
   register: UseFormRegister<UserFormDataSchema>;
@@ -16,6 +17,7 @@ export default function CreateUserForm({register,errors,}: CreateUserFormProps) 
   
   const [roles, setRoles] = useState<Rol[]>([]);
   const [loadingRoles, setLoadingRoles] = useState<boolean>(true);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -69,7 +71,7 @@ export default function CreateUserForm({register,errors,}: CreateUserFormProps) 
           <span className="required">*</span>
         </label>
 
-        <div className="input-icon-wrapper">
+        <div>
           <input
             id="username"
             type="text"
@@ -96,15 +98,27 @@ export default function CreateUserForm({register,errors,}: CreateUserFormProps) 
         <label htmlFor="password" className="form-label">
           Password <span className="required">*</span>
         </label>
-        <div className="input-icon-wrapper">
+        <div className=" relative">
           <input
             id="password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             className={`form-input ${
               errors.password ? "form-input-error" : "form-input-normal"
             }`}
             {...register("password")}
           />
+           <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2
+                           text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+            </button>
         </div>
         {errors.password && (
             <ErrorMessage>{errors.password.message}</ErrorMessage>

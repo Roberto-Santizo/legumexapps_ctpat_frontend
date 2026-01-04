@@ -5,9 +5,11 @@ export interface PackingListItemTable {
   lote: number;
   boxes: number;
   temp: number;
+  net_weight: number,
+  gross_weight: number,
   expiration_date: string;
   grn: string;
-  po: string;
+  po?: string;
 }
 
 export type PackingListHeaderView = {

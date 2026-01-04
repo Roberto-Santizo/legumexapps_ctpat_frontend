@@ -10,10 +10,13 @@ const routes = [
   
   { path: "/rol", component: lazy(() => import("../../features/roles/pages/TableRoleView")), roles: [] },
   { path: "/rol/create", component: lazy(() => import("../../features/roles/pages/CreateRol")), roles: [] },
+
   { path: "/user", component: lazy(() => import("../../features/users/pages/TableUserView")), roles: [] },
   { path: "/user/create", component: lazy(() => import("@/features/users/pages/CreateUser")), roles: [] },
-  { path: "/driver", component: lazy(() => import("../../features/drivers/pages/TableDriver")), roles: [] },
+  { path: "/user/change-password/:userId", component: lazy(() => import("@/features/users/pages/UpdateUserPasswordView")), roles: [] },
 
+
+  { path: "/driver", component: lazy(() => import("../../features/drivers/pages/TableDriver")), roles: [] },
   { path: "/driver/create", component: lazy(() => import("../../features/drivers/pages/CreateDriver")), roles: [] },
   { path: "/driver/:driverId/edit", component: lazy(() => import("@/features/drivers/pages/EditDriverView")), roles: [] },
 
