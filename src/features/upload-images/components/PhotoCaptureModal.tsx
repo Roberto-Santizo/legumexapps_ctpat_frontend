@@ -126,7 +126,7 @@ return (
               </select>
             </div>
 
-            {/* 🌟 NUEVO SELECT DE DESCRIPCIÓN */}
+            {/*  NUEVO SELECT DE DESCRIPCIÓN */}
             {showDescription && (
               <div>
                 <label className="font-medium mb-1 block">Descripción</label>

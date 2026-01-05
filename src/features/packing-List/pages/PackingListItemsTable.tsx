@@ -14,37 +14,37 @@ export default function PackingListItemsTable({ items,onDelete  }: Props) {
         <table className="table">
           <thead className="bg-orange-50 border-b border-orange-200">
             <tr>
-              <th className="px-4 py-3 text-left font-semibold text-orange-700">
+              <th className="px-2 py-3 text-left font-semibold text-orange-700">
                 Producto
               </th>
-              <th className="px-4 py-3 text-center font-semibold text-orange-700">
+              <th className="px-2 py-3 text-center font-semibold text-orange-700">
                 Tarima
               </th>
-              <th className="px-4 py-3 text-center font-semibold text-orange-700">
+              <th className="px-2 py-3 text-center font-semibold text-orange-700">
                 Lote
               </th>
-              <th className="px-4 py-3 text-center font-semibold text-orange-700">
+              <th className="px-2 py-3 text-center font-semibold text-orange-700">
                 Cajas
               </th>
-              <th className="px-4 py-3 text-center font-semibold text-orange-700">
+              <th className="px-2 py-3 text-center font-semibold text-orange-700">
                 Peso bruto
               </th>
-              <th className="px-4 py-3 text-center font-semibold text-orange-700">
+              <th className="px-2 py-3 text-center font-semibold text-orange-700">
                 Peso neto
               </th>
-              <th className="px-4 py-3 text-center font-semibold text-orange-700">
+              <th className="px-2 py-3 text-center font-semibold text-orange-700">
                 Temp
               </th>
-              <th className="px-4 py-3 text-center font-semibold text-orange-700">
+              <th className="px-2 py-3 text-center font-semibold text-orange-700">
                 Vencimiento
               </th>
-              <th className="px-4 py-3 text-center font-semibold text-orange-700">
+              <th className="px-2 py-3 text-center font-semibold text-orange-700">
                 GRN
               </th>
-              <th className="px-4 py-3 text-center font-semibold text-orange-700">
+              <th className="px-2 py-3 text-center font-semibold text-orange-700">
                 PO
               </th>
-              <th className="px-4 py-3 text-center font-semibold text-orange-700">
+              <th className="px-2 py-3 text-center font-semibold text-orange-700">
                 Acciones
               </th>
             </tr>
@@ -60,32 +60,32 @@ export default function PackingListItemsTable({ items,onDelete  }: Props) {
                   hover:bg-orange-50
                 `}
               >
-                <td className="px-4 py-3 font-medium text-gray-900">
+                <td className="px-2 py-3 font-medium text-gray-900">
                   {item.product}
                 </td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-2 py-3 text-center">
                   {item.no_tarima}
                 </td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-2 py-3 text-center">
                   {item.lote}
                 </td>
-                <td className="px-4 py-3 text-center font-semibold">
+                <td className="px-2 py-3 text-center font-semibold">
                   {item.boxes}
                 </td>
-                <td className="px-4 py-3 text-center font-semibold">
+                <td className="px-2 py-3 text-center font-semibold">
                   {item.gross_weight}
                 </td>
-                <td className="px-4 py-3 text-center font-semibold">
+                <td className="px-2 py-3 text-center font-semibold">
                   {item.net_weight}
                 </td>
 
-                <td className="px-4 py-3 text-center">
+                <td className="px-2 py-3 text-center">
                   {item.temp}°C
                 </td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-2 py-3 text-center">
                   {item.expiration_date}
                 </td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-2 py-3 text-center">
                   {item.grn ? (
                     <span className="text-green-600 font-medium">
                       {item.grn}
@@ -94,10 +94,10 @@ export default function PackingListItemsTable({ items,onDelete  }: Props) {
                     <span className="text-gray-400">—</span>
                   )}
                 </td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-2 py-3 text-center">
                   {item.po || <span className="text-gray-400">—</span>}
                 </td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-2 py-3 text-center">
                   <div className="flex justify-center gap-3">
                     <Link
                        to={`/packing-list/items/${item.id}/edit`}

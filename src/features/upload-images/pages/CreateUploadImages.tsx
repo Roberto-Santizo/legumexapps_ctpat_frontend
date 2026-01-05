@@ -1,21 +1,16 @@
-import { useParams,useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
 import UploadImagesForm from "../components/UploadImagesForm";
 import { uploadImagesAPI } from "@/features/ctpats/api/CtpatsAPI";
 import type { uploadImagesFormData } from "@/features/ctpats/schemas/types";
-import { useUpdateCtpatStatus } from "@/features/ctpats/hooks/useUpdateCtpatStatus";
-type Props = {
-  nextStatus: number; // estado al que debe avanzar después de subir imágenes
-};
 
-export default function CreateUploadImages({ nextStatus }: Props) {
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const ctpatId = Number(id);
+  type Props = {
+      ctpatId: number;
+  };
 
-  const { mutate: updateStatus } = useUpdateCtpatStatus();
+
+export default function CreateUploadImages({ ctpatId }: Props) {
 
   const { mutate: uploadImages } = useMutation({
     mutationFn: (data: uploadImagesFormData) => uploadImagesAPI(ctpatId, data),
@@ -23,9 +18,6 @@ export default function CreateUploadImages({ nextStatus }: Props) {
     onSuccess: (res) => {
       if (res.success) {
         toast.success(res.message);
-        updateStatus({ id: ctpatId, status: nextStatus });
-
-        navigate("/ctpats");
       } else {
         toast.error(res.message);
       }

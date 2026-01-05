@@ -130,7 +130,7 @@ const { data, isLoading, isError } = useQuery({
                             </button>
                           )}
 
-                          {ctpat.status === 8 && (
+                          {ctpat.status === 7 && (
                             <>
                               <Link
                                 className="btn-icon"

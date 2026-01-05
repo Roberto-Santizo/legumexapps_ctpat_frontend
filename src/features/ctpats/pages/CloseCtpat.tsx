@@ -32,7 +32,7 @@ export default function CloseCtpat({ ctpatId }: Props) {
     },
     onSuccess: (data)=>{
         toast.success(data)
-        updateStatus({ id: ctpatId, status: 8 }); 
+        updateStatus({ id: ctpatId, status: 7 }); 
         navigate("/ctpats");
     },
     onError: (error) => {

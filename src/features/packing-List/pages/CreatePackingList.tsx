@@ -6,8 +6,6 @@ import PackingListForm from "@/features/packing-List/components/CreatePackingLis
 import { createPackingListAPI } from "@/features/packing-List/api/PackingListAPI";
 import type { PackignListFormData } from "@/features/packing-List/schemas/types";
 import { useUpdateCtpatStatus } from "@/features/ctpats/hooks/useUpdateCtpatStatus";
-// import { useQueryClient } from "@tanstack/react-query";
-
 
 export default function CreatePackingList() {
   const navigate = useNavigate();
@@ -27,7 +25,7 @@ export default function CreatePackingList() {
 
     onSuccess: async (res) => {
       toast.success(res.message);
-      updateStatus({ id: ctpatId, status: 3 });
+      updateStatus({ id: ctpatId, status: 2 });
        navigate("/ctpats");
     },
 

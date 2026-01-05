@@ -5,12 +5,13 @@ import { Spinner } from "@/shared/components/Spinner";
 import React from "react";
 import CreatePackingList from "@/features/packing-List/pages/CreatePackingList";
 import CreateCtpatAssignment from "@/features/ctpats/pages/CreateCtpatAssignment";
-import CreateUploadImages from "@/features/upload-images/pages/CreateUploadImages";
+// import CreateUploadImages from "@/features/upload-images/pages/CreateUploadImages";
 import CheckListPage from "@/features/checkLists/pages/CheckListPage";
 import CloseCtpat from "@/features/ctpats/pages/CloseCtpat";
 import type { CtpatStatus } from "@/features/ctpats/constants/statusCodes";
-import PackingListDetailPage from "@/features/packing-List/components/PackingListDetailPage";
+import PackingListWithImagesStep from "@/features/packing-List/components/PackingListWithImagesStep";
 import { useUpdateCtpatStatus } from "@/features/ctpats/hooks/useUpdateCtpatStatus";
+import FinalContainerImages from "@/features/ctpats/components/FinalContainerImages";
 
  
 export default function FlowCtpatSteps() {
@@ -31,30 +32,27 @@ export default function FlowCtpatSteps() {
   const ctpat = data.response;
 
   const stepsMap = (ctpatId: number): Record<CtpatStatus, React.ReactNode> => ({
-    1: <CreateUploadImages nextStatus={2} />,
-
-    2: <CreatePackingList />, 
-
-    3: (
-          <PackingListDetailPage
+    1: <CreatePackingList/>,
+    2: (
+          <PackingListWithImagesStep
             ctpatId={ctpat.id}
             onContinue={() =>
               updateStatusMutation.mutate({
                 id: ctpat.id,
-                status: 4,
+                status: 3,
               })
             }
           />
         ),
-    4: <CheckListPage ctpatId={ctpatId} />,
+    3: <CheckListPage ctpatId={ctpatId} />,
 
-    5: <CreateCtpatAssignment ctpatId={ctpatId} />,
+    4: <CreateCtpatAssignment ctpatId={ctpatId} />,
 
-    6: <CreateUploadImages nextStatus={7} />,
+    5: <FinalContainerImages ctpatId={ctpatId} />,
 
-    7: <CloseCtpat ctpatId={ctpatId} />,
+    6: <CloseCtpat ctpatId={ctpatId} />,
 
-    8: <p className="text-center text-xl font-semibold mt-10">CTPAT Cerrado</p>,
+    7: <p className="text-center text-xl font-semibold mt-10">CTPAT Cerrado</p>,
   });
 
   const status = ctpat.status as CtpatStatus;
