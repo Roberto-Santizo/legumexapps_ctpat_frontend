@@ -2,12 +2,18 @@
 
 import { ErrorMessage } from "@/shared/components/ErrorMessage";
 import type {UseFormRegister,FieldErrors} from "react-hook-form";
+import { useState,useEffect } from "react";
+
 import type { AddItemToPackingListFormData } from "@/features/packing-List/schemas/addItemToPackingList";
 import {getProductAPI} from "@/features/products/api/ProductsAPI";
-import { useState,useEffect } from "react";
+import {getCustomersForSelectAPI} from "@/features/customer/api/CustomerAPI";
 
 
 type ProductSelect = {
+  id: number;
+  name: string;
+};
+type CustomerSelect = {
   id: number;
   name: string;
 };
@@ -20,6 +26,10 @@ type PackingListFormProps = {
 export default function AddItemToPackingListForm({register, errors}: PackingListFormProps) {
     const [products, setProducts] = useState<ProductSelect[]>([]);
     const [loadingProducts, setLoadingProducts] = useState<boolean>(true);
+
+    const [customers, setCustomers] = useState<CustomerSelect[]>([]);
+    const [loadingCustomers, setLoadingCustomers] = useState<boolean>(true);
+
 
         useEffect(() => {
         const fetchProducts = async () => {
@@ -37,6 +47,24 @@ export default function AddItemToPackingListForm({register, errors}: PackingList
         };
         fetchProducts();
         }, []);
+
+        useEffect(() => {
+            const fetchCustomers = async () => {
+                try {
+                const result = await getCustomersForSelectAPI();
+                if (!result) return;
+
+                setCustomers(result);
+                } catch (error) {
+                console.error("Error cargando clientes:", error);
+                } finally {
+                setLoadingCustomers(false);
+                }
+            };
+
+            fetchCustomers();
+        }, []);
+
 
   return (
     <div className="form-container space-y-1">
@@ -138,6 +166,21 @@ export default function AddItemToPackingListForm({register, errors}: PackingList
             <ErrorMessage>{errors.temp.message}</ErrorMessage>
             )}
         </div>
+        <div className="form-group">
+                <label htmlFor="gross_weight" className="form-label">PESO BRUTO<span className="required">*</span></label>
+                <input
+                id="gross_weight"
+                type="number"
+                placeholder="2456"
+                className={`form-input ${
+                    errors?.gross_weight ? "form-input-error" : "form-input-normal"
+                }`}
+                {...register("gross_weight", { required: "El peso bruto es obligatorio" })}
+                />
+                {errors?.gross_weight && (
+                <ErrorMessage>{errors.gross_weight.message}</ErrorMessage>
+                )}
+        </div>
 
         <div className="form-group">
                 <label htmlFor="net_weight" className="form-label">PESO NETO<span className="required">*</span></label>
@@ -152,22 +195,6 @@ export default function AddItemToPackingListForm({register, errors}: PackingList
                 />
                 {errors?.net_weight && (
                 <ErrorMessage>{errors.net_weight.message}</ErrorMessage>
-                )}
-        </div>
-
-        <div className="form-group">
-                <label htmlFor="gross_weight" className="form-label">PESO BRUTO<span className="required">*</span></label>
-                <input
-                id="gross_weight"
-                type="number"
-                placeholder="2456"
-                className={`form-input ${
-                    errors?.gross_weight ? "form-input-error" : "form-input-normal"
-                }`}
-                {...register("gross_weight", { required: "El peso bruto es obligatorio" })}
-                />
-                {errors?.gross_weight && (
-                <ErrorMessage>{errors.gross_weight.message}</ErrorMessage>
                 )}
         </div>
 
@@ -205,6 +232,36 @@ export default function AddItemToPackingListForm({register, errors}: PackingList
                 {errors?.expiration_date && (
                 <ErrorMessage>{errors.expiration_date.message}</ErrorMessage>
                 )}
+        </div>
+        
+        <div className="form-group">
+        <label htmlFor="client_id" className="form-label">
+            Cliente <span className="required">*</span>
+        </label>
+
+        <select
+            id="client_id"
+            disabled={loadingCustomers}
+            className={`form-input ${
+            errors.client_id ? "form-input-error" : "form-input-normal"
+            }`}
+            {...register("client_id", {
+            valueAsNumber: true,
+            required: "El cliente es obligatorio",
+            })}
+        >
+            <option value="">Selecciona el cliente</option>
+
+            {customers.map((customer) => (
+            <option key={customer.id} value={customer.id}>
+                {customer.name}
+            </option>
+            ))}
+        </select>
+
+        {errors.client_id && (
+            <ErrorMessage>{errors.client_id.message}</ErrorMessage>
+        )}
         </div>
 
         <div className="form-group">

@@ -1,63 +1,45 @@
-import { Link, useNavigate } from 'react-router-dom'
-import { useForm} from "react-hook-form";
-import ContainersForm from "@/features/containers/components/CreateContainersForm";
-import type { ContainerFormData,Container } from "@/features/containers/schemas/types";
-import {toast} from "react-toastify"
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {updateContainerAPI} from "@/features/containers/api/ContainerAPI"
-import { useEffect } from 'react';
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import {createCustumerAPI} from "@/features/customer/api/CustomerAPI"
+import CreateCustomerForm from "@/features/customer/component/CreateCustomerForm";
+import type { CreateCustomer } from "@/features/customer/schemas/types";
 
-type EditContainerFormProps = {
-  data: ContainerFormData;
-  containerId: Container['id'];
-};
-export default function EditContainerForm({data, containerId }: EditContainerFormProps) {
-   const navigate = useNavigate()
-   const {register,handleSubmit,formState: { errors }, reset} = useForm<ContainerFormData>();
 
-   useEffect(()=>{
-       if (data) {
-      reset({
-        container: data.container,
-        seal: data.seal,
-        sensor: data.sensor,
-        type: data.type,
-      });
+export default function CreateCustomerView() {
+    const navigate = useNavigate();
+  const initialValues:CreateCustomer = {
+    name: "",
+    code: "",
+  }
+  const {register, handleSubmit, formState:{errors}}= useForm({defaultValues:initialValues})
+
+  const {mutate} = useMutation({
+    mutationFn: createCustumerAPI,
+    onError: (error) =>{
+        toast.error(error.message)
+    },
+    onSuccess: (data) =>{
+        toast.success(data.message);
+        navigate("/customers");
     }
-  }, [data, reset]);
-   
-   const queryClient = useQueryClient()
-       const { mutate} = useMutation({
-        mutationFn: updateContainerAPI,
-        onError: (error) => {
-           toast.error(error.message)
-        },
-        onSuccess: (data) => {
-            queryClient.invalidateQueries({queryKey: ['containers']})
-            queryClient.invalidateQueries({queryKey: ['editContainer', containerId]})
-            toast.success(data)
-            navigate('/container')
-        }
-    })
-  const handleForm = (formData: ContainerFormData) => {
-    const data = {
-      formData,
-      containerId
-    }
-    mutate(data)
-  };
+  })
+
+  const handleForm = (formData : CreateCustomer) =>mutate(formData);
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] bg-clip-text text-transparent mb-3">
-            Editar Contenedor
+            Crear Nuevo Cliente
           </h1>
         </div>
+
         <div className="mb-6">
           <Link
-            to="/container"
+            to="/customers"
             className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[var(--color-primary-dark)] font-semibold rounded-xl shadow-md hover:shadow-lg hover:bg-[var(--color-bg-secondary)] transition-all duration-200 border border-[var(--color-border-light)]"
           >
             <svg
@@ -79,23 +61,23 @@ export default function EditContainerForm({data, containerId }: EditContainerFor
 
         <div className="bg-white rounded-2xl shadow-xl border border-[var(--color-border-light)] overflow-hidden">
           <div className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] h-2"></div>
-
           <form
             className="p-8 space-y-6"
             onSubmit={handleSubmit(handleForm)}
             noValidate
           >
-            <ContainersForm
-              register={register}
-              errors={errors}
-            />
+            <CreateCustomerForm register={register} errors={errors} />
             <button
               type="submit"
               className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
             >
-              Guardar Cambios
+              Crear Cliente
             </button>
           </form>
+        </div>
+
+        <div className="mt-6 text-center text-sm text-[var(--color-text-tertiary)]">
+          <p>Los cambios se aplicarán inmediatamente después de crear el cliente</p>
         </div>
       </div>
     </div>

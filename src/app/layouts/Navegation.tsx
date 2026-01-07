@@ -1,4 +1,4 @@
-import {HomeIcon,UserCog,User,Truck,CircleUserRound,Container,Apple,TruckElectric,ClipboardCopy,Eye} from "lucide-react";
+import {HomeIcon,UserCog,User,Truck,CircleUserRound,Container,Apple,TruckElectric,ClipboardCopy,Eye,UserRound } from "lucide-react";
 import NavLinkComponent from "../../shared/components/NavLinkComponent";
 
 export default function Navegation() {
@@ -35,6 +35,10 @@ export default function Navegation() {
 
         <NavLinkComponent url="/products" text="Productos">
           <Apple  />
+        </NavLinkComponent>
+        
+        <NavLinkComponent url="/customers" text="Clientes">
+          <UserRound/>
         </NavLinkComponent>
 
         <NavLinkComponent url="/conditions" text="Condiciones">

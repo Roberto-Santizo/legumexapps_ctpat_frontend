@@ -56,6 +56,11 @@ const routes = [
   { path: "/observations", component: lazy(() => import("@/features/observations/pages/TableObservation")), roles: [] },
   { path: "/observations/create", component: lazy(() => import("@/features/observations/pages/CreateObservation")), roles: [] },
   { path: "/observations/:observationId/edit", component: lazy(() => import("@/features/observations/pages/EditObservationView")), roles: [] },
+
+  { path: "/customers", component: lazy(() => import("@/features/customer/page/CustomerTable")), roles: [] },
+  { path: "/customers/create", component: lazy(() => import("@/features/customer/page/CreateCustomerView")), roles: [] },
+  { path: "/customers/:customerId/edit", component: lazy(() => import("@/features/customer/page/EditCustomerView")), roles: [] },
+
   
   {path: "/steps",component: lazy(() => import("@/features/process/page/FlowCtpatSteps")),},
   {path: "/steps/:id",component: lazy(() => import("@/features/process/page/FlowCtpatSteps")),},
