@@ -124,7 +124,7 @@ const TableHeader: React.FC<{ showPoGrn?: boolean }> = ({ showPoGrn }) => (
     <Text style={styles.colSmall}>NO. TARIMA</Text>
     <Text style={styles.colSmall}>LOTE</Text>
     <Text style={styles.colSmall}>CODIGO</Text>
-    <Text style={styles.colSmall}>CAJAS</Text>
+    <Text style={styles.colSmall}>CAJAS POR TARIMA</Text>
     <Text style={styles.colMedium}>PESO BRUTO</Text>
     <Text style={styles.colMedium}>PESO NETO</Text>
     <Text style={styles.colPresentacion}>PRESENTACION</Text>

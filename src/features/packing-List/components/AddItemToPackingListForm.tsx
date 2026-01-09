@@ -134,7 +134,7 @@ export default function AddItemToPackingListForm({register, errors}: PackingList
         </div>
 
         <div className="form-group">
-            <label htmlFor="boxes" className="form-label">Boxes<span className="required">*</span></label>
+            <label htmlFor="boxes" className="form-label">Cajas por tarimas<span className="required">*</span></label>
             <input
             id="boxes"
             type="number"
@@ -167,7 +167,7 @@ export default function AddItemToPackingListForm({register, errors}: PackingList
             )}
         </div>
         <div className="form-group">
-                <label htmlFor="gross_weight" className="form-label">PESO BRUTO<span className="required">*</span></label>
+                <label htmlFor="gross_weight" className="form-label">Peso Bruto<span className="required">*</span></label>
                 <input
                 id="gross_weight"
                 type="number"
@@ -183,7 +183,7 @@ export default function AddItemToPackingListForm({register, errors}: PackingList
         </div>
 
         <div className="form-group">
-                <label htmlFor="net_weight" className="form-label">PESO NETO<span className="required">*</span></label>
+                <label htmlFor="net_weight" className="form-label">Peso neto<span className="required">*</span></label>
                 <input
                 id="net_weight"
                 type="number"

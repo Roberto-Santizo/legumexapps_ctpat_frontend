@@ -26,7 +26,7 @@ export default function PackingListItemsTable({ items, onDelete, ctpatId }: Prop
                 Producto
               </th>
               <th className="px-2 py-3 text-center font-semibold text-orange-700">
-                Tarima
+                Tari
               </th>
               <th className="px-2 py-3 text-center font-semibold text-orange-700">
                 Lote
