@@ -2,6 +2,9 @@ import { useState, useRef, useCallback } from "react";
 import Webcam from "react-webcam";
 import { Button } from "@/shared/components/button";
 
+/* ======================================================
+   TYPES
+====================================================== */
 export type BuildImagePayload<T extends boolean> =
   T extends true
     ? { image: string; type: string; description: string }
@@ -12,6 +15,10 @@ type Props<T extends boolean> = {
   onSave: (img: BuildImagePayload<T>) => void;
   showDescription?: T;
 };
+
+/* ======================================================
+   CONSTANTS
+====================================================== */
 const IMAGE_LABELS = {
   CONTAINER_PICTURES: "IMÁGENES DEL CONTENEDOR",
   CONTAINER_LOAD: "CARGA DEL CONTENEDOR",
@@ -20,7 +27,6 @@ const IMAGE_LABELS = {
   FINAL_CONTAINER: "CONTENEDOR FINAL",
   DRIVER_IDENTIFICATION: "IDENTIFICACIÓN DEL CONDUCTOR",
 } as const;
-
 
 const IMAGE_TYPES = [
   "CONTAINER_PICTURES",
@@ -42,18 +48,31 @@ const DESCRIPTION_OPTIONS = [
   { value: "DRIVER ID", label: "Identificación del conductor" },
 ] as const;
 
+/* ======================================================
+   COMPONENT
+====================================================== */
 export default function PhotoCaptureModal<T extends boolean>({
   onClose,
   onSave,
   showDescription = true as T,
 }: Props<T>) {
+  /* ======================================================
+     REFS
+  ====================================================== */
   const webcamRef = useRef<Webcam>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
+  /* ======================================================
+     STATE
+  ====================================================== */
   const [preview, setPreview] = useState<string | null>(null);
   const [type, setType] = useState<string>(IMAGE_TYPES[0]);
   const [description, setDescription] = useState("");
   const [cameraActive, setCameraActive] = useState(true);
 
+  /* ======================================================
+     CAMERA CAPTURE
+  ====================================================== */
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot();
     if (imageSrc) {
@@ -62,36 +81,70 @@ export default function PhotoCaptureModal<T extends boolean>({
     }
   }, []);
 
+  /* ======================================================
+     IMAGE UPLOAD (FILE INPUT)
+     - Desktop: Opens file explorer
+     - Mobile: Opens gallery / camera
+  ====================================================== */
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Solo se permiten imágenes");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreview(reader.result as string);
+      setCameraActive(false);
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  /* ======================================================
+     SAVE IMAGE
+  ====================================================== */
   const handleSave = () => {
     if (!preview) {
-      alert("Error: No se ha tomado la foto");
+      alert("Error: no se ha seleccionado ninguna imagen");
       return;
     }
 
     if (!type) {
-      alert("Debes seleccionar el tipo antes de guardar");
+      alert("Debes seleccionar el tipo de imagen");
       return;
     }
 
     const result = {
       image: preview,
-      type: type.replace(/_/g, " "), //this delete the _ on the imagen types we send to the backend 
+      type: type.replace(/_/g, " "),
       ...(showDescription ? { description } : {}),
     } as BuildImagePayload<T>;
 
     onSave(result);
   };
 
+  /* ======================================================
+     RETAKE / RESET
+  ====================================================== */
   const handleRetake = () => {
     setPreview(null);
     setCameraActive(true);
   };
 
-return (
+  return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
       <div className="bg-white rounded-2xl p-6 w-full max-w-md">
-        <h2 className="text-lg font-semibold mb-4">Tomar Foto</h2>
+        <h2 className="text-lg font-semibold mb-4">
+          Tomar o subir imagen
+        </h2>
 
+        {/* ======================================================
+            CAMERA + UPLOAD SECTION
+        ====================================================== */}
         {cameraActive && !preview && (
           <div className="flex flex-col items-center space-y-4">
             <Webcam
@@ -100,19 +153,43 @@ return (
               videoConstraints={{ facingMode: "environment" }}
               className="w-full rounded-lg"
             />
-            <div className="flex gap-3">
-              <Button onClick={capture}>📸 Tomar Foto</Button>
-              <Button variant="outline" onClick={onClose}>Cancelar</Button>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileSelect}
+            />
+
+            <div className="flex flex-wrap gap-3 justify-center">
+              <Button onClick={capture}>📸 Tomar foto</Button>
+
+              <Button
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                🖼️ Subir imagen
+              </Button>
+
+              <Button variant="outline" onClick={onClose}>
+                Cancelar
+              </Button>
             </div>
           </div>
         )}
 
+        {/* ======================================================
+            PREVIEW + METADATA SECTION
+        ====================================================== */}
         {preview && (
           <div className="space-y-3">
             <img src={preview} className="w-full rounded-lg" />
 
             <div>
-              <label className="font-medium mb-1 block">Tipo de imagen</label>
+              <label className="font-medium mb-1 block">
+                Tipo de imagen
+              </label>
               <select
                 className="w-full border p-2 rounded-md"
                 value={type}
@@ -126,18 +203,17 @@ return (
               </select>
             </div>
 
-            {/*  NUEVO SELECT DE DESCRIPCIÓN */}
             {showDescription && (
               <div>
-                <label className="font-medium mb-1 block">Descripción</label>
+                <label className="font-medium mb-1 block">
+                  Descripción
+                </label>
                 <select
                   className="w-full border p-2 rounded-md"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 >
-                  {/* Opción para NO seleccionar descripción */}
                   <option value="">-- Sin descripción --</option>
-
                   {DESCRIPTION_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
                       {opt.label}
@@ -151,7 +227,9 @@ return (
               <Button variant="outline" onClick={handleRetake}>
                 🔄 Retomar
               </Button>
-              <Button onClick={handleSave}>💾 Guardar</Button>
+              <Button onClick={handleSave}>
+                💾 Guardar
+              </Button>
             </div>
           </div>
         )}

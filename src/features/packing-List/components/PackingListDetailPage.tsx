@@ -41,7 +41,6 @@ export default function PackingListDetailPage({ ctpatId, onContinue }: Props) {
   if (isLoading) return <p>Cargando packing list...</p>;
   if (isError || !packingList)
     return <p>Error al cargar el packing list</p>;
-
   const items = packingList.items ?? [];
   const hasItems = items.length > 0;
 
@@ -60,7 +59,6 @@ export default function PackingListDetailPage({ ctpatId, onContinue }: Props) {
     <div className="p-6 space-y-6">
       {/* Header */}
       <PackingListHeader packingList={headerData} />
-
       <div className="flex justify-between">
         <button
           onClick={() => setOpenModal(true)}
@@ -69,23 +67,26 @@ export default function PackingListDetailPage({ ctpatId, onContinue }: Props) {
           + Agregar ítem
         </button>
 
-        <button
-          onClick={onContinue}
-          disabled={!hasItems}
-          className={`px-4 py-2 rounded-lg text-white ${
-            hasItems
-              ? "bg-green-600 hover:bg-green-700"
-              : "bg-gray-300 cursor-not-allowed"
-          }`}
-        >
-          Continuar a Checklist
-        </button>
+      <button
+        type="button"   
+        onClick={onContinue}
+        disabled={!hasItems}
+        className={`px-4 py-2 rounded-lg text-white ${
+          hasItems
+            ? "bg-green-600 hover:bg-green-700"
+            : "bg-gray-300 cursor-not-allowed"
+        }`}
+      >
+        Continuar a Checklist
+      </button>
+
+
       </div>
 
-      {/* Tabla */}
       <PackingListItemsTable
         items={items}
         onDelete={handleDeleteItem}
+        ctpatId={ctpatId}
       />
 
       <AddItemModal

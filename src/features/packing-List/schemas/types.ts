@@ -53,6 +53,5 @@ export const getPackingListSchema = z.object({
 })
 
 export type PackingListFormData = z.infer<typeof getPackingListSchema>
-
 export type PackingList = z.infer<typeof packingList>
 export type PackignListFormData = Pick<PackingList, "box_type"|"order"|"customer"|"thermograph_no">

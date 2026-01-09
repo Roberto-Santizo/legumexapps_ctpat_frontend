@@ -119,7 +119,7 @@ const { data, isLoading, isError } = useQuery({
                       </td>
                       <td>
                         <div className="table-actions justify-center">
-                          {ctpat.status !== 8 && (
+                          {ctpat.status !== 7 && (
                             <button
                               className="btn-icon btn-icon-primary"
                               onClick={() =>

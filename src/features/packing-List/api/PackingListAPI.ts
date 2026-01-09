@@ -9,7 +9,6 @@ export async function createPackingListAPI(ctpatId: number, formData: PackignLis
 {
   try {
     const { data } = await api.post(`/packing-list/${ctpatId}`, formData);
-    console.log(data)
     return data
   } catch (error) {
     if (isAxiosError(error) && error.response) {
@@ -22,9 +21,7 @@ export async function createPackingListAPI(ctpatId: number, formData: PackignLis
 export async function getPackingListById(ctpatId: number): Promise<PackingListFormData> {
   try {
     const { data } = await api.get(`packing-list/${ctpatId}`);
-    console.log(data)
     const response = getPackingListSchema.safeParse(data.response);
-    console.log(response)
 
     if (!response.success) {
       throw new Error("Respuesta inválida del servidor");
@@ -42,7 +39,6 @@ export async function getPackingListById(ctpatId: number): Promise<PackingListFo
 export async function addItemToPackingListAPI(id:number, formData: AddItemToPackingListFormData) {
   try {
     const { data } = await api.post(`/packing-list/addItem/${id}`, formData);
-    console.log(data)
     return data
   } catch (error) {
     if (isAxiosError(error) && error.response) {
@@ -79,6 +75,18 @@ export async function deleteItemAPI(packingListItemId:number) {
   try {
     const {data} = await api.delete(`/packing-list/deleteItem/${packingListItemId}`);
     return data
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
+    }
+    throw error;
+  }
+}
+
+export async function getItemByIdAPI(itemId: number): Promise<AddItemToPackingListFormData> {
+  try {
+    const { data } = await api.get(`/packing-list/getItem/${itemId}`);
+    return data.response;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message);

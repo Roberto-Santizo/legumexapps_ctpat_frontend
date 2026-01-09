@@ -8,7 +8,7 @@ type Props = {
   onContinue: () => void;
 };
 
-export default function PackingListWithImagesStep({ ctpatId, onContinue }: Props) {
+export default function PackingListSection({ ctpatId, onContinue }: Props) {
   const [showImages, setShowImages] = useState(false);
 
   return (

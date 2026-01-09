@@ -1,111 +1,154 @@
-// import { Link, useNavigate } from "react-router-dom";
-// import { useForm } from "react-hook-form";
-// import { toast } from "react-toastify";
-// import { useMutation, useQueryClient } from "@tanstack/react-query";
-// import { useEffect } from "react";
-// import { updatePackingListItemAPI } from "@/features/packing-List/api/PackingListAPI";
-// import type { AddItemToPackingListFormData } from "@/features/packing-List/schemas/addItemToPackingList";
-// import type { PackingListItem } from "@/features/packing-List/types";
-// import AddItemToPackingListForm from "./AddItemToPackingListForm";
+import { useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { useEffect } from "react";
+import AddItemToPackingListForm from "./AddItemToPackingListForm";
+import { updatePackingListItemAPI } from "../api/PackingListAPI";
+import type { AddItemToPackingListFormData } from "../schemas/addItemToPackingList";
 
-// type EditPackingListItemFormProps = {
-//   data: PackingListItem;
-//   itemId: number;
-//   ctpatId: number;
-// };
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  packingListId: number;
+  itemId: number;
+  ctpatId: number;
+  initialData: AddItemToPackingListFormData;
+};
 
-// export default function EditPackingListItemForm({
-//   data,
-//   itemId,
-//   ctpatId,
-// }: EditPackingListItemFormProps) {
-//   const navigate = useNavigate();
-//   const queryClient = useQueryClient();
+export default function EditPackingListItemForm({
+  open,
+  onClose,
+  packingListId,
+  itemId,
+  ctpatId,
+  initialData,
+}: Props) {
+  const queryClient = useQueryClient();
+  
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<AddItemToPackingListFormData>({
+    defaultValues: initialData,
+  });
 
-//   const {
-//     register,
-//     handleSubmit,
-//     formState: { errors },
-//     reset,
-//   } = useForm<AddItemToPackingListFormData>();
+  // Actualizar el formulario cuando cambien los datos iniciales
+  useEffect(() => {
+    if (initialData) {
+      reset(initialData);
+    }
+  }, [initialData, reset]);
 
-//   // 🔹 Precargar datos
-//   useEffect(() => {
-//     if (data) {
-//       reset({
-//         name: data.name,
-//         type: data.type,
-//       });
-//     }
-//   }, [data, reset]);
+  const { mutate, isPending } = useMutation({
+    mutationFn: (formData: AddItemToPackingListFormData) =>
+      updatePackingListItemAPI({
+        packingListId,
+        itemId,
+        formData,
+      }),
 
-//   const { mutate, isPending } = useMutation({
-//     mutationFn: updatePackingListItemAPI,
+    onSuccess: async () => {
+      toast.success("Ítem actualizado correctamente");
+      
+      // Invalidar queries para actualizar la tabla
+      await queryClient.invalidateQueries({
+        queryKey: ["packingList", ctpatId],
+      });
+      
+      // Invalidar query del item específico por si se usa en otro lugar
+      await queryClient.invalidateQueries({
+        queryKey: ["packingListItem", itemId],
+      });
 
-//     onSuccess: () => {
-//       toast.success("Item actualizado correctamente");
+      onClose();
+    },
 
-//       queryClient.invalidateQueries({
-//         queryKey: ["packingList", ctpatId],
-//       });
+    onError: (error: Error) => toast.error(error.message),
+  });
 
-//       navigate(-1);
-//     },
+  if (!open) return null;
 
-//     onError: (error: Error) => {
-//       toast.error(error.message);
-//     },
-//   });
+  return (
+    <div
+      className="
+        fixed inset-0 z-50
+        flex items-center justify-center
+        bg-black/50 backdrop-blur-sm
+        px-3 sm:px-4
+      "
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="
+          bg-white
+          w-full
+          sm:max-w-lg
+          md:max-w-xl
+          rounded-2xl
+          shadow-xl
+          flex flex-col
+          max-h-[90vh]
+        "
+      >
+        {/* HEADER */}
+        <div className="text-center mb-8 pt-6 px-5">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] bg-clip-text text-transparent mb-3">
+            Editar Ítem del Packing List
+          </h1>
+        </div>
 
-//   const handleForm = (formData: AddItemToPackingListFormData) => {
-//     mutate({
-//       itemId,
-//       packingListId: data.packing_list_id,
-//       formData,
-//     });
-//   };
+        {/* BODY */}
+        <div className="px-5 py-4 overflow-y-auto">
+          <form onSubmit={handleSubmit((data) => mutate(data))}>
+            <AddItemToPackingListForm register={register} errors={errors} />
 
-//   return (
-//     <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4">
-//       <div className="max-w-2xl mx-auto">
-//         <div className="text-center mb-8">
-//           <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)]">
-//             Editar Item del Packing List
-//           </h1>
-//         </div>
+            {/* FOOTER */}
+            <div className="mt-6 flex flex-col-reverse sm:flex-row justify-end gap-2">
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={isPending}
+                className={`
+                  px-4 py-2
+                  rounded-lg
+                  border border-gray-300
+                  text-gray-700
+                  transition
+                  ${
+                    isPending
+                      ? "opacity-50 cursor-not-allowed bg-gray-50"
+                      : "hover:bg-gray-100"
+                  }
+                `}
+              >
+                Cancelar
+              </button>
 
-//         <div className="mb-6">
-//           <Link
-//             to={-1 as any}
-//             className="inline-flex items-center gap-2 px-6 py-3 bg-white rounded-xl shadow border"
-//           >
-//             ← Regresar
-//           </Link>
-//         </div>
-
-//         <div className="bg-white rounded-2xl shadow-xl border overflow-hidden">
-//           <div className="h-2 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)]" />
-
-//           <form
-//             className="p-8 space-y-6"
-//             onSubmit={handleSubmit(handleForm)}
-//             noValidate
-//           >
-//             <AddItemToPackingListForm
-//               register={register}
-//               errors={errors}
-//             />
-
-//             <button
-//               type="submit"
-//               disabled={isPending}
-//               className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] text-white font-bold py-4 rounded-xl"
-//             >
-//               {isPending ? "Guardando..." : "Guardar Cambios"}
-//             </button>
-//           </form>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
+              <button
+                type="submit"
+                disabled={isPending}
+                className={`
+                  px-4 py-2
+                  rounded-lg
+                  bg-[var(--color-primary)]
+                  text-white
+                  transition
+                  ${
+                    isPending
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:opacity-90"
+                  }
+                `}
+              >
+                {isPending ? "Actualizando..." : "Actualizar"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}

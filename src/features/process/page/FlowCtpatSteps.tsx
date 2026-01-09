@@ -9,7 +9,8 @@ import CreateCtpatAssignment from "@/features/ctpats/pages/CreateCtpatAssignment
 import CheckListPage from "@/features/checkLists/pages/CheckListPage";
 import CloseCtpat from "@/features/ctpats/pages/CloseCtpat";
 import type { CtpatStatus } from "@/features/ctpats/constants/statusCodes";
-import PackingListWithImagesStep from "@/features/packing-List/components/PackingListWithImagesStep";
+// import PackingListWithImagesStep from "@/features/packing-List/components/PackingListSection";
+import PackingListReviewStep from "@/features/packing-List/pages/PackingListReviewStep"
 import { useUpdateCtpatStatus } from "@/features/ctpats/hooks/useUpdateCtpatStatus";
 import FinalContainerImages from "@/features/ctpats/components/FinalContainerImages";
 
@@ -34,7 +35,7 @@ export default function FlowCtpatSteps() {
   const stepsMap = (ctpatId: number): Record<CtpatStatus, React.ReactNode> => ({
     1: <CreatePackingList/>,
     2: (
-          <PackingListWithImagesStep
+          <PackingListReviewStep
             ctpatId={ctpat.id}
             onContinue={() =>
               updateStatusMutation.mutate({

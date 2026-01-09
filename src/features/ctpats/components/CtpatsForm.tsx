@@ -36,7 +36,7 @@ export default function CtpatForm({
         const { response } = await getContainerAPI();
         setContainers(response);
       } catch (error) {
-        console.error("Error al cargar los contenedores:", error);
+        console.error(error);
       } finally {
         setLoadingContainers(false);
       }
@@ -58,11 +58,8 @@ export default function CtpatForm({
   }, [register]);
 
   const handleAddImage = (newImage: BuildImagePayload<true>) => {
-    console.log("Añadiendo imagen:", newImage);
 
     setValue("images", [...images, newImage], { shouldValidate: true });
-
-    console.log("Nuevo array de imágenes:", [...images, newImage]);
 
     setShowModal(false);
     toast.success("Foto agregada correctamente");

@@ -46,7 +46,7 @@ const routes = [
   
   { path: "/packingList", component: lazy(() => import("@/features/packing-List/pages/CreatePackingList")), roles: [] },
   {path: "/packingList/document/:id",component: lazy(() => import("@/features/packing-List/packingListDocument/PackingListDocument")),roles: [],},
-  // {path: "/packingList/ItemId/:id",component: lazy(() => import("@/features/packing-List/pages/EditPackingListItem")),roles: [],},
+  {path: "/ctpats/:ctpatId/packing-list/items/:id/edit",component: lazy(() => import("@/features/packing-List/pages/EditPackingListItemView")),roles: []},
 
   
   { path: "/trucks", component: lazy(() => import("@/features/trucks/pages/TableTruck")), roles: [] },

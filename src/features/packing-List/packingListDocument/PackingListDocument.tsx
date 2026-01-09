@@ -121,7 +121,7 @@ const TableHeader: React.FC<{ showPoGrn?: boolean }> = ({ showPoGrn }) => (
   <View style={[styles.tableRow, styles.tableHeader]} fixed>
     <Text style={styles.colFecha}>FECHA PRODUCCION</Text>
     <Text style={styles.colProducto}>PRODUCTO</Text>
-    <Text style={styles.colSmall}>NO TARIMA</Text>
+    <Text style={styles.colSmall}>NO. TARIMA</Text>
     <Text style={styles.colSmall}>LOTE</Text>
     <Text style={styles.colSmall}>CODIGO</Text>
     <Text style={styles.colSmall}>CAJAS</Text>
@@ -212,9 +212,9 @@ const TableFooter: React.FC<{
 
 const TotalsTableHeader = () => (
   <View style={styles.totalsHeaderRow}>
-    <Text style={styles.totalsColProduct}>Producto</Text>
+    <Text style={styles.totalsColProduct}>PRODUCTO</Text>
     <Text style={styles.totalsColSmall}>TOTAL DE CAJAS</Text>
-    <Text style={styles.totalsColMedium}>PESO</Text>
+    <Text style={styles.totalsColMedium}>PESO BRUTO</Text>
     <Text style={styles.totalsColMedium}>PESO NETO</Text>
   </View>
 );
@@ -225,9 +225,7 @@ const TotalsTableRow: React.FC<{ row: TotalRow }> = ({ row }) => (
     <Text style={styles.totalsColProduct}>{row.product}</Text>
     <Text style={styles.totalsColSmall}>{row.totalBoxes}</Text>
     <Text style={styles.totalsColMedium}>{row.weight.toFixed(2)}</Text>
-    <Text style={styles.totalsColMedium}>
-      {row.netWeight.toFixed(2)}
-    </Text>
+    <Text style={styles.totalsColMedium}>{row.netWeight.toFixed(2)}</Text>
   </View>
 );
 
