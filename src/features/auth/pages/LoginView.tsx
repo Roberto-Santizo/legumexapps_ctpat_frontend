@@ -1,36 +1,46 @@
 import { User, Lock, Eye, EyeOff, LogIn } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { LoginRequest } from "@/features/auth/schemas/types";
 import { loginApi } from "@/features/auth/api/LoginAPI";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import { ErrorMessage } from "@/shared/components/ErrorMessage";
 
 export default function LoginView() {
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
+  
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginRequest>({ mode: "onChange" });
 
-  const { mutate} = useMutation({
+  // CRÍTICO: Limpiar TODO al montar el componente de login
+  useEffect(() => {
+    localStorage.clear();
+  }, []);
+
+  const { mutate, isPending } = useMutation({
     mutationFn: loginApi,
     onError: (error) => {
       toast.error(error.message);
     },
     onSuccess: (response) => {
+      // Limpiar y guardar nuevo token
+      localStorage.clear();
+      localStorage.setItem("token", response.token);
+      
       toast.success("Login exitoso");
-      localStorage.setItem("token",response.token)
-      navigate("/ctpats");
+      
+      // Recargar página para estado completamente limpio
+      window.location.href = "/ctpats";
     },
   });
-  const onSubmit = (formData: LoginRequest) =>{
-    mutate(formData)
-  }
+  
+  const onSubmit = (formData: LoginRequest) => {
+    mutate(formData);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 flex items-center justify-center p-4">
@@ -44,8 +54,12 @@ export default function LoginView() {
           <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-8 py-10 text-center relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-slate-500/10 to-slate-600/10"></div>
             <div className="relative">
-              <div >
-                 <img src="/src/assets/images/logo.png" alt="LegumexLogo" className="w-28 h-16 text-white flex items-center justify-center mx-auto" />
+              <div>
+                <img 
+                  src="/src/assets/images/logo.png" 
+                  alt="Legumex Logo" 
+                  className="w-28 h-16 mx-auto object-contain" 
+                />
               </div>
               <h1 className="text-2xl font-bold text-white tracking-tight mb-1">
                 Legumex Apps
@@ -57,9 +71,10 @@ export default function LoginView() {
           </div>
 
           <form
-           className="px-8 py-8"
-           onSubmit={handleSubmit(onSubmit) }
-           >
+            className="px-8 py-8"
+            onSubmit={handleSubmit(onSubmit)}
+            autoComplete="on"
+          >
             <div className="mb-6">
               <h2 className="text-xl font-bold text-slate-900 mb-1">
                 Iniciar Sesión
@@ -71,18 +86,23 @@ export default function LoginView() {
 
             <div className="space-y-5">
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                <label 
+                  htmlFor="username" 
+                  className="block text-sm font-semibold text-slate-700 mb-2"
+                >
                   Usuario
                 </label>
                 <div className="relative">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 flex items-center justify-center">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                     <User className="w-5 h-5" />
                   </div>
                   <input
                     id="username"
                     type="text"
                     placeholder="Ingresa tu usuario"
-                    className="pl-12 pr-4 py-3 border border-slate-300 rounded-lg w-full focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    autoComplete="username"
+                    disabled={isPending}
+                    className="pl-12 pr-4 py-3 border border-slate-300 rounded-lg w-full focus:ring-2 focus:ring-amber-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                     {...register("username", {
                       required: "El usuario es obligatorio",
                     })}
@@ -94,18 +114,23 @@ export default function LoginView() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                <label 
+                  htmlFor="password" 
+                  className="block text-sm font-semibold text-slate-700 mb-2"
+                >
                   Contraseña
                 </label>
                 <div className="relative">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 flex items-center justify-center">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                     <Lock className="w-5 h-5" />
                   </div>
                   <input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Ingresa tu contraseña"
-                    className="pl-12 pr-12 py-3 border border-slate-300 rounded-lg w-full focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    autoComplete="current-password"
+                    disabled={isPending}
+                    className="pl-12 pr-12 py-3 border border-slate-300 rounded-lg w-full focus:ring-2 focus:ring-amber-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                     {...register("password", {
                       required: "La contraseña es obligatoria",
                     })}
@@ -116,7 +141,8 @@ export default function LoginView() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                    disabled={isPending}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors disabled:opacity-50"
                   >
                     {showPassword ? (
                       <EyeOff className="w-5 h-5" />
@@ -129,10 +155,20 @@ export default function LoginView() {
 
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-amber-500 via-amber-600 to-orange-600 text-white font-semibold py-3.5 text-base rounded-xl shadow-lg shadow-amber-500/30 hover:shadow-xl hover:shadow-amber-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2"
+                disabled={isPending}
+                className="w-full bg-gradient-to-r from-amber-500 via-amber-600 to-orange-600 text-white font-semibold py-3.5 text-base rounded-xl shadow-lg shadow-amber-500/30 hover:shadow-xl hover:shadow-amber-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                <LogIn className="w-5 h-5" />
-                <span>Iniciar Sesión</span>
+                {isPending ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Iniciando sesión...</span>
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="w-5 h-5" />
+                    <span>Iniciar Sesión</span>
+                  </>
+                )}
               </button>
             </div>
           </form>
