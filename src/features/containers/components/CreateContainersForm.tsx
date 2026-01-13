@@ -13,7 +13,7 @@ export default function ContainersForm({register,errors,}: ContainerFormProps) {
     <div className="form-container space-y-6">
       <div className="form-group">
         <label htmlFor="container" className="form-label">
-          Código de Contenedor <span className="required">*</span>
+          Numero de contenedor <span className="required">*</span>
         </label>
         <div className="input-icon-wrapper relative">
           <input

@@ -45,7 +45,8 @@
       "@/process/*": ["process/*"],
       "@/not-found/*": ["not-found/*"],
       "@/assets/*": ["assets/*"],
-      "@/hooks/*": ["hooks/*"]
+      "@/hooks/*": ["hooks/*"],
+      "@/core/*": ["core/*"]
 
     }
   },

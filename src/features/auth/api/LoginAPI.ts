@@ -12,7 +12,7 @@ export async function loginApi(formData: LoginRequest): Promise<LoginResponse> {
     return parsedResponse;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.error || "Error en el login");
+      throw new Error(error.response.data.error);
     }
     throw error;
   }

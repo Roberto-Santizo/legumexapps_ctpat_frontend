@@ -7,7 +7,7 @@ export async function checkStatusAPI() {
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.message || "Token inválido");
+      throw new Error(error.response.data.message);
     }
     throw error;
   }

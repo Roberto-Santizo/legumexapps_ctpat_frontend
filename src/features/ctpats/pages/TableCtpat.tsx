@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Pencil,Eye,FileCheck,X  } from "lucide-react";
+import { Pencil,Eye,FileCheck,X,FilePenLine} from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,9 @@ import { getCtpatsAPI } from "@/features/ctpats/api/CtpatsAPI.js";
 import {CTPAT_STATUS_MAP,CTPAT_STATUS_COLORS} from "@/features/ctpats/constants/statusCodes";
 import CtpatFilterForm from "@/features/ctpats/components/CtpatFilterForm.js";
 import { getCtpatsWithFiltersAPI } from "@/features/ctpats/api/CtpatsAPI.js";
+import { useAuth } from "@/hooks/useAuth";
+import { canAccess } from "@/core/permissions/canAccess";
+import { CTPAT_PERMISSIONS } from "@/core/permissions/ctpats.permissions";
 
 type AppliedFilters = {
   container?: string;
@@ -19,6 +22,8 @@ type AppliedFilters = {
 
 export default function CtpatTableView() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const [openFilter, setOpenFilter] = useState(false);
@@ -69,10 +74,11 @@ const { data, isLoading, isError } = useQuery({
             <h2 className="table-title">Lista de Ctpats</h2>
 
             <div className="flex items-center gap-3 self-end sm:self-auto">
-              <Link to="/ctpats/create" className="btn-primary">
-                Crear Ctpat
-              </Link>
-
+              {canAccess(CTPAT_PERMISSIONS.CREATE, user?.role) && (
+                <Link to="/ctpats/create" className="btn-primary">
+                  Crear Ctpat
+                </Link>
+              )}
               <button
                 type="button"
                 onClick={() => setOpenFilter(true)}
@@ -119,22 +125,21 @@ const { data, isLoading, isError } = useQuery({
                       </td>
                       <td>
                         <div className="table-actions justify-center">
-                          {ctpat.status !== 7 && (
-                            <button
-                              className="btn-icon btn-icon-primary"
-                              onClick={() =>
-                                navigate(`/steps/${ctpat.id}`)
-                              }
-                            >
-                              <Pencil size={16} />
-                            </button>
+                          {ctpat.status !== 7 &&
+                            canAccess(CTPAT_PERMISSIONS.EDIT_STEPS, user?.role) && (
+                              <button
+                                className="btn-icon btn-icon-primary"
+                                onClick={() => navigate(`/steps/${ctpat.id}`)}
+                              >
+                                <Pencil size={16} />
+                              </button>
                           )}
-
                           {ctpat.status === 7 && (
                             <>
                               <Link
                                 className="btn-icon"
                                 to={`/ctpats/document/${ctpat.id}`}
+                                title="Ver ctp"
                               >
                                 <Eye size={16} />
                               </Link>
@@ -142,9 +147,20 @@ const { data, isLoading, isError } = useQuery({
                               <Link
                                 className="btn-icon"
                                 to={`/packingList/document/${ctpat.id}`}
+                                title="Ver packing List"
                               >
-                                <FileCheck size={16} />
+                              <FileCheck size={16} />
                               </Link>
+                              {canAccess(CTPAT_PERMISSIONS.CREATE, user?.role) && (
+                                                              <Link
+                                className="btn-icon btn-icon-primary"
+                                to={`/ctpats/${ctpat.id}/edit-items`}
+                                title="Editar items del packing List"
+                              >
+                                <FilePenLine size={16} />
+                              </Link>
+                              )}
+
                             </>
                           )}
                         </div>

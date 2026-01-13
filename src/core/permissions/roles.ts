@@ -1,0 +1,36 @@
+
+export const ROLES = {
+  admin: "admin",
+  CALIDAD_OPERADOR: "CALIDAD_OPERADOR",
+  CALIDAD_ADMIN: "CALIDAD_ADMIN",
+  EXPORTACIONES_CONSULTA: "EXPORTACIONES_CONSULTA",
+} as const;
+
+export type Role = typeof ROLES[keyof typeof ROLES];
+
+export const ROLE_GROUPS = {
+
+  ADMIN_ONLY: [
+    ROLES.admin,
+  ],
+
+  ALL: [
+    ROLES.admin,
+    ROLES.CALIDAD_OPERADOR,
+    ROLES.CALIDAD_ADMIN,
+    ROLES.EXPORTACIONES_CONSULTA,
+  ],
+
+  CALIDAD: [
+    ROLES.admin,
+    ROLES.CALIDAD_OPERADOR,
+    ROLES.CALIDAD_ADMIN,
+  ],
+
+  CALIDAD_Y_EXPORTACIONES: [
+    ROLES.admin,
+    ROLES.CALIDAD_OPERADOR,
+    ROLES.CALIDAD_ADMIN,
+    ROLES.EXPORTACIONES_CONSULTA,
+  ],
+} as const;
