@@ -1,65 +1,75 @@
+
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import EditPackingListItemForm from "@/features/packing-List/components/EditPackingListItemForm";
-import { getItemByIdAPI, getPackingListById } from "@/features/packing-List/api/PackingListAPI";
+import { useState } from "react";
+import { ArrowLeft } from "lucide-react";
+import PackingListHeader from "@/features/packing-List/components/PackingListHeader";
+import PackingListItemsTable from "@/features/packing-List/pages/PackingListItemsTable";
+import AddItemModal from "@/features/packing-List/components/AddItemToPackingListModal";
+import { getPackingListById, deleteItemAPI } from "@/features/packing-List/api/PackingListAPI";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { Spinner } from "@/shared/components/Spinner";
 
-export default function EditPackingListItemView() {
+/**
+ * Vista independiente para editar items del packing list
+ * Esta vista NO está atada al flujo de estados del CTPAT
+ * Permite editar items y regresar a la tabla principal
+ */
+export default function EditPackingListItemsView() {
   const navigate = useNavigate();
-  const params = useParams();
-  
-  const itemId = Number(params.id);
-  const ctpatIdNumber = Number(params.ctpatId);
-  
-  // Obtener los datos del item a editar
-  const {
-    data: itemData,
-    isLoading: isLoadingItem,
-    isError: isErrorItem,
-  } = useQuery({
-    queryKey: ["packingListItem", itemId],
-    queryFn: () => getItemByIdAPI(itemId),
-    enabled: !!itemId,
-  });
+  const { id } = useParams(); // Este es el ctpatId
+  const ctpatId = Number(id);
 
-  // Obtener el packing list para obtener el packingListId
+  const [openModal, setOpenModal] = useState(false);
+  const queryClient = useQueryClient();
+
   const {
     data: packingList,
-    isLoading: isLoadingPackingList,
-    isError: isErrorPackingList,
+    isLoading,
+    isError,
   } = useQuery({
-    queryKey: ["packingList", ctpatIdNumber],
-    queryFn: () => getPackingListById(ctpatIdNumber),
-    enabled: !!ctpatIdNumber,
+    queryKey: ["packingList", ctpatId],
+    queryFn: () => getPackingListById(ctpatId),
+    enabled: !!ctpatId,
   });
 
-  const handleClose = () => {
-    navigate(-1); 
+  const deleteItemMutation = useMutation({
+    mutationFn: deleteItemAPI,
+    onSuccess: async () => {
+      toast.success("Ítem eliminado correctamente");
+      await queryClient.invalidateQueries({
+        queryKey: ["packingList", ctpatId],
+      });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const handleDeleteItem = (itemId: number) => {
+    deleteItemMutation.mutate(itemId);
   };
 
-  if (isLoadingItem || isLoadingPackingList) {
-    return (
-      <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-[var(--color-primary)] border-t-transparent"></div>
-          <p className="mt-4 text-gray-600">Cargando datos del ítem...</p>
-        </div>
-      </div>
-    );
-  }
+  const handleGoBack = () => {
+    navigate("/ctpats");
+  };
 
-  if (isErrorItem || isErrorPackingList || !itemData || !packingList) {
+  if (isLoading) return <Spinner />;
+  
+  if (isError || !packingList) {
     return (
       <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
             <p className="text-red-800 font-semibold mb-4">
-              Error al cargar los datos del ítem
+              Error al cargar el packing list
             </p>
             <button
-              onClick={() => navigate(-1)}
+              onClick={handleGoBack}
               className="inline-flex items-center gap-2 px-4 py-2 bg-white text-gray-700 rounded-lg hover:bg-gray-50 border border-gray-300"
             >
-              Regresar
+              Regresar a CTpats
             </button>
           </div>
         </div>
@@ -67,44 +77,80 @@ export default function EditPackingListItemView() {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] bg-clip-text text-transparent mb-3">
-            Editar Ítem del Packing List
-          </h1>
-        </div>
+  const items = packingList.items ?? [];
 
-        <div className="mb-6">
+  const headerData = {
+    id: packingList.id,
+    carrier: packingList.carrier,
+    order: packingList.order,
+    client: packingList.client,
+    no_container: packingList.no_container,
+    container_type: packingList.container_type,
+    seal: packingList.seal,
+    boxes: packingList.boxes,
+    beginning_date: packingList.beginning_date,
+  };
+
+  return (
+    <div className="min-h-screen bg-[var(--color-bg-primary)] py-8 px-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header con título y botón regresar */}
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Editar Items del Packing List
+            </h1>
+            <p className="text-gray-600">
+              CTPAT #{ctpatId} - Modifica los items y los cambios se guardarán automáticamente
+            </p>
+          </div>
+
           <button
-            onClick={handleClose}
+            onClick={handleGoBack}
             className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[var(--color-primary-dark)] font-semibold rounded-xl shadow-md hover:shadow-lg hover:bg-[var(--color-bg-secondary)] transition-all duration-200 border border-[var(--color-border-light)]"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              />
-            </svg>
-            Regresar
+            <ArrowLeft size={20} />
+            Regresar a CTpats
           </button>
         </div>
 
-        <EditPackingListItemForm
-          open={true}
-          onClose={handleClose}
+        {/* Contenido principal */}
+        <div className="space-y-6">
+          {/* Header del packing list */}
+          <PackingListHeader packingList={headerData} />
+
+          {/* Botón agregar item */}
+          <div className="flex justify-start">
+            <button
+              onClick={() => setOpenModal(true)}
+              className="px-6 py-3 bg-[var(--color-primary)] text-white rounded-lg hover:opacity-90 transition-all font-semibold shadow-md hover:shadow-lg"
+            >
+              + Agregar ítem
+            </button>
+          </div>
+
+          {/* Tabla de items */}
+          <PackingListItemsTable
+            items={items}
+            onDelete={handleDeleteItem}
+            ctpatId={ctpatId}
+          />
+
+          {/* Nota informativa */}
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+            <p className="text-sm text-blue-800">
+              💡 <strong>Nota:</strong> Los cambios se guardan automáticamente. 
+              Puedes editar, agregar o eliminar items según sea necesario.
+            </p>
+          </div>
+        </div>
+
+        {/* Modal para agregar items */}
+        <AddItemModal
+          open={openModal}
+          onClose={() => setOpenModal(false)}
           packingListId={packingList.id}
-          itemId={itemId}
-          ctpatId={ctpatIdNumber}
-          initialData={itemData}
+          ctpatId={ctpatId}
         />
       </div>
     </div>

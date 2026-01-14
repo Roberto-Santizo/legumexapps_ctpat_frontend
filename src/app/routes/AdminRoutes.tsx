@@ -31,33 +31,38 @@ const routes = [
 
   { path: "/ctpats", component: lazy(() => import("@/features/ctpats/pages/TableCtpat")), roles: ROLE_GROUPS.CALIDAD_Y_EXPORTACIONES },
   { path: "/ctpats/create", component: lazy(() => import("@/features/ctpats/pages/CreateCtpats")), roles: ROLE_GROUPS.CALIDAD },
-  { path: "/ctpats/document/:id", component: lazy(() => import("@/features/ctpats/ctpatsDocument/CtpatDocument")), roles: ROLE_GROUPS },
+  { path: "/ctpats/document/:id", component: lazy(() => import("@/features/ctpats/ctpatsDocument/CtpatDocument")), roles: ROLE_GROUPS.CALIDAD },
 
-  { path: "/products", component: lazy(() => import("@/features/products/pages/TableProducts")), roles: ROLE_GROUPS },
-  { path: "/products/create", component: lazy(() => import("@/features/products/pages/CreateProduct")), roles: ROLE_GROUPS },
-  { path: "/products/:productId/edit", component: lazy(() => import("@/features/products/pages/EditProduct")), roles: ROLE_GROUPS },
+  { path: "/products", component: lazy(() => import("@/features/products/pages/TableProducts")), roles: ROLE_GROUPS.CALIDAD },
+  { path: "/products/create", component: lazy(() => import("@/features/products/pages/CreateProduct")), roles: ROLE_GROUPS.CALIDAD },
+  { path: "/products/:productId/edit", component: lazy(() => import("@/features/products/pages/EditProduct")), roles: ROLE_GROUPS.CALIDAD },
 
-  { path: "/conditions", component: lazy(() => import("@/features/conditions/pages/TableConditions")), roles: ROLE_GROUPS },
-  { path: "/conditions/create", component: lazy(() => import("@/features/conditions/pages/CreateCondition")), roles: ROLE_GROUPS },
-  { path: "/conditions/:conditionId/edit", component: lazy(() => import("@/features/conditions/pages/EditConditionView")), roles: ROLE_GROUPS },
+  { path: "/conditions", component: lazy(() => import("@/features/conditions/pages/TableConditions")), roles: ROLE_GROUPS.CALIDAD },
+  { path: "/conditions/create", component: lazy(() => import("@/features/conditions/pages/CreateCondition")), roles: ROLE_GROUPS.CALIDAD },
+  { path: "/conditions/:conditionId/edit", component: lazy(() => import("@/features/conditions/pages/EditConditionView")), roles: ROLE_GROUPS.CALIDAD },
 
-  { path: "/packingList", component: lazy(() => import("@/features/packing-List/pages/CreatePackingList")), roles: ROLE_GROUPS },
-  { path: "/packingList/document/:id", component: lazy(() => import("@/features/packing-List/packingListDocument/PackingListDocument")), roles: ROLE_GROUPS },
+  { path: "/packingList", component: lazy(() => import("@/features/packing-List/pages/CreatePackingList")), roles: ROLE_GROUPS.CALIDAD },
+  { path: "/packingList/document/:id", component: lazy(() => import("@/features/packing-List/packingListDocument/PackingListDocument")), roles: ROLE_GROUPS.CALIDAD },
+  // {path: "/ctpats/:ctpatId/packing-list/items/:id/edit",component: lazy(() => import("@/features/packing-List/pages/EditPackingListItemView")),roles:ROLE_GROUPS.CALIDAD},
+  {
+  path: "/ctpats/:id/edit-items",component: lazy(() => import("@/features/packing-List/pages/EditPackingListItemView")),
+  roles: []
+},
 
-  { path: "/trucks", component: lazy(() => import("@/features/trucks/pages/TableTruck")), roles: ROLE_GROUPS },
-  { path: "/trucks/create", component: lazy(() => import("@/features/trucks/pages/CreateTruck")), roles: ROLE_GROUPS },
-  { path: "/trucks/:truckId/edit", component: lazy(() => import("@/features/trucks/pages/EditTruckView")), roles: ROLE_GROUPS },
+  { path: "/trucks", component: lazy(() => import("@/features/trucks/pages/TableTruck")), roles: ROLE_GROUPS.CALIDAD },
+  { path: "/trucks/create", component: lazy(() => import("@/features/trucks/pages/CreateTruck")), roles: ROLE_GROUPS.CALIDAD },
+  { path: "/trucks/:truckId/edit", component: lazy(() => import("@/features/trucks/pages/EditTruckView")), roles: ROLE_GROUPS.CALIDAD },
 
-  { path: "/observations", component: lazy(() => import("@/features/observations/pages/TableObservation")), roles: ROLE_GROUPS },
-  { path: "/observations/create", component: lazy(() => import("@/features/observations/pages/CreateObservation")), roles: ROLE_GROUPS },
-  { path: "/observations/:observationId/edit", component: lazy(() => import("@/features/observations/pages/EditObservationView")), roles: ROLE_GROUPS },
+  { path: "/observations", component: lazy(() => import("@/features/observations/pages/TableObservation")), roles: ROLE_GROUPS.CALIDAD },
+  { path: "/observations/create", component: lazy(() => import("@/features/observations/pages/CreateObservation")), roles: ROLE_GROUPS.CALIDAD },
+  { path: "/observations/:observationId/edit", component: lazy(() => import("@/features/observations/pages/EditObservationView")), roles: ROLE_GROUPS.CALIDAD },
 
-  { path: "/customers", component: lazy(() => import("@/features/customer/page/CustomerTable")), roles: ROLE_GROUPS },
-  { path: "/customers/create", component: lazy(() => import("@/features/customer/page/CreateCustomerView")), roles: ROLE_GROUPS },
+  { path: "/customers", component: lazy(() => import("@/features/customer/page/CustomerTable")), roles: ROLE_GROUPS.CALIDAD },
+  { path: "/customers/create", component: lazy(() => import("@/features/customer/page/CreateCustomerView")), roles: ROLE_GROUPS.CALIDAD },
   { path: "/customers/:customerId/edit", component: lazy(() => import("@/features/customer/page/EditCustomerView")), roles: ROLE_GROUPS },
 
-  { path: "/steps", component: lazy(() => import("@/features/process/page/FlowCtpatSteps")) },
-  { path: "/steps/:id", component: lazy(() => import("@/features/process/page/FlowCtpatSteps")) },
+  { path: "/steps", component: lazy(() => import("@/features/process/page/FlowCtpatSteps")),roles:ROLE_GROUPS.CALIDAD },
+  { path: "/steps/:id", component: lazy(() => import("@/features/process/page/FlowCtpatSteps")),roles:ROLE_GROUPS.CALIDAD },
 ];
 
 export default function AdminRoutes() {

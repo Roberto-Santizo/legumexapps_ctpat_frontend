@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import type { UserFormDataSchema } from "@/features/users/schemas/types";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import {useMutation, useQueryClient } from "@tanstack/react-query";
 import { createUserAPI } from "@/features/users/api/UserAPI";
 import { toast } from "react-toastify";
 import CreateUserForm from "@/features/users/components/CreateUserForm";
@@ -15,11 +15,13 @@ export default function CreateUserView() {
     mode: "all",
     reValidateMode: "onChange",
   });
-
+  
+  const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: createUserAPI,
     onError: (error) => toast.error(error.message),
     onSuccess: (response) => {
+      queryClient.invalidateQueries({queryKey:["users"]})
       toast.success(response);
       navigate("/user");
     },

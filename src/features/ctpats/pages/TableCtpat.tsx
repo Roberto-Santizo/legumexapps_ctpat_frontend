@@ -152,15 +152,14 @@ const { data, isLoading, isError } = useQuery({
                               <FileCheck size={16} />
                               </Link>
                               {canAccess(CTPAT_PERMISSIONS.CREATE, user?.role) && (
-                                                              <Link
+                              <Link
                                 className="btn-icon btn-icon-primary"
                                 to={`/ctpats/${ctpat.id}/edit-items`}
                                 title="Editar items del packing List"
                               >
                                 <FilePenLine size={16} />
                               </Link>
-                              )}
-
+                              )} 
                             </>
                           )}
                         </div>

@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import {useMutation,useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
@@ -18,13 +18,15 @@ export default function CreateRol() {
     defaultValues: initialValues,
     mode: "onChange",
   });
-
+  
+  const queryClient = useQueryClient();
   const { mutate } = useMutation<RoleApiResponse, Error, CreateRolFormData>({
     mutationFn: async (data) => {
       const response = await createRoleAPI(data);
       return rolResponseApiSchema.parse(response);
     },
     onSuccess: (response) => {
+      queryClient.invalidateQueries({queryKey:["roles"]})
       toast.success(response.message); // mostramos solo el message
       navigate("/rol"); // redirigimos después
     },

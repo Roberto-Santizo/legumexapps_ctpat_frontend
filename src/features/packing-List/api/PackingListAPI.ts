@@ -86,7 +86,9 @@ export async function deleteItemAPI(packingListItemId:number) {
 export async function getItemByIdAPI(itemId: number): Promise<AddItemToPackingListFormData> {
   try {
     const { data } = await api.get(`/packing-list/getItem/${itemId}`);
+    console.log(data)
     return data.response;
+
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message);

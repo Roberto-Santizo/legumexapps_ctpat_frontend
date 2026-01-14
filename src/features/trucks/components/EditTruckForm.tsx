@@ -5,7 +5,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { getCarriersAPI } from "@/features/carriers/api/CarriersAPI";
 import { updateTruckAPI } from "@/features/trucks/api/TruckAPI";
 import type { TruckUpdateData  } from "@/features/trucks/schemas/types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -51,11 +51,14 @@ export default function EditTruckForm({ data, truckId }: TruckFormProps) {
   }, [data]);
 
   // Mutación
+  const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: (payload: TruckUpdateData ) =>
       updateTruckAPI({ formData: payload, truckId }),
     onSuccess: (response) => {
-      toast.success(response.message || "Camión actualizado correctamente");
+      queryClient.invalidateQueries({queryKey:["editTruck"]})
+      queryClient.invalidateQueries({queryKey:["truck"]})
+      toast.success(response.message);
       navigate("/trucks");
     },
     onError: () => toast.error("Error al actualizar el camión"),

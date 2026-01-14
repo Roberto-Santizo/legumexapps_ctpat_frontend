@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation,useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
@@ -14,11 +14,12 @@ export default function CreateCondition() {
   };
 
   const {register,handleSubmit,formState: { errors },} = useForm({defaultValues: initialValues});
-
+  const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: createConditionsAPI,
     onError: (error) => toast.error(error.message),
     onSuccess: (response) => {
+      queryClient.invalidateQueries({queryKey: ["conditions"]})
       toast.success(response.message);
       navigate("/conditions");
     },

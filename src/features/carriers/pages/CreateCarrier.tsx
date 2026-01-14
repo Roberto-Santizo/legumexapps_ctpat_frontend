@@ -8,8 +8,6 @@ import type {CreateCarrierResponse} from "@/features/carriers/schemas/types"
 import {createCarrierResponseSchema} from "@/features/carriers/schemas/types"
 import { useForm, FormProvider } from "react-hook-form";
 
-
-
 export default function CreateCarrier() {
   const navigate = useNavigate();
   const initialValues: createCarrierFormSchema = { name: "" };
@@ -25,12 +23,10 @@ export default function CreateCarrier() {
       return createCarrierResponseSchema.parse(response);
     },
     onSuccess: (response) => {
-      if (response.statusCode === 201) {
         toast.success(response.message);
-        setTimeout(() => navigate("/carriers"), 100);
-      } else {
+        navigate("/carriers")
         toast.error(response.message);
-      }
+      
     },
   });
 
