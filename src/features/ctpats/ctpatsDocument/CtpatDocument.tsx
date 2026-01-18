@@ -12,6 +12,7 @@ import PackingListTable from "@/features/ctpats/ctpatsDocument/PackingListTable"
 import DriverTable from "@/features/ctpats/ctpatsDocument/DriverTable";
 import FinalCtpatSignatures from "@/features/ctpats/ctpatsDocument/FinalCtpatSignatures";
 import ChecklistTables from "@/features/ctpats/ctpatsDocument/ChecklistTables";
+import ObservationsTable from "@/features/ctpats/ctpatsDocument/ObservationsTable";
 import { CTPAT_PERMISSIONS } from "@/core/permissions/ctpats.permissions";
 import { canAccess } from "@/core/permissions/canAccess";
 
@@ -36,6 +37,7 @@ export default function CtpatDocument() {
     <PackingListTable data={ctpat.packingList} />,
     <DriverTable driver={ctpat.driver} ctpat={ctpat} />,
     <ChecklistTables items={ctpat.checklist.items} />,
+    <ObservationsTable observations={ctpat.observations} />, // ✅ Componente de observaciones agregado
     <FinalCtpatSignatures
       signatureC={ctpat.signature_c}
       signatureE={ctpat.signature_e}
@@ -44,7 +46,6 @@ export default function CtpatDocument() {
 
   return (
     <div className="space-y-10">
-      {/* ✅ Ahora funciona correctamente */}
       {canAccess(CTPAT_PERMISSIONS.UPLOAD_ADDITIONAL_IMAGES, user?.role) && (
         <div className="sticky top-4 z-10 flex justify-end mb-4 px-4">
           <Link

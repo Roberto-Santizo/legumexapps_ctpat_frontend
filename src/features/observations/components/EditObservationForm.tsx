@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import CreateObservationForm from "./CreateObservationForm";
 import type { ObservationCreateData } from "@/features/observations/schemas/types";
 import { useForm } from "react-hook-form";
-import {useMutation} from "@tanstack/react-query"
+import {useMutation, useQueryClient} from "@tanstack/react-query"
 import { updateObservationAPI } from "@/features/observations/api/ObservationsAPI";
 import { toast} from "react-toastify"
 import { useNavigate } from "react-router-dom";
@@ -16,12 +16,15 @@ export default function EditObservationForm({data, observationId}: EditObservati
     const initialValues : ObservationCreateData ={
         name: data.name,
     }
+  const queryClient = useQueryClient();
   const {mutate} = useMutation({
     mutationFn: updateObservationAPI,
       onError: (error) =>{
         toast.error(error.message)
       },
       onSuccess: (data) =>{
+          queryClient.invalidateQueries({queryKey: ["observation"]})
+          queryClient.invalidateQueries({queryKey: ["editObservation"]})
           toast.success(data)
           navigate("/observations")
       }

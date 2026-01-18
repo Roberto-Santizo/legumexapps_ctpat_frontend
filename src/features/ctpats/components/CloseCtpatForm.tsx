@@ -7,6 +7,8 @@ import type { ObservationList } from "@/features/observations/schemas/types";
 import { toast } from "react-toastify";
 import SignatureField from "@/shared/components/SignatureField";
 import type { Control } from "react-hook-form";
+import { toUpper } from "@/shared/helpers/textTransformUppercase";
+
 
 type CloseCtpatFormProps = {
   control: Control<CloseCtpatFormData>;
@@ -102,7 +104,9 @@ export default function CloseCtpatForm({ control, errors, register }: CloseCtpat
                     <input
                       type="text"
                       placeholder="Ingrese detalle (opcional)"
-                      {...register(`observations.${index}.data`)}
+                      {...register(`observations.${index}.data`, {
+                         setValueAs: toUpper,
+                      } )}
                       className="
                         w-full form-input 
                         rounded-lg border-gray-300 
@@ -113,7 +117,8 @@ export default function CloseCtpatForm({ control, errors, register }: CloseCtpat
                   <input
                     type="hidden"
                     value={obs.id}
-                    {...register(`observations.${index}.observation_id`, {
+                    {...register(`observations.${index}.observation_id`,
+                    {
                       valueAsNumber: true,
                     })}
                   />

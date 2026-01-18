@@ -70,7 +70,6 @@ export async function getCtpatsWithFiltersAPI(filters: {
 export async function getCtpatByIdAPI(id: number) {
   try {
     const { data } = await api.get(`/ctpat/${id}`);
-    console.log("datos que retorna el backend getctpatByID", data)
     return data; 
   } catch (error) {
     if (isAxiosError(error) && error.response) {
