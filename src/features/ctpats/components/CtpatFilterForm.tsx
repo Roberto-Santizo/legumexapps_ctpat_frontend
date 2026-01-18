@@ -83,6 +83,7 @@ const CtpatFilterForm = ({ onApply, onClear }: CtpatFilterFormProps) => {
                   name="order"
                   value={filters.order}
                   onChange={handleChange}
+                  placeholder="Ej: ET 0451"
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-600 focus:ring-4 focus:ring-blue-100 outline-none"
                 />
               </div>
@@ -92,7 +93,7 @@ const CtpatFilterForm = ({ onApply, onClear }: CtpatFilterFormProps) => {
                   <div className="bg-blue-600 p-1.5 rounded-lg">
                     <Package size={14} className="text-white" />
                   </div>
-                  CONTENEDOR
+                  NÚMERO DE CONTENEDOR
                 </label>
                 <input
                   type="text"

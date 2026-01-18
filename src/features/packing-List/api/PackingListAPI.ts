@@ -1,9 +1,11 @@
 import api from "@/shared/api/axios";
 import type {PackignListFormData} from "@/features/packing-List/schemas/types";
 import { isAxiosError } from "axios";
-import type {AddItemToPackingListFormData} from "@/features/packing-List/schemas/addItemToPackingList";
+import type {AddItemToPackingListFormData} from "@/features/packing-List/schemas/createItemSchema";
+import type {EditPackingListItemFormData} from "@/features/packing-List/schemas/editPackingListItem";
 import  {getPackingListSchema} from "@/features/packing-List/schemas/types";
 import type {PackingListFormData} from "@/features/packing-List/schemas/types";
+
 
 export async function createPackingListAPI(ctpatId: number, formData: PackignListFormData) 
 {
@@ -52,7 +54,7 @@ export async function addItemToPackingListAPI(id:number, formData: AddItemToPack
 export type UpdatePackingListItemAPIType = {
   packingListId: number;
   itemId: number;
-  formData: AddItemToPackingListFormData;
+  formData: EditPackingListItemFormData;
 };
 
 export async function updatePackingListItemAPI({
@@ -62,6 +64,7 @@ export async function updatePackingListItemAPI({
 }: UpdatePackingListItemAPIType) {
   try {
     const { data } = await api.patch(`/packing-list/editItem/${packingListId}/${itemId}`,formData);
+    console.log(data)
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
@@ -86,7 +89,7 @@ export async function deleteItemAPI(packingListItemId:number) {
 export async function getItemByIdAPI(itemId: number): Promise<AddItemToPackingListFormData> {
   try {
     const { data } = await api.get(`/packing-list/getItem/${itemId}`);
-    console.log(data)
+    console.log("This is a test", data)
     return data.response;
 
   } catch (error) {

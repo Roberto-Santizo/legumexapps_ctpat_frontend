@@ -74,6 +74,36 @@ export default function CtpatForm({
 
   return (
     <div className="form-container space-y-6">
+      {/* Type of product */}
+      <div className="form-group">
+        <label htmlFor="type" className="form-label">
+          Seleccione el tipo de producto <span className="required">*</span>
+        </label>
+
+        <select
+          id="type"
+          className={`form-input ${
+            errors?.type ? "form-input-error" : "form-input-normal"
+          }`}
+          {...register("type", {
+            valueAsNumber: true, 
+            required: "El tipo de producto es obligatorio",
+          })}
+          defaultValue=""
+        >
+          <option value="" disabled>
+            Seleccione una opción
+          </option>
+          <option value={1}>Congelado</option>
+          <option value={2}>Jugo</option>
+        </select>
+
+        {errors?.type && (
+          <ErrorMessage>{errors.type.message}</ErrorMessage>
+        )}
+      </div>
+
+
       {/* DESTINATION */}
       <div className="form-group">
         <label htmlFor="destination" className="form-label">
@@ -99,7 +129,7 @@ export default function CtpatForm({
       {/* CONTAINER */}
       <div className="form-group">
         <label htmlFor="container_id" className="form-label">
-          Contenedor <span className="required">*</span>
+          Contenedor (Número) <span className="required">*</span>
         </label>
         <select
           id="container_id"
@@ -197,7 +227,7 @@ export default function CtpatForm({
         <PhotoCaptureModal<true>
           onClose={() => setShowModal(false)}
           onSave={handleAddImage}
-          showDescription={true} // <--- descripción obligatoria
+          showDescription={true} 
         />
       )}
     </div>

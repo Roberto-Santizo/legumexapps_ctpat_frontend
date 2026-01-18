@@ -33,13 +33,13 @@ export const editDriverSchema = driverSchema.pick({
   license: true,
 });
 
-export const createDriverSchema =  driverSchema.pick({
-    name: true,
-    identification: true,
-    license: true,
-    carrier_id: true,
-    identification_image: true,
-    license_image: true,
+export const createDriverSchema =  z.object({
+    name: z.string(),
+    identification: z.string(),
+    license: z.string(),
+    carrier_id: z.number(),
+    identification_image: z.string().optional(),
+    license_image: z.string(),
   })
 
 export type DriverFormData = z.infer<typeof createDriverSchema>;

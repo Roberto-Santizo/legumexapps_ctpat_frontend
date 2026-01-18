@@ -125,7 +125,7 @@ export default function DriverForm({ showCarrierField = true, showPhotoFields = 
 
         {showPhotoFields && (
           <div className="form-group mt-6">
-            <label className="form-label font-bold">Fotografía Licencia</label>
+            <label className="form-label font-bold">Fotografía Licencia <span className="required">*</span></label>
 
             {licenseImage ? (
               <img src={licenseImage} className="h-40 w-40 rounded-lg border mb-2 shadow" />
@@ -146,7 +146,9 @@ export default function DriverForm({ showCarrierField = true, showPhotoFields = 
               Tomar foto Licencia
             </button>
 
-            <input type="hidden" {...register("license_image")} />
+            <input type="hidden" {...register("license_image",{
+              required: "La fotografía de la licencia es obligatoria",
+            })} />
             {errors.license_image && <ErrorMessage>{errors.license_image.message}</ErrorMessage>}
           </div>
         )}

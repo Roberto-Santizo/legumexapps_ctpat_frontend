@@ -14,7 +14,7 @@ export async function updateCtpatTruckDriver({ formData, ctpatId }: AssignmentAP
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.message || "Error en el servidor");
+      throw new Error(error.response.data.message);
     }
     throw error;
   }

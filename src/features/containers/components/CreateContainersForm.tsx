@@ -81,18 +81,19 @@ export default function ContainersForm({register,errors,}: ContainerFormProps) {
           Tipo de Contenedor <span className="required">*</span>
         </label>
         <div className="input-icon-wrapper relative">
-          <input
+          <select
             id="type"
-            type="text"
-            placeholder="HC 48"
             className={`form-input pl-10 ${
               errors.type ? "form-input-error" : "form-input-normal"
             }`}
             {...register("type", {
-              setValueAs: toUpper,
               required: "El tipo de contenedor es obligatorio",
             })}
-          />
+          >
+            <option value="">Seleccione un tipo</option>
+            <option value="HC 48">HC 48 (Contenedor de Exportación)</option>
+            <option value="HC 53">HC 53 (Furgón)</option>
+          </select>
         </div>
         {errors.type && <ErrorMessage>{errors.type.message}</ErrorMessage>}
       </div>

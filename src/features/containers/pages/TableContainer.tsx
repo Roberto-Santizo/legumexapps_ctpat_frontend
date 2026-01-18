@@ -48,7 +48,7 @@ export default function TableContainer() {
                     <th className="table-cell-center">Contenedor</th>
                     <th className="table-cell-center">Sello</th>
                     <th className="table-cell-center">Sensor</th>
-                    <th className="table-cell-center">Tipo</th>
+                    <th className="table-cell-center">Tipo de contenedor</th>
                     <th className="table-cell-center">Acciones</th>
                   </tr>
                 </thead>

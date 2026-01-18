@@ -10,15 +10,8 @@ export async function createUserAPI(formData: UserFormDataSchema) {
       return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      const backendData = error.response.data || {};
-      const message =
-        backendData.message ||
-        backendData.messagge ||
-        backendData.error ||
-        "Error desconocido";
-      throw new Error(message);
+      throw new Error(error.response.data.error)
     }
-    throw new Error("Error al conectar con el servidor");
   }
 }
 

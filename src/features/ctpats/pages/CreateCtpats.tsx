@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation,useQueryClient}  from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
@@ -19,7 +19,7 @@ export default function CreateCtpat() {
     },
     mode: "onChange",
   });
-
+  const queryClient = useQueryClient();
   const { mutate } = useMutation<
     CreateCtpatAPIResponse,
     Error,
@@ -27,6 +27,7 @@ export default function CreateCtpat() {
   >({
     mutationFn: (formData) => createCtpatsAPI(formData),
       onSuccess(data) {
+            queryClient.invalidateQueries({queryKey:["ctpats"]})
             toast.success(data.message);
             navigate(`/ctpats`);
       },

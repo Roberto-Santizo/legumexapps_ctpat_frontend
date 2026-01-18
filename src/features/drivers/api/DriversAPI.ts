@@ -9,13 +9,8 @@ export async function createDriverAPI(formData: DriverFormData) {
       return data
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      const backendData = error.response.data || {};
-      const message =
-        backendData.message ||
-        backendData.error;
-      throw new Error(message);
+       throw new Error(error.response.data.message)
     }
-    throw new Error("Error al conectar con el servidor");
   }
 }
 
@@ -30,11 +25,8 @@ export async function getDriverAPI(page: number = 1) {
     }
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      console.error("Error en getDriverAPI", error.response.data);
-    } else {
-      console.error("Error desconocido en getRoleAPI:", error);
-    }
-    throw error;
+       throw new Error(error.response.data.error)
+    } 
   }
 }
 
@@ -43,12 +35,9 @@ export async function getDriverByIdAPI(id: number) {
     const { data } = await api.get(`/drivers/${id}`);
     return data;
   } catch (error) {
-    if (isAxiosError(error) && error.response) {
-      console.error("Error en getDriverByIdAPI", error.response.data);
-    } else {
-      console.error("Error desconocido en getDriverByIdAPI:", error);
+      if (isAxiosError(error) && error.response) {
+       throw new Error(error.response.data.error)
     }
-    throw error;
   }
 }
 
@@ -59,16 +48,11 @@ type DriverAPIType = {
 export async function updateDriver({ formData, driverId }: DriverAPIType) {
   try {
     const { data } = await api.patch(`/drivers/${driverId}`, formData);
-    if (data?.statusCode === 201) {
       return data; 
-    }
-    throw new Error(data?.message || "Error desconocido en la actualización del piloto");
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      const backendMessage = error.response.data?.message || "Error desconocido desde el servidor";
-      throw new Error(backendMessage);
+       throw new Error(error.response.data.error)
     }
-    throw error;
   }
 }
 

@@ -47,7 +47,7 @@ export default function CtpatImages({ images }: { images: CtpatImage[] }) {
                       className="w-full h-40 object-cover border"
                     />
 
-                    {img.description && (
+                    {img.description && img.description.trim() !== "" && (
                       <p className="text-center mt-1 text-[10px] italic">
                         {img.description}
                       </p>

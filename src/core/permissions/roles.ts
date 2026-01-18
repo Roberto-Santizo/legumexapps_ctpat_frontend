@@ -13,6 +13,11 @@ export const ROLE_GROUPS = {
   ADMIN_ONLY: [
     ROLES.admin,
   ],
+  
+  ADMIN_Y_CALIDAD_ADMIN: [
+    ROLES.admin,
+    ROLES.CALIDAD_ADMIN,
+  ],
 
   ALL: [
     ROLES.admin,

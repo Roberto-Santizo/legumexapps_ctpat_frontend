@@ -1,5 +1,5 @@
 import type { DriverFormData } from "@/features/drivers/schemas/types.tsx";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm,FormProvider } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,31 +7,31 @@ import DriverForm from "../components/CreateDriverForm.tsx";
 import { createDriverAPI } from "../api/DriversAPI.ts";
 
 export default function CreateDriver() {
-  
   const navigate = useNavigate();
   const methods = useForm<DriverFormData>({
     defaultValues: {
       name: "",
       identification: "",
       license: "",
-      carrier_id: 0,
+      carrier_id: undefined,
       identification_image: "",
       license_image: "",
     },
     mode: "onChange",
   });
 
+  const queryClient = useQueryClient()
   const { mutate } = useMutation({
-    mutationFn: (data: DriverFormData) => createDriverAPI(data),
-    onSuccess: (response) => {
-      if (response) {
-        toast.success(response.message);
+    mutationFn: createDriverAPI,
+     onError: (error) => {
+       toast.error(error.message)
+      },
+      onSuccess:(data) => {
+        queryClient.invalidateQueries({queryKey:["driver"]})
+        toast.success(data.message);
         navigate("/driver");
-      } else {
-        toast.error(response);
       }
-    },
-  });
+    })
 
 const handleForm = async (data: DriverFormData) => {
 

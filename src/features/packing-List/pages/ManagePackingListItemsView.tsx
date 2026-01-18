@@ -1,27 +1,23 @@
-
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
+import { toast } from "react-toastify";
+
 import PackingListHeader from "@/features/packing-List/components/PackingListHeader";
 import PackingListItemsTable from "@/features/packing-List/pages/PackingListItemsTable";
 import AddItemModal from "@/features/packing-List/components/AddItemToPackingListModal";
+import EditItemForm from "@/features/packing-List/components/EditItemForm";
 import { getPackingListById, deleteItemAPI } from "@/features/packing-List/api/PackingListAPI";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-toastify";
-import { Spinner } from "@/shared/components/Spinner";
+import type { PackingListItemTable } from "@/features/packing-List/schemas/packingList";
 
-/**
- * Vista independiente para editar items del packing list
- * Esta vista NO está atada al flujo de estados del CTPAT
- * Permite editar items y regresar a la tabla principal
- */
-export default function EditPackingListItemsView() {
+export default function ManagePackingListItemsView() {
   const navigate = useNavigate();
-  const { id } = useParams(); // Este es el ctpatId
+  const { id } = useParams();
   const ctpatId = Number(id);
 
-  const [openModal, setOpenModal] = useState(false);
+  const [openAddModal, setOpenAddModal] = useState(false);
+  const [editingItem, setEditingItem] = useState<PackingListItemTable | null>(null);
   const queryClient = useQueryClient();
 
   const {
@@ -32,6 +28,7 @@ export default function EditPackingListItemsView() {
     queryKey: ["packingList", ctpatId],
     queryFn: () => getPackingListById(ctpatId),
     enabled: !!ctpatId,
+    retry: 1,
   });
 
   const deleteItemMutation = useMutation({
@@ -51,12 +48,27 @@ export default function EditPackingListItemsView() {
     deleteItemMutation.mutate(itemId);
   };
 
+  const handleEditItem = (itemData: PackingListItemTable) => {
+    setEditingItem(itemData);
+  };
+
   const handleGoBack = () => {
     navigate("/ctpats");
   };
 
-  if (isLoading) return <Spinner />;
-  
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-primary)] mx-auto mb-4"></div>
+          <p className="text-gray-600">Cargando packing list...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
   if (isError || !packingList) {
     return (
       <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4">
@@ -69,6 +81,7 @@ export default function EditPackingListItemsView() {
               onClick={handleGoBack}
               className="inline-flex items-center gap-2 px-4 py-2 bg-white text-gray-700 rounded-lg hover:bg-gray-50 border border-gray-300"
             >
+              <ArrowLeft size={20} />
               Regresar a CTpats
             </button>
           </div>
@@ -94,15 +107,13 @@ export default function EditPackingListItemsView() {
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] py-8 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* Header con título y botón regresar */}
+        {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Editar Items del Packing List
+              Gestionar Items del Packing List
             </h1>
-            <p className="text-gray-600">
-              CTPAT #{ctpatId} - Modifica los items y los cambios se guardarán automáticamente
-            </p>
+            <p className="text-gray-600">CTPAT ID: {ctpatId}</p>
           </div>
 
           <button
@@ -114,15 +125,15 @@ export default function EditPackingListItemsView() {
           </button>
         </div>
 
-        {/* Contenido principal */}
+        {/* Contenido */}
         <div className="space-y-6">
-          {/* Header del packing list */}
+          {/* Información del Packing List */}
           <PackingListHeader packingList={headerData} />
 
-          {/* Botón agregar item */}
+          {/* Botón para agregar */}
           <div className="flex justify-start">
             <button
-              onClick={() => setOpenModal(true)}
+              onClick={() => setOpenAddModal(true)}
               className="px-6 py-3 bg-[var(--color-primary)] text-white rounded-lg hover:opacity-90 transition-all font-semibold shadow-md hover:shadow-lg"
             >
               + Agregar ítem
@@ -133,25 +144,38 @@ export default function EditPackingListItemsView() {
           <PackingListItemsTable
             items={items}
             onDelete={handleDeleteItem}
+            onEdit={(_, itemData) => handleEditItem(itemData)}
             ctpatId={ctpatId}
           />
 
-          {/* Nota informativa */}
+          {/* Mensaje informativo */}
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
             <p className="text-sm text-blue-800">
-              💡 <strong>Nota:</strong> Los cambios se guardan automáticamente. 
-              Puedes editar, agregar o eliminar items según sea necesario.
+              💡 <strong>Nota:</strong> Los cambios se guardan automáticamente.
+              Puedes agregar, editar o eliminar items según sea necesario.
             </p>
           </div>
         </div>
 
-        {/* Modal para agregar items */}
+        {/* Modal para agregar item */}
         <AddItemModal
-          open={openModal}
-          onClose={() => setOpenModal(false)}
+          open={openAddModal}
+          onClose={() => setOpenAddModal(false)}
           packingListId={packingList.id}
           ctpatId={ctpatId}
         />
+
+        {/* Modal para editar item */}
+        {editingItem && (
+          <EditItemForm
+            open={true}
+            onClose={() => setEditingItem(null)}
+            packingListId={packingList.id}
+            itemId={editingItem.id}
+            ctpatId={ctpatId}
+            itemData={editingItem}
+          />
+        )}
       </div>
     </div>
   );

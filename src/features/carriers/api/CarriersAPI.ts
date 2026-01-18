@@ -11,10 +11,9 @@ export async function createCarriersAPI(formData: createCarrierFormSchema) {
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       throw new Error(
-        error.response.data.error || "Error al crear el contenedor"
+        error.response.data.message
       );
     }
-    throw error;
   }
 }
 

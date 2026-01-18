@@ -5,21 +5,20 @@ import UploadImagesForm from "../components/UploadImagesForm";
 import { uploadImagesAPI } from "@/features/ctpats/api/CtpatsAPI";
 import type { uploadImagesFormData } from "@/features/ctpats/schemas/types";
 
-  type Props = {
-      ctpatId: number;
-  };
-
+type Props = {
+  ctpatId: number;
+};
 
 export default function CreateUploadImages({ ctpatId }: Props) {
 
   const { mutate: uploadImages } = useMutation({
     mutationFn: (data: uploadImagesFormData) => uploadImagesAPI(ctpatId, data),
 
-    onSuccess: (res) => {
-      if (res.success) {
-        toast.success(res.message);
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success(data.message);
       } else {
-        toast.error(res.message);
+        toast.error(data?.message);
       }
     },
 

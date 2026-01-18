@@ -13,13 +13,12 @@ type Props = {
 };
 
 export default function DriverModalCreate({ isOpen, onClose, onCreated }: Props) {
-
   const methods = useForm<DriverFormData>({
     defaultValues: {
       name: "",
       identification: "",
       license: "",
-      carrier_id: 0,
+      carrier_id: undefined,
       identification_image: "",
       license_image: "",
     }
@@ -37,7 +36,7 @@ export default function DriverModalCreate({ isOpen, onClose, onCreated }: Props)
   const handleForm = (data: DriverFormData) => {
 
     if (!data.identification_image && !data.license_image) {
-      toast.error("Debes agregar al menos una fotografía.");
+       toast.error("Debes agregar al menos una fotografía (DPI o Licencia)");
       return;
     }
 

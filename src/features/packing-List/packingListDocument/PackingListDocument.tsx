@@ -33,7 +33,7 @@ interface ItemData {
   fechaProduccion: string;
   producto: string;
   noTarima: number;
-  lote: number;
+  lote: string | number;
   codigo: string;
   cajas: number;
   pesoBruto: number;
@@ -438,7 +438,7 @@ const PackingListGenerator: React.FC = () => {
 
         </Document>
       );
-    }, [header, items, totals]);
+    }, [header, items, totals,totalsTable]);
 
     if (!header || !totals || !pdfDocument) {
       return <p>Cargando PDF...</p>;

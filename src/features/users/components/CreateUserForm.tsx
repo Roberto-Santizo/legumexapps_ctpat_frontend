@@ -46,7 +46,7 @@ export default function CreateUserForm({register,errors,}: CreateUserFormProps) 
           <input
             id="name"
             type="text"
-            placeholder="Ej. Manuel"
+            placeholder="Ej. LUIS"
             className={`form-input ${
               errors.name ? "form-input-error" : "form-input-normal"
             }`}
@@ -80,7 +80,6 @@ export default function CreateUserForm({register,errors,}: CreateUserFormProps) 
               errors.username ? "form-input-error" : "form-input-normal"
             }`}
             {...register("username", {
-              setValueAs: toUpper,
               required: "El username es obligatorio",
               minLength: {
                 value: 3,

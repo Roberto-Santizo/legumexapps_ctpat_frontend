@@ -99,7 +99,7 @@ const { data, isLoading, isError } = useQuery({
                     <th>Destino</th>
                     <th>Usuario</th>
                     <th>Sitio de salida</th>
-                    <th>Contenedor</th>
+                    <th>Contenedor (Número) </th>
                     <th>Fecha de creación</th>
                     <th>Estado</th>
                     <th>Acciones</th>
@@ -137,7 +137,7 @@ const { data, isLoading, isError } = useQuery({
                           {ctpat.status === 7 && (
                             <>
                               <Link
-                                className="btn-icon"
+                                className="btn-icon btn-icon-primary"
                                 to={`/ctpats/document/${ctpat.id}`}
                                 title="Ver ctp"
                               >
@@ -145,7 +145,7 @@ const { data, isLoading, isError } = useQuery({
                               </Link>
 
                               <Link
-                                className="btn-icon"
+                                className="btn-icon btn-icon-primary"
                                 to={`/packingList/document/${ctpat.id}`}
                                 title="Ver packing List"
                               >
@@ -154,7 +154,7 @@ const { data, isLoading, isError } = useQuery({
                               {canAccess(CTPAT_PERMISSIONS.CREATE, user?.role) && (
                               <Link
                                 className="btn-icon btn-icon-primary"
-                                to={`/ctpats/${ctpat.id}/edit-items`}
+                                to={`/ctpats/${ctpat.id}/packing-list/manage-items`}
                                 title="Editar items del packing List"
                               >
                                 <FilePenLine size={16} />

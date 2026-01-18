@@ -32,6 +32,8 @@ const routes = [
   { path: "/ctpats", component: lazy(() => import("@/features/ctpats/pages/TableCtpat")), roles: ROLE_GROUPS.CALIDAD_Y_EXPORTACIONES },
   { path: "/ctpats/create", component: lazy(() => import("@/features/ctpats/pages/CreateCtpats")), roles: ROLE_GROUPS.CALIDAD },
   { path: "/ctpats/document/:id", component: lazy(() => import("@/features/ctpats/ctpatsDocument/CtpatDocument")), roles: ROLE_GROUPS.CALIDAD },
+  //this is to add an images 
+  {path: "/ctpats/:id/upload-additional-images",component: lazy(() => import("@/features/ctpats/pages/UploadAdditionalImagesView")),roles: ROLE_GROUPS.ADMIN_Y_CALIDAD_ADMIN },
 
   { path: "/products", component: lazy(() => import("@/features/products/pages/TableProducts")), roles: ROLE_GROUPS.CALIDAD },
   { path: "/products/create", component: lazy(() => import("@/features/products/pages/CreateProduct")), roles: ROLE_GROUPS.CALIDAD },
@@ -43,11 +45,11 @@ const routes = [
 
   { path: "/packingList", component: lazy(() => import("@/features/packing-List/pages/CreatePackingList")), roles: ROLE_GROUPS.CALIDAD },
   { path: "/packingList/document/:id", component: lazy(() => import("@/features/packing-List/packingListDocument/PackingListDocument")), roles: ROLE_GROUPS.CALIDAD },
-  // {path: "/ctpats/:ctpatId/packing-list/items/:id/edit",component: lazy(() => import("@/features/packing-List/pages/EditPackingListItemView")),roles:ROLE_GROUPS.CALIDAD},
-  {
-  path: "/ctpats/:id/edit-items",component: lazy(() => import("@/features/packing-List/pages/EditPackingListItemView")),
-  roles: []
-},
+
+  //Edit packingList´s items 
+  {path: "/packing-list/editItem/:packingListId/:id/",component: lazy(() => import("@/features/packing-List/pages/EditItemView")),roles:ROLE_GROUPS.CALIDAD},
+  {path: "/ctpats/:id/packing-list/manage-items",component: lazy(() => import("@/features/packing-List/pages/ManagePackingListItemsView")),roles: ROLE_GROUPS.CALIDAD},
+
 
   { path: "/trucks", component: lazy(() => import("@/features/trucks/pages/TableTruck")), roles: ROLE_GROUPS.CALIDAD },
   { path: "/trucks/create", component: lazy(() => import("@/features/trucks/pages/CreateTruck")), roles: ROLE_GROUPS.CALIDAD },

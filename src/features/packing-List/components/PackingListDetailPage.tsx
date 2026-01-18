@@ -1,48 +1,132 @@
-import { useQuery } from "@tanstack/react-query"; 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
 import PackingListHeader from "@/features/packing-List/components/PackingListHeader";
 import PackingListItemsTable from "@/features/packing-List/pages/PackingListItemsTable";
 import AddItemModal from "@/features/packing-List/components/AddItemToPackingListModal";
-import {getPackingListById,deleteItemAPI} from "@/features/packing-List/api/PackingListAPI";
+import EditItemForm from "@/features/packing-List/components/EditItemForm";
+import { getPackingListById, deleteItemAPI } from "@/features/packing-List/api/PackingListAPI";
+import type { PackingListItemTable } from "@/features/packing-List/schemas/packingList";
 
-type Props = {ctpatId: number;onContinue: () => void;};
+type Props = {
+  ctpatId: number;
+  onContinue: () => void;
+};
 
 export default function PackingListDetailPage({ ctpatId, onContinue }: Props) {
-
-  const [openModal, setOpenModal] = useState(false);
+  const [openAddModal, setOpenAddModal] = useState(false);
+  const [editingItem, setEditingItem] = useState<PackingListItemTable | null>(null);
   const queryClient = useQueryClient();
 
-  const {data: packingList,isLoading,isError,} = useQuery({
+  const {
+    data: packingList,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["packingList", ctpatId],
     queryFn: () => getPackingListById(ctpatId),
     enabled: !!ctpatId,
+    retry: 1, // Solo reintentar una vez
   });
+
+  // DEBUG: Monitorear el estado de la query
+  useEffect(() => {
+    console.log("🔍 DEBUG PackingListDetailPage:", {
+      ctpatId,
+      isLoading,
+      isError,
+      error: error?.message,
+      packingList: packingList ? "Datos cargados" : "Sin datos",
+    });
+  }, [ctpatId, isLoading, isError, error, packingList]);
 
   const deleteItemMutation = useMutation({
     mutationFn: deleteItemAPI,
     onSuccess: async () => {
       toast.success("Ítem eliminado correctamente");
       await queryClient.invalidateQueries({
-        queryKey: ["packingList", ctpatId], 
+        queryKey: ["packingList", ctpatId],
       });
     },
     onError: (error: Error) => {
       toast.error(error.message);
     },
   });
-  
+
   const handleDeleteItem = (itemId: number) => {
     deleteItemMutation.mutate(itemId);
   };
 
-  if (isLoading) return <p>Cargando packing list...</p>;
-  if (isError || !packingList)
-    return <p>Error al cargar el packing list</p>;
+  const handleEditItem = (itemData: PackingListItemTable) => {
+    setEditingItem(itemData);
+  };
+
+  // Mostrar estado de carga
+  if (isLoading) {
+    return (
+      <div className="p-6 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-primary)] mx-auto mb-4"></div>
+          <p className="text-gray-600">Cargando packing list...</p>
+          <p className="text-sm text-gray-400 mt-2">CTPAT ID: {ctpatId}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Mostrar error con detalles
+  if (isError || !packingList) {
+    console.error("❌ Error al cargar packing list:", {
+      ctpatId,
+      error: error?.message,
+      packingList,
+    });
+
+    return (
+      <div className="p-6">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-6">
+          <h3 className="text-red-800 font-semibold mb-2">
+            Error al cargar el packing list
+          </h3>
+          <p className="text-red-600 text-sm mb-4">
+            CTPAT ID: {ctpatId}
+          </p>
+          {error && (
+            <div className="bg-red-100 rounded p-3 mb-4">
+              <p className="text-xs text-red-800 font-mono">
+                Error: {error.message}
+              </p>
+            </div>
+          )}
+          <div className="space-y-2 text-sm text-red-700">
+            <p>Posibles causas:</p>
+            <ul className="list-disc list-inside ml-4 space-y-1">
+              <li>El packing list no existe para este CTPAT</li>
+              <li>Error de conexión con el servidor</li>
+              <li>El CTPAT ID es inválido: {ctpatId}</li>
+              <li>Error en la validación del esquema de datos</li>
+            </ul>
+          </div>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+          >
+            Recargar página
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const items = packingList.items ?? [];
   const hasItems = items.length > 0;
+
+  console.log("✅ Packing list cargado correctamente:", {
+    id: packingList.id,
+    itemsCount: items.length,
+  });
 
   const headerData = {
     id: packingList.id,
@@ -55,46 +139,59 @@ export default function PackingListDetailPage({ ctpatId, onContinue }: Props) {
     boxes: packingList.boxes,
     beginning_date: packingList.beginning_date,
   };
+
   return (
     <div className="p-6 space-y-6">
-      {/* Header */}
       <PackingListHeader packingList={headerData} />
+
       <div className="flex justify-between">
         <button
-          onClick={() => setOpenModal(true)}
+          onClick={() => setOpenAddModal(true)}
           className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg"
         >
           + Agregar ítem
         </button>
 
-      <button
-        type="button"   
-        onClick={onContinue}
-        disabled={!hasItems}
-        className={`px-4 py-2 rounded-lg text-white ${
-          hasItems
-            ? "bg-green-600 hover:bg-green-700"
-            : "bg-gray-300 cursor-not-allowed"
-        }`}
-      >
-        Continuar a Checklist
-      </button>
-
-
+        <button
+          type="button"
+          onClick={onContinue}
+          disabled={!hasItems}
+          className={`px-4 py-2 rounded-lg text-white ${
+            hasItems
+              ? "bg-green-600 hover:bg-green-700"
+              : "bg-gray-300 cursor-not-allowed"
+          }`}
+        >
+          Continuar a Checklist
+        </button>
       </div>
 
       <PackingListItemsTable
         items={items}
         onDelete={handleDeleteItem}
+        onEdit={(_, itemData) => handleEditItem(itemData)}
         ctpatId={ctpatId}
       />
 
+      {/* Modal agregar */}
       <AddItemModal
-        open={openModal}
-        onClose={() => setOpenModal(false)}
+        open={openAddModal}
+        onClose={() => setOpenAddModal(false)}
         packingListId={packingList.id}
         ctpatId={ctpatId}
       />
+
+      {/* Modal editar */}
+      {editingItem && (
+        <EditItemForm
+          open={true}
+          onClose={() => setEditingItem(null)}
+          packingListId={packingList.id}
+          itemId={editingItem.id}
+          ctpatId={ctpatId}
+          itemData={editingItem}
+        />
+      )}
     </div>
   );
 }

@@ -1,7 +1,8 @@
 import api from "@/shared/api/axios"
 import { isAxiosError } from "axios";
-import type {ProductCreateData, ProductUpdateData} from "@/features/products/schemas/types"
-import { getProductSchema } from "@/features/products/schemas/types";
+import type {ProductCreateData, ProductUpdateData,} from "@/features/products/schemas/types"
+import { getProductSchema} from "@/features/products/schemas/types";
+import { productSelectResponseSchema } from "@/features/products/schemas/types";
 
 export async function createProdutAPI(formData: ProductCreateData) {
     try {
@@ -33,6 +34,26 @@ export async function getProductAPI(page: number = 1) {
     throw error;
   }
 }
+
+export async function getProductsForSelectAPI() {
+  try {
+    const { data } = await api.get("/products");
+
+    const parsed = productSelectResponseSchema.safeParse(data);
+
+    if (!parsed.success) {
+      throw new Error("Formato inválido de productos para el select");
+    }
+
+    return parsed.data.response; 
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
+    }
+    throw error;
+  }
+}
+
 
 export async function getProductByIdAPI(id: number) {
   try {

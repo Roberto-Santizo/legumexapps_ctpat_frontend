@@ -16,19 +16,22 @@ export const packingListTotalSchema = z.object({
 });
 
 export const packingListItemSchema = z.object({
-      id: z.number(),
-      product: z.string(),
-      no_tarima: z.number(),
-      lote: z.number(),
-      code: z.string(),
-      boxes: z.number(),
-      gross_weight: z.number(), 
-      net_weight: z.number(),
-      presentation: z.string(),
-      temp: z.number(),
-      expiration_date: z.string(),
-      grn:  z.string(),
-      po:  z.string().optional(),
+  id: z.number(),
+  product: z.string(), // El backend SÍ envía este campo
+  product_id: z.number(),
+  no_tarima: z.number(),
+  lote: z.union([z.string(), z.number()]).transform(val => String(val)), // Acepta string o number, convierte a string
+  code: z.string(), // El backend SÍ envía este campo
+  boxes: z.number(),
+  net_weight: z.number(),
+  gross_weight: z.number(),
+  presentation: z.string(), // El backend SÍ envía este campo
+  temp: z.number(),
+  expiration_date: z.string(),
+  client: z.string(), // Campo adicional del backend
+  client_id: z.number(),
+  grn: z.string(),
+  po: z.string().optional(),
 })
 
 export const getPackingListSchema = z.object({

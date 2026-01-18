@@ -1,6 +1,7 @@
 import {Menu,X,Bell, Settings,User,UserCircle,LogOut,ChevronRight,} from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import {useAuth} from "@/hooks/useAuth"
+import {useGreetingGT} from "@/shared/helpers/useGreetingGT"
 
 type HeaderProps = {
   sidebarOpen: boolean;
@@ -13,6 +14,7 @@ export default function Header({sidebarOpen,setSidebarOpen,mobileMenuOpen,setMob
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
   const { user, logout } = useAuth();
+  const greeting = useGreetingGT(); //This is to greet the user depending on the time of day
 
   useEffect(() => {
     const handlePointerOutside = (e: MouseEvent | TouchEvent) => {
@@ -101,7 +103,7 @@ export default function Header({sidebarOpen,setSidebarOpen,mobileMenuOpen,setMob
             >
               <div className="hidden lg:block text-right">
                 <p className="text-sm font-semibold text-slate-200 group-hover:text-white transition-colors">
-                  {user?.name}
+                  {greeting}, {user?.name}
                 </p>
                 <p className="text-xs text-amber-400 font-medium">
                   {user?.role}

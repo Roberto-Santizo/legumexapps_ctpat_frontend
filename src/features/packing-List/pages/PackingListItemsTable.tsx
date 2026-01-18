@@ -1,21 +1,18 @@
 import type { PackingListItemTable } from "@/features/packing-List/schemas/packingList";
 import { Trash2, Pencil } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 type Props = {
   items: PackingListItemTable[];
   onDelete: (itemId: number) => void;
-  ctpatId: number; // Agregamos ctpatId para la navegación
+  onEdit: (itemId: number, itemData: PackingListItemTable) => void;
+  ctpatId?: number;
 };
 
-export default function PackingListItemsTable({ items, onDelete, ctpatId }: Props) {
-  const navigate = useNavigate();
-
-  const handleEdit = (itemId: number) => {
-    // Navegar a la ruta de edición pasando tanto el ctpatId como el itemId
-    navigate(`/ctpats/${ctpatId}/packing-list/items/${itemId}/edit`);
-  };
-
+export default function PackingListItemsTable({ 
+  items, 
+  onDelete, 
+  onEdit
+}: Props) {
   return (
     <div className="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200">
       <div className="overflow-x-auto">
@@ -26,10 +23,13 @@ export default function PackingListItemsTable({ items, onDelete, ctpatId }: Prop
                 Producto
               </th>
               <th className="px-2 py-3 text-center font-semibold text-orange-700">
-                Tari
+                Tarima
               </th>
               <th className="px-2 py-3 text-center font-semibold text-orange-700">
                 Lote
+              </th>
+              <th className="px-2 py-3 text-center font-semibold text-orange-700">
+                Código
               </th>
               <th className="px-2 py-3 text-center font-semibold text-orange-700">
                 Cajas
@@ -41,10 +41,16 @@ export default function PackingListItemsTable({ items, onDelete, ctpatId }: Prop
                 Peso neto
               </th>
               <th className="px-2 py-3 text-center font-semibold text-orange-700">
+                Presentación
+              </th>
+              <th className="px-2 py-3 text-center font-semibold text-orange-700">
                 Temp
               </th>
               <th className="px-2 py-3 text-center font-semibold text-orange-700">
                 Vencimiento
+              </th>
+              <th className="px-2 py-3 text-center font-semibold text-orange-700">
+                Cliente
               </th>
               <th className="px-2 py-3 text-center font-semibold text-orange-700">
                 GRN
@@ -77,6 +83,9 @@ export default function PackingListItemsTable({ items, onDelete, ctpatId }: Prop
                 <td className="px-2 py-3 text-center">
                   {item.lote}
                 </td>
+                <td className="px-2 py-3 text-center text-sm">
+                  {item.code}
+                </td>
                 <td className="px-2 py-3 text-center font-semibold">
                   {item.boxes}
                 </td>
@@ -86,12 +95,17 @@ export default function PackingListItemsTable({ items, onDelete, ctpatId }: Prop
                 <td className="px-2 py-3 text-center font-semibold">
                   {item.net_weight}
                 </td>
-
+                <td className="px-2 py-3 text-center text-sm">
+                  {item.presentation}
+                </td>
                 <td className="px-2 py-3 text-center">
                   {item.temp}°C
                 </td>
-                <td className="px-2 py-3 text-center">
+                <td className="px-2 py-3 text-center text-sm">
                   {item.expiration_date}
+                </td>
+                <td className="px-2 py-3 text-center text-sm">
+                  {item.client}
                 </td>
                 <td className="px-2 py-3 text-center">
                   {item.grn ? (
@@ -108,14 +122,14 @@ export default function PackingListItemsTable({ items, onDelete, ctpatId }: Prop
                 <td className="px-2 py-3 text-center">
                   <div className="flex justify-center gap-3">
                     <button
-                      onClick={() => handleEdit(item.id)}
+                      onClick={() => onEdit(item.id, item)}
                       className="btn-icon btn-icon-primary"
                       title="Editar"
                     >
                       <Pencil size={16} />
                     </button>
                     <button
-                      onClick={() => onDelete(item.id)} 
+                      onClick={() => onDelete(item.id)}
                       className="btn-icon btn-icon-primary"
                       title="Eliminar"
                     >

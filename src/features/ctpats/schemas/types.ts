@@ -21,6 +21,7 @@ export const CtpatSchema = z.object({
   destination: z.string(),
   container_id: z.number(),
   departure_site: z.string(),
+  type : z.number(),
   images: z.array(ImageSchema),
 });
 
@@ -53,6 +54,8 @@ export type uploadImages = z.infer<typeof ImageSchema>;
 export const UploadImageSimpleSchema = z.object({
   image: z.string(),
   type: z.string(),
+  description: z.string().optional(),
+
 });
 
 export const UploadImagesFormSchema = z.object({

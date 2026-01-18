@@ -1,7 +1,9 @@
-import { ErrorMessage } from "@/shared/components/ErrorMessage";
 import type {UseFormRegister,FieldErrors} from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
+import {getCustomersForSelectAPI} from "@/features/customer/api/CustomerAPI"
+
+import { ErrorMessage } from "@/shared/components/ErrorMessage";
 import type { PackignListFormData } from "@/features/packing-List/schemas/types";
-import { toUpper } from "@/shared/helpers/textTransformUppercase";
 
 type PackingListFormProps = {
     register: UseFormRegister<PackignListFormData>
@@ -9,24 +11,34 @@ type PackingListFormProps = {
 }
 
 export default function PackingListForm({register, errors}: PackingListFormProps) {
+    const { data: customers, isLoading } = useQuery({
+        queryKey: ["customers-select"],
+        queryFn: getCustomersForSelectAPI,
+    });
+
+    if (isLoading) {
+     return <p>Cargando clientes...</p>;
+    }    
   return (
     <div className="form-container space-y-6">
         <div className="form-group">
-                <label htmlFor="box_type" className="form-label">
-                Tipo de caja<span className="required">*</span>
-                </label>
-                <input
-                    id="box_type"
-                    type="text"
-                    placeholder="Impreso"
-                    className={`form-input ${
-                        errors?.box_type ? "form-input-error" : "form-input-normal"
-                    }`}
-                    {...register("box_type", { required: "El tipo de caja es obligatorio" })}
-                />
-                {errors?.box_type && (
-                <ErrorMessage>{errors.box_type.message}</ErrorMessage>
-                )}
+        <label htmlFor="box_type" className="form-label">
+            Tipo de caja<span className="required">*</span>
+        </label>
+        <select
+            id="box_type"
+            className={`form-input ${
+            errors?.box_type ? "form-input-error" : "form-input-normal"
+            }`}
+            {...register("box_type", { required: "El tipo de caja es obligatorio" })}
+        >
+            <option value="">Seleccione un tipo</option>
+            <option value="PRINTED">PRINTED (Cajas impresas)</option>
+            <option value="KRAFT">KRAFT (Cajas Genéricas)</option>
+        </select>
+        {errors?.box_type && (
+            <ErrorMessage>{errors.box_type.message}</ErrorMessage>
+        )}
         </div>
 
         <div className="form-group">
@@ -43,26 +55,36 @@ export default function PackingListForm({register, errors}: PackingListFormProps
             {errors?.order && (
             <ErrorMessage>{errors.order.message}</ErrorMessage>
             )}
-      </div>
+        </div>
 
-      <div className="form-group">
-            <label htmlFor="customer" className="form-label">Cliente <span className="required">*</span></label>
-            <input
+        <div className="form-group">
+            <label htmlFor="customer" className="form-label">
+                Cliente <span className="required">*</span>
+            </label>
+
+            <select
                 id="customer"
-                type="text"
-                placeholder="H.E.B."
                 className={`form-input ${
-                    errors?.customer ? "form-input-error" : "form-input-normal"
+                errors?.customer ? "form-input-error" : "form-input-normal"
                 }`}
                 {...register("customer", {
-                    setValueAs: toUpper,
-                    required: "El cliente es obligatorio",
+                required: "El cliente es obligatorio",
                 })}
-            />
+            >
+                <option value="">Seleccione un cliente</option>
+
+                {customers?.map((customer) => (
+                <option key={customer.id} value={customer.name}>
+                    {customer.name}
+                </option>
+                ))}
+            </select>
+
             {errors?.customer && (
-            <ErrorMessage>{errors.customer.message}</ErrorMessage>
+                <ErrorMessage>{errors.customer.message}</ErrorMessage>
             )}
-     </div>
+        </div>
+
     
      <div className="form-group">
             <label htmlFor="thermograph_no" className="form-label">Numero de termógrafro <span className="required">*</span> </label>
