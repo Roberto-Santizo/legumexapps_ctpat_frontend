@@ -6,15 +6,9 @@ import { toUpper } from "@/shared/helpers/textTransformUppercase";
 type ProductFormProps = {
   register: UseFormRegister<ProductCreateData>;
   errors: FieldErrors<ProductCreateData>;
-  isEdit?: boolean;
-  showCarrierField?: boolean;
 };
 
-export default function ProductForm({
-  register,
-  errors,
-  isEdit = false,
-}: ProductFormProps) {
+export default function CreateProductsForm({register,errors,}: ProductFormProps) {
   return (
     <div className="form-container space-y-6">
       <div className="form-group">
@@ -57,8 +51,6 @@ export default function ProductForm({
         </div>
         {errors.code && <ErrorMessage>{errors.code.message}</ErrorMessage>}
       </div>
-
-      {!isEdit && (
         <>
           <div className="form-group">
             <label htmlFor="presentation" className="form-label">
@@ -85,7 +77,7 @@ export default function ProductForm({
 
           <div className="form-group">
             <label htmlFor="lbs_presentation" className="form-label">
-              Presentación de la caja<span className="required">*</span>
+              Libras por caja<span className="required">*</span>
             </label>
             <div className="input-icon-wrapper relative">
               <input
@@ -107,7 +99,6 @@ export default function ProductForm({
             )}
           </div>
         </>
-      )}
     </div>
   );
 }

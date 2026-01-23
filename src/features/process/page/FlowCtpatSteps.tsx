@@ -3,18 +3,17 @@ import { useQuery } from "@tanstack/react-query";
 import {getCtpatByIdAPI} from "@/features/ctpats/api/CtpatsAPI";
 import { Spinner } from "@/shared/components/Spinner";
 import React from "react";
-import CreatePackingList from "@/features/packing-List/pages/CreatePackingList";
 import CreateCtpatAssignment from "@/features/ctpats/pages/CreateCtpatAssignment";
-// import CreateUploadImages from "@/features/upload-images/pages/CreateUploadImages";
 import CheckListPage from "@/features/checkLists/pages/CheckListPage";
 import CloseCtpat from "@/features/ctpats/pages/CloseCtpat";
 import type { CtpatStatus } from "@/features/ctpats/constants/statusCodes";
-// import PackingListWithImagesStep from "@/features/packing-List/components/PackingListSection";
-import PackingListReviewStep from "@/features/packing-List/pages/PackingListReviewStep"
+import DynamicPackingListReview from "@/features/process/components/DynamicPackingListReview";
 import { useUpdateCtpatStatus } from "@/features/ctpats/hooks/useUpdateCtpatStatus";
 import FinalContainerImages from "@/features/ctpats/components/FinalContainerImages";
 
- 
+import { getProductConfigById } from "../control flow/productConfig";
+import type { ProductTypeId } from "../control flow/productTypes";
+
 export default function FlowCtpatSteps() {
   const params = useParams();
   const ctpatId = Number(params.id);
@@ -32,33 +31,49 @@ export default function FlowCtpatSteps() {
 
   const ctpat = data.response;
 
-  const stepsMap = (ctpatId: number): Record<CtpatStatus, React.ReactNode> => ({
-    1: <CreatePackingList/>,
+  // Obtener el tipo de producto del CTPAT (1 = FROZEN, 2 = JUICE)
+  const productTypeId: ProductTypeId = ctpat.type || 1;
+  const config = getProductConfigById(productTypeId);
+
+  // Extraer el componente de creación de packing list
+  const CreatePackingListComponent = config.createPackingListComponent;
+
+  const stepsMap: Record<CtpatStatus, React.ReactNode> = {
+    // STATUS 1: DINÁMICO - Crea packing list según tipo de producto
+    // Si type=1 → CreatePackingList (frozen)
+    // Si type=2 → CreatePackingListView (juice)
+    1: <CreatePackingListComponent />,
+
+    //STATUS 2: DINÁMICO - Revisa y agrega items según tipo de producto
+    // Si type=1 → PackingListReviewStep (frozen)
+    // Si type=2 → JuicePackingListReviewStep (juice)
     2: (
-          <PackingListReviewStep
-            ctpatId={ctpat.id}
-            onContinue={() =>
-              updateStatusMutation.mutate({
-                id: ctpat.id,
-                status: 3,
-              })
-            }
-          />
-        ),
-    3: <CheckListPage ctpatId={ctpatId} />,
+      <DynamicPackingListReview
+        ctpatId={ctpat.id}
+        onContinue={() =>
+          updateStatusMutation.mutate({
+            id: ctpat.id,
+            status: 3,
+          })
+        }
+      />
+    ),
 
-    4: <CreateCtpatAssignment ctpatId={ctpatId} />,
+    3: <CheckListPage ctpatId={ctpat.id} />,
 
-    5: <FinalContainerImages ctpatId={ctpatId} />,
+    4: <CreateCtpatAssignment ctpatId={ctpat.id} />,
 
-    6: <CloseCtpat ctpatId={ctpatId} />,
+    5: <FinalContainerImages ctpatId={ctpat.id} />,
+
+    6: <CloseCtpat ctpatId={ctpat.id} />,
 
     7: <p className="text-center text-xl font-semibold mt-10">CTPAT Cerrado</p>,
-  });
+  };
+
 
   const status = ctpat.status as CtpatStatus;
 
   return (
-    stepsMap(ctpatId)[status] ?? <p>Estado desconocido o no implementado</p>
+    stepsMap[status] ?? <p>Estado desconocido o no implementado</p>
   );
 }

@@ -1,8 +1,14 @@
 // packingList.styles.ts
 import { StyleSheet } from '@react-pdf/renderer';
 
-const BORDER_COLOR = '#000000';
+const BORDER_COLOR = '#cbd5e0';
 const BORDER_WIDTH = 1;
+const PRIMARY_COLOR = '#2c5282';
+const HEADER_BG = '#2c5282';
+const HEADER_TEXT = '#FFFFFF';
+const LABEL_BG = '#f7fafc';
+const LABEL_TEXT = '#2d3748';
+// const ALT_ROW_BG = '#f7fafc';
 
 export const packingListDocumentSyles = StyleSheet.create({
   page: {
@@ -22,15 +28,14 @@ export const packingListDocumentSyles = StyleSheet.create({
   headerGrid: {
     flexDirection: 'row',
     marginBottom: 5,
-    // El contenedor tiene el borde exterior completo
     borderWidth: BORDER_WIDTH,
-    borderColor: BORDER_COLOR,
+    borderColor: PRIMARY_COLOR,
   },
 
   logoCell: {
     width: '30%',
     borderRightWidth: BORDER_WIDTH,
-    borderColor: BORDER_COLOR,
+    borderColor: PRIMARY_COLOR,
     padding: 5,
     height: 50,
   },
@@ -38,46 +43,49 @@ export const packingListDocumentSyles = StyleSheet.create({
   formatCell: {
     width: '40%',
     borderRightWidth: BORDER_WIDTH,
-    borderColor: BORDER_COLOR,
+    borderColor: PRIMARY_COLOR,
     padding: 5,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: LABEL_BG,
+    color: LABEL_TEXT,
   },
 
   annexCell: {
     width: '60%',
     padding: 5,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: LABEL_BG,
+    color: LABEL_TEXT,
   },
   
   // Fila interna del header (Packing List / Version)
   headerSubRow: {
     flexDirection: 'row',
     height: 25,
-    borderTopWidth: BORDER_WIDTH, // Solo borde arriba para separar de la fila anterior
-    borderColor: BORDER_COLOR,
+    borderTopWidth: BORDER_WIDTH,
+    borderColor: PRIMARY_COLOR,
   },
 
   packingListCell: {
     width: '40%',
     borderRightWidth: BORDER_WIDTH,
-    borderColor: BORDER_COLOR,
+    borderColor: HEADER_TEXT,
     padding: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e0e0e0',
+    backgroundColor: HEADER_BG,
+    color: HEADER_TEXT,
   },
   versionCell: {
     width: '60%',
     padding: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e0e0e0',
+    backgroundColor: HEADER_BG,
+    color: HEADER_TEXT,
   },
 
   // ===============================
   // Tabla datos generales
   // ===============================
-  // Contenedor general para los datos
   generalDataContainer: {
     borderTopWidth: BORDER_WIDTH,
     borderLeftWidth: BORDER_WIDTH,
@@ -89,57 +97,58 @@ export const packingListDocumentSyles = StyleSheet.create({
   },
 
   dataCellLabel: {
-      width: '13%', // Etiqueta
-      borderRightWidth: BORDER_WIDTH,
-      borderBottomWidth: BORDER_WIDTH,
-      borderColor: BORDER_COLOR,
-      padding: 3,
-      backgroundColor: '#f0f0f0',
-      fontWeight: 'bold',
-    },
+    width: '13%',
+    borderRightWidth: BORDER_WIDTH,
+    borderBottomWidth: BORDER_WIDTH,
+    borderColor: BORDER_COLOR,
+    padding: 3,
+    backgroundColor: LABEL_BG,
+    fontWeight: 'bold',
+    color: LABEL_TEXT,
+  },
 
   dataCellValue: {
-    width: '17%', // Valor
+    width: '17%',
     borderRightWidth: BORDER_WIDTH,
     borderBottomWidth: BORDER_WIDTH,
     borderColor: BORDER_COLOR,
     padding: 3,
   },
 
-
   dataCellLabelWide: {
-      width: '10%', // Etiqueta más angosta
-      borderRightWidth: BORDER_WIDTH,
-      borderBottomWidth: BORDER_WIDTH,
-      borderColor: BORDER_COLOR,
-      padding: 3,
-      backgroundColor: '#f0f0f0',
-      fontWeight: 'bold',
-    },
+    width: '10%',
+    borderRightWidth: BORDER_WIDTH,
+    borderBottomWidth: BORDER_WIDTH,
+    borderColor: BORDER_COLOR,
+    padding: 3,
+    backgroundColor: LABEL_BG,
+    fontWeight: 'bold',
+    color: LABEL_TEXT,
+  },
 
   dataCellValueWide: {
-      width: '30%', 
-      borderRightWidth: BORDER_WIDTH,
-      borderBottomWidth: BORDER_WIDTH,
-      borderColor: BORDER_COLOR,
-      padding: 3,
-    },
+    width: '30%', 
+    borderRightWidth: BORDER_WIDTH,
+    borderBottomWidth: BORDER_WIDTH,
+    borderColor: BORDER_COLOR,
+    padding: 3,
+  },
 
   dataCellProduct: {
-      width: '30%', // Igual que ValueWide
-      borderRightWidth: BORDER_WIDTH,
-      borderBottomWidth: BORDER_WIDTH,
-      borderColor: BORDER_COLOR,
-      padding: 3,
-    },
+    width: '30%',
+    borderRightWidth: BORDER_WIDTH,
+    borderBottomWidth: BORDER_WIDTH,
+    borderColor: BORDER_COLOR,
+    padding: 3,
+  },
 
   dataCellNoBorder: {
-      width: '17%', 
-      padding: 3,
-      borderRightWidth: BORDER_WIDTH,
-      borderBottomWidth: BORDER_WIDTH,
-      borderColor: BORDER_COLOR,
-    },
+    width: '17%', 
+    padding: 3,
+    borderRightWidth: BORDER_WIDTH,
+    borderBottomWidth: BORDER_WIDTH,
+    borderColor: BORDER_COLOR,
+  },
 
   // ===============================
   // Tabla principal (Productos)
@@ -147,10 +156,9 @@ export const packingListDocumentSyles = StyleSheet.create({
   table: {
     width: '100%',
     marginTop: 10,
-    // ESTRATEGIA GRID: La tabla pone borde ARRIBA e IZQUIERDA
     borderTopWidth: BORDER_WIDTH,
     borderLeftWidth: BORDER_WIDTH,
-    borderColor: BORDER_COLOR,
+    borderColor: PRIMARY_COLOR,
   },
 
   tableRow: {
@@ -159,7 +167,8 @@ export const packingListDocumentSyles = StyleSheet.create({
 
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: '#e0e0e0',
+    backgroundColor: HEADER_BG,
+    color: HEADER_TEXT,
   },
 
   // CELDAS DE TABLA
@@ -225,73 +234,78 @@ export const packingListDocumentSyles = StyleSheet.create({
     textAlign: 'right',
     fontWeight: 'bold',
     borderRightWidth: BORDER_WIDTH,
-    borderBottomWidth: BORDER_WIDTH, // Importante para cerrar la tabla abajo
+    borderBottomWidth: BORDER_WIDTH,
     borderColor: BORDER_COLOR,
+    backgroundColor: '#e2e8f0',
+    color: LABEL_TEXT,
   },
 
   colTotalLabelWithPoGrn: {
-    width: '56%', // Ajustar según tus columnas extra
+    width: '56%',
     padding: 3,
     textAlign: 'right',
     fontWeight: 'bold',
     borderRightWidth: BORDER_WIDTH,
     borderBottomWidth: BORDER_WIDTH,
     borderColor: BORDER_COLOR,
+    backgroundColor: '#e2e8f0',
+    color: LABEL_TEXT,
   },
 
   // ===============================
-// Tabla de Totales (Resumen por Producto)
-// ===============================
+  // Tabla de Totales (Resumen por Producto)
+  // ===============================
 
-totalsSection: {
-  marginTop: 14,
-},
+  totalsSection: {
+    marginTop: 14,
+  },
 
-totalsTitle: {
-  fontWeight: 'bold',
-  marginBottom: 4,
-},
+  totalsTitle: {
+    fontWeight: 'bold',
+    marginBottom: 4,
+    color: PRIMARY_COLOR,
+  },
 
-totalsTable: {
-  width: '100%',
-  borderTopWidth: BORDER_WIDTH,
-  borderLeftWidth: BORDER_WIDTH,
-  borderColor: BORDER_COLOR,
-},
+  totalsTable: {
+    width: '100%',
+    borderTopWidth: BORDER_WIDTH,
+    borderLeftWidth: BORDER_WIDTH,
+    borderColor: PRIMARY_COLOR,
+  },
 
-totalsHeaderRow: {
-  flexDirection: 'row',
-  backgroundColor: '#e0e0e0',
-},
+  totalsHeaderRow: {
+    flexDirection: 'row',
+    backgroundColor: HEADER_BG,
+    color: HEADER_TEXT,
+  },
 
-totalsRow: {
-  flexDirection: 'row',
-},
+  totalsRow: {
+    flexDirection: 'row',
+  },
 
-totalsColProduct: {
-  width: '40%',
-  borderRightWidth: BORDER_WIDTH,
-  borderBottomWidth: BORDER_WIDTH,
-  borderColor: BORDER_COLOR,
-  padding: 3,
-},
+  totalsColProduct: {
+    width: '40%',
+    borderRightWidth: BORDER_WIDTH,
+    borderBottomWidth: BORDER_WIDTH,
+    borderColor: BORDER_COLOR,
+    padding: 3,
+  },
 
-totalsColSmall: {
-  width: '20%',
-  borderRightWidth: BORDER_WIDTH,
-  borderBottomWidth: BORDER_WIDTH,
-  borderColor: BORDER_COLOR,
-  padding: 3,
-  textAlign: 'center',
-},
+  totalsColSmall: {
+    width: '20%',
+    borderRightWidth: BORDER_WIDTH,
+    borderBottomWidth: BORDER_WIDTH,
+    borderColor: BORDER_COLOR,
+    padding: 3,
+    textAlign: 'center',
+  },
 
-totalsColMedium: {
-  width: '20%',
-  borderRightWidth: BORDER_WIDTH,
-  borderBottomWidth: BORDER_WIDTH,
-  borderColor: BORDER_COLOR,
-  padding: 3,
-  textAlign: 'right',
-},
-
+  totalsColMedium: {
+    width: '20%',
+    borderRightWidth: BORDER_WIDTH,
+    borderBottomWidth: BORDER_WIDTH,
+    borderColor: BORDER_COLOR,
+    padding: 3,
+    textAlign: 'right',
+  },
 });

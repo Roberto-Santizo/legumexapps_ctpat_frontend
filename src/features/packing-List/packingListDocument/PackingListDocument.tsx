@@ -56,6 +56,12 @@ interface TotalRow {
   weight: number;
   netWeight: number;
 }
+
+/* ===============================================================
+  COLORES
+================================================================ */
+const HEADER_TEXT_COLOR = '#FFFFFF';
+
 /* ===============================================================
   2. MAPPERS (API → PDF)
 ================================================================ */
@@ -119,22 +125,22 @@ const mapTotalsTable = (
 ================================================================ */
 const TableHeader: React.FC<{ showPoGrn?: boolean }> = ({ showPoGrn }) => (
   <View style={[styles.tableRow, styles.tableHeader]} fixed>
-    <Text style={styles.colFecha}>FECHA PRODUCCION</Text>
-    <Text style={styles.colProducto}>PRODUCTO</Text>
-    <Text style={styles.colSmall}>NO. TARIMA</Text>
-    <Text style={styles.colSmall}>LOTE</Text>
-    <Text style={styles.colSmall}>CODIGO</Text>
-    <Text style={styles.colSmall}>CAJAS POR TARIMA</Text>
-    <Text style={styles.colMedium}>PESO BRUTO</Text>
-    <Text style={styles.colMedium}>PESO NETO</Text>
-    <Text style={styles.colPresentacion}>PRESENTACION</Text>
-    <Text style={styles.colTemp}>TEMP</Text>
-    <Text style={styles.colFecha}>FECHA EXPIRACION</Text>
+    <Text style={[styles.colFecha, { color: HEADER_TEXT_COLOR, borderColor: '#FFFFFF' }]}>FECHA PRODUCCION</Text>
+    <Text style={[styles.colProducto, { color: HEADER_TEXT_COLOR, borderColor: '#FFFFFF' }]}>PRODUCTO</Text>
+    <Text style={[styles.colSmall, { color: HEADER_TEXT_COLOR, borderColor: '#FFFFFF' }]}>NO. TARIMA</Text>
+    <Text style={[styles.colSmall, { color: HEADER_TEXT_COLOR, borderColor: '#FFFFFF' }]}>LOTE</Text>
+    <Text style={[styles.colSmall, { color: HEADER_TEXT_COLOR, borderColor: '#FFFFFF' }]}>CODIGO</Text>
+    <Text style={[styles.colSmall, { color: HEADER_TEXT_COLOR, borderColor: '#FFFFFF' }]}>CAJAS POR TARIMA</Text>
+    <Text style={[styles.colMedium, { color: HEADER_TEXT_COLOR, borderColor: '#FFFFFF' }]}>PESO BRUTO</Text>
+    <Text style={[styles.colMedium, { color: HEADER_TEXT_COLOR, borderColor: '#FFFFFF' }]}>PESO NETO</Text>
+    <Text style={[styles.colPresentacion, { color: HEADER_TEXT_COLOR, borderColor: '#FFFFFF' }]}>PRESENTACION</Text>
+    <Text style={[styles.colTemp, { color: HEADER_TEXT_COLOR, borderColor: '#FFFFFF' }]}>TEMP</Text>
+    <Text style={[styles.colFecha, { color: HEADER_TEXT_COLOR, borderColor: '#FFFFFF' }]}>FECHA EXPIRACION</Text>
 
     {showPoGrn && (
       <>
-        <Text style={styles.colSmall}>PO</Text>
-        <Text style={styles.colSmall}>GRN</Text>
+        <Text style={[styles.colSmall, { color: HEADER_TEXT_COLOR, borderColor: '#FFFFFF' }]}>PO</Text>
+        <Text style={[styles.colSmall, { color: HEADER_TEXT_COLOR, borderColor: '#FFFFFF' }]}>GRN</Text>
       </>
     )}
   </View>
@@ -183,26 +189,26 @@ const TableFooter: React.FC<{
       TOTAL
     </Text>
 
-    <Text style={styles.colSmall}>
+    <Text style={[styles.colSmall, { backgroundColor: '#e2e8f0' }]}>
       {totals.totalCajas}
     </Text>
 
-    <Text style={styles.colMedium}>
+    <Text style={[styles.colMedium, { backgroundColor: '#e2e8f0' }]}>
       {totals.totalPesoBruto.toFixed(2)}
     </Text>
 
-    <Text style={styles.colMedium}>
+    <Text style={[styles.colMedium, { backgroundColor: '#e2e8f0' }]}>
       {totals.totalPesoNeto.toFixed(2)}
     </Text>
 
-    <Text style={styles.colPresentacion} />
-    <Text style={styles.colTemp} />
-    <Text style={styles.colFecha} />
+    <Text style={[styles.colPresentacion, { backgroundColor: '#e2e8f0' }]} />
+    <Text style={[styles.colTemp, { backgroundColor: '#e2e8f0' }]} />
+    <Text style={[styles.colFecha, { backgroundColor: '#e2e8f0' }]} />
 
     {showPoGrn && (
       <>
-        <Text style={styles.colSmall} />
-        <Text style={styles.colSmall} />
+        <Text style={[styles.colSmall, { backgroundColor: '#e2e8f0' }]} />
+        <Text style={[styles.colSmall, { backgroundColor: '#e2e8f0' }]} />
       </>
     )}
   </View>
@@ -212,10 +218,10 @@ const TableFooter: React.FC<{
 
 const TotalsTableHeader = () => (
   <View style={styles.totalsHeaderRow}>
-    <Text style={styles.totalsColProduct}>PRODUCTO</Text>
-    <Text style={styles.totalsColSmall}>TOTAL DE CAJAS</Text>
-    <Text style={styles.totalsColMedium}>PESO BRUTO</Text>
-    <Text style={styles.totalsColMedium}>PESO NETO</Text>
+    <Text style={[styles.totalsColProduct, { color: HEADER_TEXT_COLOR, borderColor: '#FFFFFF' }]}>PRODUCTO</Text>
+    <Text style={[styles.totalsColSmall, { color: HEADER_TEXT_COLOR, borderColor: '#FFFFFF' }]}>TOTAL DE CAJAS</Text>
+    <Text style={[styles.totalsColMedium, { color: HEADER_TEXT_COLOR, borderColor: '#FFFFFF' }]}>PESO BRUTO</Text>
+    <Text style={[styles.totalsColMedium, { color: HEADER_TEXT_COLOR, borderColor: '#FFFFFF' }]}>PESO NETO</Text>
   </View>
 );
 
@@ -271,10 +277,10 @@ const HeaderSection: React.FC<{ header: HeaderData }> = ({ header }) => (
         {/* Usamos el estilo headerSubRow para poner el borde superior correcto */}
         <View style={styles.headerSubRow}>
           <View style={styles.packingListCell}>
-            <Text>PACKING LIST</Text>
+            <Text style={{ color: HEADER_TEXT_COLOR }}>PACKING LIST</Text>
           </View>
           <View style={{...styles.versionCell, borderRightWidth: 0}}>
-            <Text>VERSION:01</Text>
+            <Text style={{ color: HEADER_TEXT_COLOR }}>VERSION:01</Text>
           </View>
         </View>
       </View>
@@ -466,4 +472,3 @@ const PackingListGenerator: React.FC = () => {
 };
 
 export default PackingListGenerator;
-

@@ -5,10 +5,11 @@ import { ArrowLeft } from "lucide-react";
 import { toast } from "react-toastify";
 
 import PackingListHeader from "@/features/packing-List/components/PackingListHeader";
-import PackingListItemsTable from "@/features/packing-List/pages/PackingListItemsTable";
-import AddItemModal from "@/features/packing-List/components/AddItemToPackingListModal";
-import EditItemForm from "@/features/packing-List/components/EditItemForm";
-import { getPackingListById, deleteItemAPI } from "@/features/packing-List/api/PackingListAPI";
+import PackingListItemsTable from "@/features/frozen-items/page/FrozenItemsTable";
+import AddItemModal from "@/features/frozen-items/component/AddFrozenItemToPackingListModal";
+import EditItemForm from "@/features/frozen-items/component/EditFrozenItemForm";
+import { getPackingListById } from "@/features/packing-List/api/PackingListAPI";
+import { deleteItemAPI } from "@/features/frozen-items/api/frozenItemAPI";
 import type { PackingListItemTable } from "@/features/packing-List/schemas/packingList";
 
 export default function ManagePackingListItemsView() {
@@ -161,7 +162,7 @@ export default function ManagePackingListItemsView() {
         <AddItemModal
           open={openAddModal}
           onClose={() => setOpenAddModal(false)}
-          packingListId={packingList.id}
+          frozenPackingListId={packingList.id}
           ctpatId={ctpatId}
         />
 

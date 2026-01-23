@@ -4,7 +4,9 @@ import EditConditionForm from "@/features/conditions/components/EditConditionFor
 import { getConditionByIdAPI } from "@/features/conditions/api/ConditionsAPI";
 
 export default function EditCondition() {
-  const { conditionId } = useParams();
+  const params = useParams()
+  const  conditionId  = Number(params.conditionId);
+
 
   const { data, isError, isLoading } = useQuery({
     queryKey: ["editCondition", conditionId],

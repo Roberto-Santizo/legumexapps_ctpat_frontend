@@ -10,7 +10,9 @@ export function useUpdateCtpatStatus() {
       updateCtpatStatusAPI(id, status),
 
     onSuccess: (data) => {
-      toast.success(data.message);
+      if (data?.message) {
+        toast.success(data.message);
+      }
 
       queryClient.invalidateQueries({ queryKey: ["ctpats"] });
 

@@ -25,7 +25,7 @@ export async function getDriverAPI(page: number = 1) {
     }
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-       throw new Error(error.response.data.error)
+       throw new Error(error.response.data.message)
     } 
   }
 }
@@ -36,7 +36,7 @@ export async function getDriverByIdAPI(id: number) {
     return data;
   } catch (error) {
       if (isAxiosError(error) && error.response) {
-       throw new Error(error.response.data.error)
+       throw new Error(error.response.data.message)
     }
   }
 }
@@ -51,7 +51,7 @@ export async function updateDriver({ formData, driverId }: DriverAPIType) {
       return data; 
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-       throw new Error(error.response.data.error)
+       throw new Error(error.response.data.message)
     }
   }
 }

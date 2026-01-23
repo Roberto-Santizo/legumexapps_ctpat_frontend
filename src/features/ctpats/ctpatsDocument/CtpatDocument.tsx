@@ -8,13 +8,14 @@ import { ImagePlus } from "lucide-react";
 import LetterPage from "./LetterPage";
 import CtpatGeneralInformationTable from "@/features/ctpats/ctpatsDocument/CtpatGeneralInformationTable";
 import CtpatImages from "@/features/ctpats/ctpatsDocument/CtpatImages";
-import PackingListTable from "@/features/ctpats/ctpatsDocument/PackingListTable";
+import DynamicPackingListTable from "@/features/ctpats/ctpatsDocument/DynamicPackingListTable";
 import DriverTable from "@/features/ctpats/ctpatsDocument/DriverTable";
 import FinalCtpatSignatures from "@/features/ctpats/ctpatsDocument/FinalCtpatSignatures";
 import ChecklistTables from "@/features/ctpats/ctpatsDocument/ChecklistTables";
 import ObservationsTable from "@/features/ctpats/ctpatsDocument/ObservationsTable";
 import { CTPAT_PERMISSIONS } from "@/core/permissions/ctpats.permissions";
 import { canAccess } from "@/core/permissions/canAccess";
+import type { ProductTypeId } from "@/features/process/control flow/productTypes";
 
 export default function CtpatDocument() {
   const { id } = useParams();
@@ -31,13 +32,19 @@ export default function CtpatDocument() {
 
   const ctpat = data.response;
 
+  // Obtener el tipo de producto (1 = FROZEN, 2 = JUICE)
+  const productType: ProductTypeId = ctpat.type || 1;
+
   const pages = [
     <CtpatGeneralInformationTable data={ctpat} />,
     <CtpatImages images={ctpat.images} />,
-    <PackingListTable data={ctpat.packingList} />,
+    <DynamicPackingListTable
+      productType={productType}
+      packingListData={ctpat.packingList}
+    />,
     <DriverTable driver={ctpat.driver} ctpat={ctpat} />,
     <ChecklistTables items={ctpat.checklist.items} />,
-    <ObservationsTable observations={ctpat.observations} />, // ✅ Componente de observaciones agregado
+    <ObservationsTable observations={ctpat.observations} />, //  Componente de observaciones agregado
     <FinalCtpatSignatures
       signatureC={ctpat.signature_c}
       signatureE={ctpat.signature_e}

@@ -21,14 +21,13 @@ export async function getCtpatsAPI(page: number = 1) {
     const { data } = await api.get("/ctpat", { params: { limit, offset } });
     const response = getCtpatsSchema.safeParse(data);
     if (response.success) {
-      return response.data; 
+      return response.data;
     }
     throw new Error("Formato de respuesta inválido");
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.error);
+      throw new Error(error.response.data.message);
     }
-    throw error;
   }
 }
 
@@ -60,7 +59,7 @@ export async function getCtpatsWithFiltersAPI(filters: {
     throw new Error("Formato de respuesta inválido");
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.error);
+      throw new Error(error.response.data.message);
     }
     throw error;
   }
@@ -107,9 +106,8 @@ export async function updateCtpatStatusAPI(id: number, status: number) {
     throw new Error("Respuesta inesperada del servidor");
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.message || "Error al actualizar el estado del CTPAT");
+      throw new Error(error.response.data.message);
     }
-    throw error;
   }
 }
 

@@ -1,7 +1,7 @@
 
 
 import type { TruckCreateData } from "@/features/trucks/schemas/types.ts";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation,useQueryClient } from "@tanstack/react-query";
 import { useForm,FormProvider } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
@@ -18,16 +18,17 @@ export default function CreateTruck() {
     },
     mode: "onChange",
   });
-
+  
+  const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: (data: TruckCreateData) => createTruckAPI(data),
-    onSuccess: (response) => {
-      if (response) {
-        toast.success(response.message);
+    onError: (error)=>{
+      toast.error(error.message)
+    },
+    onSuccess: (data) => {
+        queryClient.invalidateQueries({queryKey:["truck"]})
+        toast.success(data.message);
         navigate("/trucks");
-      } else {
-        toast.error(response);
-      }
     },
   });
 

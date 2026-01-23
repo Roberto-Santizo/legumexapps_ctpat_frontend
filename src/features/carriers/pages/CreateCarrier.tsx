@@ -30,7 +30,7 @@ export default function CreateCarrier() {
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["carriers"] });
-      toast.success(response.message || "Transportista creado exitosamente");
+      toast.success(response.message);
       navigate("/carriers");
     },
   });

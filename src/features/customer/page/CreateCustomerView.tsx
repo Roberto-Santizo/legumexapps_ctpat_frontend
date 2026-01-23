@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import {createCustumerAPI} from "@/features/customer/api/CustomerAPI"
 import CreateCustomerForm from "@/features/customer/component/CreateCustomerForm";
@@ -14,13 +14,14 @@ export default function CreateCustomerView() {
     code: "",
   }
   const {register, handleSubmit, formState:{errors}}= useForm({defaultValues:initialValues})
-
+  const queryClient = useQueryClient();
   const {mutate} = useMutation({
     mutationFn: createCustumerAPI,
     onError: (error) =>{
         toast.error(error.message)
     },
     onSuccess: (data) =>{
+        queryClient.invalidateQueries({queryKey: ["customers"]})
         toast.success(data.message);
         navigate("/customers");
     }

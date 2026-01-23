@@ -10,7 +10,7 @@ export async function createUserAPI(formData: UserFormDataSchema) {
       return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.error)
+      throw new Error(error.response.data.message)
     }
   }
 }
@@ -21,20 +21,20 @@ export async function getUsersAPI(page: number = 1) {
     const offset = page;
     const { data } = await api.get("/users", { params: { limit, offset } });
     const response = getUserSchema.safeParse(data);
-    if (response.success) {
-      return response.data;
+
+    if (!response.success) {
+      console.error("Error de validación:", response.error.issues);
+      throw new Error("Error al validar los datos de usuarios");
     }
-    throw new Error("Respuesta del servidor no válida");
+
+    return response.data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      const backendData = error.response.data;
-      const message = backendData.error || backendData.message || "Error desconocido";
-      throw new Error(message);
+      throw new Error(error.response.data.message);
     }
-    throw new Error("Error al conectar con el servidor");
+    throw error;
   }
 }
-
 
 type UpdateUserPasswordAPI = {
   userId: number;

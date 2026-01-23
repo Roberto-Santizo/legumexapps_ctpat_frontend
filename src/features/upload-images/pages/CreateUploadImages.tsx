@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
 import UploadImagesForm from "../components/UploadImagesForm";
@@ -7,9 +7,12 @@ import type { uploadImagesFormData } from "@/features/ctpats/schemas/types";
 
 type Props = {
   ctpatId: number;
+  /** Opcional: solo para mostrar título diferente */
+  type?: "ctpat" | "juice";
 };
 
-export default function CreateUploadImages({ ctpatId }: Props) {
+export default function CreateUploadImages({ ctpatId, type = "ctpat" }: Props) {
+  const queryClient = useQueryClient();
 
   const { mutate: uploadImages } = useMutation({
     mutationFn: (data: uploadImagesFormData) => uploadImagesAPI(ctpatId, data),
@@ -17,6 +20,8 @@ export default function CreateUploadImages({ ctpatId }: Props) {
     onSuccess: (data) => {
       if (data?.success) {
         toast.success(data.message);
+        // Invalidar la query del ctpat para que se actualice automáticamente
+        queryClient.invalidateQueries({ queryKey: ["ctpat", String(ctpatId)] });
       } else {
         toast.error(data?.message);
       }
@@ -29,7 +34,9 @@ export default function CreateUploadImages({ ctpatId }: Props) {
 
   return (
     <div className="max-w-lg mx-auto p-6 space-y-6">
-      <h1 className="text-3xl font-bold">Subir Imágenes</h1>
+      <h1 className="text-3xl font-bold">
+        {type === "juice" ? "Subir Imágenes de Jugos" : "Subir Imágenes"}
+      </h1>
 
       <UploadImagesForm onSubmit={(data) => uploadImages(data)} />
     </div>

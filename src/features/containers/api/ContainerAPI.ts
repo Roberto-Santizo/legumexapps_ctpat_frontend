@@ -5,23 +5,11 @@ import type {ContainerFormData,GetContainerFormData,Container} from "@/features/
 export async function createContainerAPI(formData: ContainerFormData) {
   try {
     const { data } = await api.post("/containers", formData);
-    if ([201].includes(data.statusCode)) {
-      return {
-        success: true,
-        message: data.message || "Operación realizada correctamente",
-      };
-    }
-    throw new Error(data.message || "Error desconocido al crear el contenedor");
-
+      return data
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      const backendData = error.response.data || {};
-      const message =
-        backendData.message || backendData.error || "Error al conectar con el servidor";
-      throw new Error(message);
+      throw new Error(error.response.data.message)
     }
-
-    throw new Error("Error desconocido al crear el contenedor");
   }
 }
 
@@ -50,11 +38,8 @@ export async function getContainerByIdAPI(id: Container['id']) {
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      console.error("Error en getContainerByIdAPI", error.response.data);
-    } else {
-      console.error("Error desconocido en getContainerByIdAPI:", error);
-    }
-    throw error;
+     throw new Error(error.response.data.message)
+    } 
   }
 }
 
@@ -64,7 +49,7 @@ type ContainerAPIType ={
 }
 export async function updateContainerAPI({formData,containerId}:ContainerAPIType ) {
   try {
-    const { data } = await api.patch<string>(`/containers/${containerId}`, formData);
+    const { data } = await api.patch(`/containers/${containerId}`, formData);
     return data
   } catch (error) {
     if (isAxiosError(error) && error.response){

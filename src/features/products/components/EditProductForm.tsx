@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -6,6 +5,7 @@ import { toast } from "react-toastify";
 
 import { updateProductAPI } from "@/features/products/api/ProductsAPI";
 import type { ProductUpdateData} from "@/features/products/schemas/types";
+import CreateProductsForm from "@/features/products/components/CreateProductsForm"
 
 type EditProductFormProps = {
   data: ProductUpdateData;
@@ -14,33 +14,24 @@ type EditProductFormProps = {
 
 export default function EditProductForm({ data, productId }: EditProductFormProps) {
   const navigate = useNavigate();
+  
+  const {register,handleSubmit,formState: { errors }} = useForm({defaultValues:{
+    name: data.name,
+    code: data.code,
+    presentation: data.presentation,
+    lbs_presentation: data.lbs_presentation
+  }});
+  
   const queryClient = useQueryClient();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<ProductUpdateData>();
-
-  useEffect(() => {
-    if (data) {
-      reset({
-        name: data.name,
-        code: data.code,
-      });
-    }
-  }, [data, reset]);
-
   const { mutate } = useMutation({
     mutationFn: updateProductAPI,
     onError: (error) => {
-      toast.error(error.message || "Error al actualizar el producto");
+      toast.error(error.message);
     },
-    onSuccess: (message: string) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       queryClient.invalidateQueries({ queryKey: ["editProduct", productId] });
-      toast.success(message || "Producto actualizado correctamente");
+      toast.success(data.message);
       navigate("/products");
     },
   });
@@ -89,50 +80,7 @@ export default function EditProductForm({ data, productId }: EditProductFormProp
             onSubmit={handleSubmit(handleForm)}
             noValidate
           >
-            <div className="form-group">
-              <label htmlFor="name" className="form-label">
-                Nombre del producto <span className="required">*</span>
-              </label>
-              <input
-                id="name"
-                type="text"
-                placeholder="Fresa"
-                className={`form-input ${
-                  errors.name ? "form-input-error" : "form-input-normal"
-                }`}
-                {...register("name", {
-                  required: "El nombre del producto es obligatorio",
-                })}
-              />
-              {errors.name && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.name.message}
-                </p>
-              )}
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="code" className="form-label">
-                Código del producto <span className="required">*</span>
-              </label>
-              <input
-                id="code"
-                type="text"
-                placeholder="F-1"
-                className={`form-input ${
-                  errors.code ? "form-input-error" : "form-input-normal"
-                }`}
-                {...register("code", {
-                  required: "El código del producto es obligatorio",
-                })}
-              />
-              {errors.code && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.code.message}
-                </p>
-              )}
-            </div>
-
+            <CreateProductsForm register={register} errors={errors} />
             <button
               type="submit"
               className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"

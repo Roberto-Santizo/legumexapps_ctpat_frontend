@@ -25,12 +25,9 @@ export const userSchema = baseUserSchema.extend({
   role: rolSchema,
 });
 
-export const userListSchema = userSchema.transform((user) => ({
-  id: user.id,
-  name: user.name,
-  username: user.username,
-  role: user.role.name,
-}));
+export const userListSchema = baseUserSchema.extend({
+  role: z.string(),
+});
 
 export const updateUserPasswordSchema = z.object({
   newPassword: z.string()

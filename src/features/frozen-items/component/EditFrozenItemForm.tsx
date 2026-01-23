@@ -3,15 +3,15 @@ import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
 
-import { updatePackingListItemAPI } from "../api/PackingListAPI";
-import type { EditPackingListItemFormData } from "@/features/packing-List/schemas/editPackingListItem";
+import { updatePackingListItemAPI } from "@/features/frozen-items/api/frozenItemAPI";
+import type { EditPackingListItemFormData } from "@/features/frozen-items/schema/frozenItemType";
 import type { PackingListItemTable } from "@/features/packing-List/schemas/packingList";
 import { tableItemToEditForm } from "@/features/packing-List/schemas/packingList";
 import { ErrorMessage } from "@/shared/components/ErrorMessage";
 import { getCustomersForSelectAPI } from "@/features/customer/api/CustomerAPI";
 import { getProductsForSelectAPI } from "@/features/products/api/ProductsAPI";
 import { toUpper } from "@/shared/helpers/textTransformUppercase";
-import BaseModal from "@/features/packing-List/components/BaseModal";
+import BaseModal from "@/shared/components/BaseModal";
 
 type Props = {
   open: boolean;
@@ -22,7 +22,7 @@ type Props = {
   itemData: PackingListItemTable;
 };
 
-export default function EditItemForm({
+export default function EditFrozenItemForm({
   open,
   onClose,
   packingListId,

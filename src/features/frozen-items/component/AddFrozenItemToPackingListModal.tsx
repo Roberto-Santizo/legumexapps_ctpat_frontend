@@ -2,22 +2,22 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
-import BaseModal from "@/features/packing-List/components/BaseModal";
-import CreateItemForm from "@/features/packing-List/components/CreateItemForm";
-import { addItemToPackingListAPI } from "../api/PackingListAPI";
-import type { AddItemToPackingListFormData } from "@/features/packing-List/schemas/createItemSchema";
+import BaseModal from "@/shared/components/BaseModal";
+import CreateItemForm from "@/features/frozen-items/component/CreateFrozenItemForm";
+import { addItemToPackingListAPI } from "@/features/frozen-items/api/frozenItemAPI";
+import type { AddItemToPackingListFormData } from "@/features/frozen-items/schema/frozenItemType";
 
 type Props = {
   open: boolean;
   onClose: () => void;
-  packingListId: number;
+  frozenPackingListId: number;
   ctpatId: number;
 };
 
-export default function AddItemToPackingListModal({
+export default function AddFrozenItemToPackingListModal({
   open,
   onClose,
-  packingListId,
+  frozenPackingListId,
   ctpatId,
 }: Props) {
   const queryClient = useQueryClient();
@@ -31,7 +31,7 @@ export default function AddItemToPackingListModal({
 
   const { mutate, isPending } = useMutation({
     mutationFn: (data: AddItemToPackingListFormData) =>
-      addItemToPackingListAPI(packingListId, data),
+      addItemToPackingListAPI(frozenPackingListId, data),
 
     onSuccess: async () => {
       toast.success("Ítem agregado");
@@ -51,7 +51,7 @@ export default function AddItemToPackingListModal({
       onClose={onClose}
       title="Agregar Ítem al Packing List"
     >
-      <form onSubmit={handleSubmit((data) => mutate(data))}>
+      <form onSubmit={handleSubmit((data) => mutate(data))} noValidate>
         <CreateItemForm register={register} errors={errors} />
 
         {/* FOOTER */}

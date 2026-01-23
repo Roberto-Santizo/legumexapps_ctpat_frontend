@@ -1,20 +1,21 @@
 import type { UseFormRegister, FieldErrors } from "react-hook-form";
-import type { AddItemToPackingListFormData } from "@/features/packing-List/schemas/createItemSchema";
-import { ErrorMessage } from "@/shared/components/ErrorMessage";
 import { useQuery } from "@tanstack/react-query";
-import { getProductsForSelectAPI } from "@/features/products/api/ProductsAPI";
+
+import { ErrorMessage } from "@/shared/components/ErrorMessage";
 import { getCustomersForSelectAPI } from "@/features/customer/api/CustomerAPI";
-import { toUpper } from "@/shared/helpers/textTransformUppercase";
+import type {CreateJuiceItemFormData} from "@/features/juice-Items/schema/juiceItemType"
+import {getJuiceForSelectAPI} from "@/features/juiceProduct/api/JuiceApi"
+import {toUpper} from "@/shared/helpers/textTransformUppercase"
 
 type Props = {
-  register: UseFormRegister<AddItemToPackingListFormData>;
-  errors: FieldErrors<AddItemToPackingListFormData>;
+  register: UseFormRegister<CreateJuiceItemFormData>;
+  errors: FieldErrors<CreateJuiceItemFormData>;
 };
 
-export default function CreateItemForm({ register, errors }: Props) {
-  const { data: products } = useQuery({
-    queryKey: ["products-select"],
-    queryFn: getProductsForSelectAPI,
+export default function CreateJuiceItemForm({ register, errors }: Props) {
+  const { data: juices } = useQuery({
+    queryKey: ["juice-select"],
+    queryFn: getJuiceForSelectAPI,
   });
 
   const { data: customers } = useQuery({
@@ -24,67 +25,32 @@ export default function CreateItemForm({ register, errors }: Props) {
 
   return (
     <div className="space-y-6">
-      {/* PRODUCTO */}
       <div className="form-group">
         <label className="form-label">
-          Producto <span className="required">*</span>
+          Jugo <span className="required">*</span>
         </label>
         <select
           className={`form-input ${
-            errors.product_id ? "form-input-error" : "form-input-normal"
+            errors.juice_id ? "form-input-error" : "form-input-normal"
           }`}
-          {...register("product_id", {
+          {...register("juice_id", {
             valueAsNumber: true,
-            required: "El producto es obligatorio",
+            required: "El jugo es obligatorio",
           })}
         >
-          <option value="">Seleccione un producto</option>
-          {products?.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.name}
+          <option value="">Seleccione un jugo</option>
+          {juices?.map((juice) => (
+            <option key={juice.id} value={juice.id}>
+              {juice.name}  ({juice.code})
             </option>
           ))}
         </select>
-        {errors.product_id && (
-          <ErrorMessage>{errors.product_id.message}</ErrorMessage>
+        {errors.juice_id && (
+          <ErrorMessage>{errors.juice_id.message}</ErrorMessage>
         )}
       </div>
 
-      {/* NÚMERO DE PALET */}
-      <div className="form-group">
-        <label className="form-label">Número de palet *</label>
-        <input
-          type="number"
-          className={`form-input ${
-            errors.no_pallet ? "form-input-error" : "form-input-normal"
-          }`}
-          {...register("no_pallet", {
-            valueAsNumber: true,
-            required: "El número de palet es obligatorio",
-          })}
-        />
-        {errors.no_pallet && (
-          <ErrorMessage>{errors.no_pallet.message}</ErrorMessage>
-        )}
-      </div>
 
-      {/* LOTE - Acepta string o number, se convierte a string */}
-      <div className="form-group">
-        <label className="form-label">Lote *</label>
-        <input
-          type="text"
-          className={`form-input ${
-            errors.lote ? "form-input-error" : "form-input-normal"
-          }`}
-          {...register("lote", {
-            setValueAs: toUpper,
-            required: "El lote es obligatorio",
-          })}
-        />
-        {errors.lote && <ErrorMessage>{errors.lote.message}</ErrorMessage>}
-      </div>
-
-      {/* CAJAS */}
       <div className="form-group">
         <label className="form-label">Cajas *</label>
         <input
@@ -95,17 +61,25 @@ export default function CreateItemForm({ register, errors }: Props) {
           {...register("boxes", {
             valueAsNumber: true,
             required: "La cantidad de cajas es obligatoria",
+             min:{
+                value:0.01,
+                message: "La cantidad de cajas debe ser mayor a 0"
+              },
+              validate: {
+                positive: (value) => value > 0 || "Las cajas deben ser mayor a 0",
+                notZero: (value) => value !== 0 || "Las cajas no pueden ser 0"
+              }
           })}
         />
         {errors.boxes && <ErrorMessage>{errors.boxes.message}</ErrorMessage>}
       </div>
 
-      {/* TEMPERATURA */}
       <div className="form-group">
         <label className="form-label">Temperatura *</label>
         <input
           type="number"
-          step="0.1"
+          step="any"
+          placeholder="Ej: 1.5 o -1.5"
           className={`form-input ${
             errors.temp ? "form-input-error" : "form-input-normal"
           }`}
@@ -117,7 +91,7 @@ export default function CreateItemForm({ register, errors }: Props) {
         {errors.temp && <ErrorMessage>{errors.temp.message}</ErrorMessage>}
       </div>
 
-      {/* PESO BRUTO */}
+
       <div className="form-group">
           <label className="form-label">Peso bruto *</label>
           <input
@@ -144,7 +118,6 @@ export default function CreateItemForm({ register, errors }: Props) {
           )}
       </div>
 
-        {/* PESO NETO */}
       <div className="form-group">
           <label className="form-label">Peso neto *</label>
           <input
@@ -171,41 +144,6 @@ export default function CreateItemForm({ register, errors }: Props) {
           )}
       </div>
 
-      {/* FECHA DE PRODUCCIÓN */}
-      <div className="form-group">
-        <label className="form-label">Fecha de producción *</label>
-        <input
-          type="date"
-          className={`form-input ${
-            errors.production_date ? "form-input-error" : "form-input-normal"
-          }`}
-          {...register("production_date", {
-            required: "La fecha de producción es obligatoria",
-          })}
-        />
-        {errors.production_date && (
-          <ErrorMessage>{errors.production_date.message}</ErrorMessage>
-        )}
-      </div>
-
-      {/* FECHA DE VENCIMIENTO */}
-      <div className="form-group">
-        <label className="form-label">Fecha de vencimiento *</label>
-        <input
-          type="date"
-          className={`form-input ${
-            errors.expiration_date ? "form-input-error" : "form-input-normal"
-          }`}
-          {...register("expiration_date", {
-            required: "La fecha de vencimiento es obligatoria",
-          })}
-        />
-        {errors.expiration_date && (
-          <ErrorMessage>{errors.expiration_date.message}</ErrorMessage>
-        )}
-      </div>
-
-      {/* CLIENTE */}
       <div className="form-group">
         <label className="form-label">
           Cliente <span className="required">*</span>
@@ -231,32 +169,62 @@ export default function CreateItemForm({ register, errors }: Props) {
         )}
       </div>
 
-      {/* PO (OPCIONAL) */}
       <div className="form-group">
-        <label className="form-label">PO</label>
-        <input
-          type="text"
-          className="form-input form-input-normal"
-          {...register("po")}
-        />
-      </div>
-
-      {/* GRN (OPCIONAL) */}
-      <div className="form-group">
-        <label className="form-label">GRN</label>
-        <input
-          type="text"
-          id="grn"
-          className={`form-input ${
-            errors.grn ? "form-input-error" : "form-input-normal"
-          }`}
-          {...register("grn", {
-            required: "El GRN  es obligatoria",
-           setValueAs: (value) => value?.toUpperCase(),
-          })}
-        />
-        {errors.grn && (<ErrorMessage>{errors.grn.message}</ErrorMessage> )}
-      </div>
+          <label className="form-label">Cantidad de botellas *</label>
+          <input
+            type="number"
+            className={`form-input ${
+              errors.bottles ? "form-input-error" : "form-input-normal"
+            }`}
+            {...register("bottles", {
+              valueAsNumber: true,
+              required: "El dato de botellas es obligatorio",
+              min:{
+                value: 0.01,
+                message: "El dato  debe ser mayor a 0"
+              },
+              validate: {
+                positive: (value) => value > 0 || "El dato debe ser mayor a 0",
+                notZero: (value) => value !== 0 || "El dato no puede ser 0"
+              }
+            })}
+          />
+          {errors.bottles && (
+            <ErrorMessage>{errors.bottles.message}</ErrorMessage>
+          )}
+        </div>
+        <div className="form-group">
+            <label className="form-label">Fecha de producción *</label>
+            <input
+              type="date"
+              className={`form-input ${
+                errors.date ? "form-input-error" : "form-input-normal"
+              }`}
+              {...register("date", {
+                required: "La fecha es obligatoria",
+              })}
+            />
+            {errors.date && (
+              <ErrorMessage>{errors.date.message}</ErrorMessage>
+            )}
+        </div>
+        
+        <div className="form-group">
+          <label className="form-label">GRN *</label>
+          <input
+            type="text"
+            className={`form-input ${
+              errors.grn ? "form-input-error" : "form-input-normal"
+            }`}
+            {...register("grn", {
+              setValueAs: toUpper, 
+              required: "El dato de grn es obligatorio",
+            })}
+          />
+          {errors.grn && (
+            <ErrorMessage>{errors.grn.message}</ErrorMessage>
+          )}
+        </div>
     </div>
   );
 }

@@ -57,7 +57,7 @@ type TruckAPIType = {
 }
 export async function updateTruckAPI({ formData, truckId }: TruckAPIType) {
   try {
-    const { data } = await api.patch(`/drivers/${truckId}`, formData);
+    const { data } = await api.patch(`/truck/${truckId}`, formData);
     if (data) {
       return data; 
     }

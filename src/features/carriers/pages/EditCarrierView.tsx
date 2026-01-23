@@ -5,11 +5,11 @@ import { getCarrierByIdAPI } from "@/features/carriers/api/CarriersAPI";
 
 export default function EditCarrierView() {
   const params = useParams();
-  const id = params.id!
+  const id = Number(params.id)
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["editCarrier", id],
-    queryFn: () => getCarrierByIdAPI(Number(id)),
+    queryFn: () => getCarrierByIdAPI(id),
     retry: 1,
   });
 
@@ -17,6 +17,6 @@ export default function EditCarrierView() {
   if (isError || !data) return <Navigate to="/404" />;
   if(data?.response)
 
-  return (<EditCarrierForm data = {data.response} id = {Number(id)} />);
+  return (<EditCarrierForm data = {data.response} id = {id} />);
   
 }

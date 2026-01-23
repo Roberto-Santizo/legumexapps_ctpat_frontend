@@ -1,12 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 
 import PackingListHeader from "@/features/packing-List/components/PackingListHeader";
-import PackingListItemsTable from "@/features/packing-List/pages/PackingListItemsTable";
-import AddItemModal from "@/features/packing-List/components/AddItemToPackingListModal";
-import EditItemForm from "@/features/packing-List/components/EditItemForm";
-import { getPackingListById, deleteItemAPI } from "@/features/packing-List/api/PackingListAPI";
+import PackingListItemsTable from "@/features/frozen-items/page/FrozenItemsTable";
+import AddItemModal from "@/features/frozen-items/component/AddFrozenItemToPackingListModal";
+import EditItemForm from "@/features/frozen-items/component/EditFrozenItemForm";
+import { getPackingListById } from "@/features/packing-List/api/PackingListAPI";
+import { deleteItemAPI } from "@/features/frozen-items/api/frozenItemAPI";
 import type { PackingListItemTable } from "@/features/packing-List/schemas/packingList";
 
 type Props = {
@@ -30,17 +31,6 @@ export default function PackingListDetailPage({ ctpatId, onContinue }: Props) {
     enabled: !!ctpatId,
     retry: 1, // Solo reintentar una vez
   });
-
-  // DEBUG: Monitorear el estado de la query
-  useEffect(() => {
-    console.log("🔍 DEBUG PackingListDetailPage:", {
-      ctpatId,
-      isLoading,
-      isError,
-      error: error?.message,
-      packingList: packingList ? "Datos cargados" : "Sin datos",
-    });
-  }, [ctpatId, isLoading, isError, error, packingList]);
 
   const deleteItemMutation = useMutation({
     mutationFn: deleteItemAPI,
@@ -78,12 +68,6 @@ export default function PackingListDetailPage({ ctpatId, onContinue }: Props) {
 
   // Mostrar error con detalles
   if (isError || !packingList) {
-    console.error("❌ Error al cargar packing list:", {
-      ctpatId,
-      error: error?.message,
-      packingList,
-    });
-
     return (
       <div className="p-6">
         <div className="bg-red-50 border border-red-200 rounded-xl p-6">
@@ -122,11 +106,6 @@ export default function PackingListDetailPage({ ctpatId, onContinue }: Props) {
 
   const items = packingList.items ?? [];
   const hasItems = items.length > 0;
-
-  console.log("✅ Packing list cargado correctamente:", {
-    id: packingList.id,
-    itemsCount: items.length,
-  });
 
   const headerData = {
     id: packingList.id,
@@ -177,7 +156,7 @@ export default function PackingListDetailPage({ ctpatId, onContinue }: Props) {
       <AddItemModal
         open={openAddModal}
         onClose={() => setOpenAddModal(false)}
-        packingListId={packingList.id}
+        frozenPackingListId={packingList.id}
         ctpatId={ctpatId}
       />
 

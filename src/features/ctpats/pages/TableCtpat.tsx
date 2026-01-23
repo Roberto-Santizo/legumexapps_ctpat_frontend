@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Pencil,Eye,FileCheck,X,FilePenLine} from "lucide-react";
+import { Pencil, Eye, FileCheck, X, FilePenLine } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -7,12 +7,13 @@ import { Filter } from "lucide-react";
 
 import PaginationComponent from "@/shared/components/PaginationComponent.js";
 import { getCtpatsAPI } from "@/features/ctpats/api/CtpatsAPI.js";
-import {CTPAT_STATUS_MAP,CTPAT_STATUS_COLORS} from "@/features/ctpats/constants/statusCodes";
+import { CTPAT_STATUS_MAP, CTPAT_STATUS_COLORS } from "@/features/ctpats/constants/statusCodes";
 import CtpatFilterForm from "@/features/ctpats/components/CtpatFilterForm.js";
 import { getCtpatsWithFiltersAPI } from "@/features/ctpats/api/CtpatsAPI.js";
 import { useAuth } from "@/hooks/useAuth";
 import { canAccess } from "@/core/permissions/canAccess";
 import { CTPAT_PERMISSIONS } from "@/core/permissions/ctpats.permissions";
+import DynamicPackingListReview from "@/features/process/components/DynamicPackingListReview";
 
 type AppliedFilters = {
   container?: string;
@@ -28,6 +29,7 @@ export default function CtpatTableView() {
   const [currentPage, setCurrentPage] = useState(1);
   const [openFilter, setOpenFilter] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<AppliedFilters>({});
+  const [editPackingListCtpatId, setEditPackingListCtpatId] = useState<number | null>(null);
 
 const { data, isLoading, isError } = useQuery({
   queryKey: ["ctpats", currentPage, appliedFilters],
@@ -152,13 +154,13 @@ const { data, isLoading, isError } = useQuery({
                               <FileCheck size={16} />
                               </Link>
                               {canAccess(CTPAT_PERMISSIONS.CREATE, user?.role) && (
-                              <Link
-                                className="btn-icon btn-icon-primary"
-                                to={`/ctpats/${ctpat.id}/packing-list/manage-items`}
-                                title="Editar items del packing List"
-                              >
-                                <FilePenLine size={16} />
-                              </Link>
+                                <button
+                                  className="btn-icon btn-icon-primary"
+                                  onClick={() => setEditPackingListCtpatId(ctpat.id)}
+                                  title="Editar items del packing List"
+                                >
+                                  <FilePenLine size={16} />
+                                </button>
                               )} 
                             </>
                           )}
@@ -204,6 +206,33 @@ const { data, isLoading, isError } = useQuery({
                 onClear={handleClearFilters}
               />
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal fullscreen para editar packing list de CTPAT cerrado */}
+      {editPackingListCtpatId && (
+        <div className="fixed inset-0 z-50 bg-white overflow-y-auto">
+          <div className="sticky top-0 z-10 bg-white border-b shadow-sm">
+            <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+              <h2 className="text-xl font-bold text-gray-800">
+                Editar Packing List - CTPAT #{editPackingListCtpatId}
+              </h2>
+              <button
+                onClick={() => setEditPackingListCtpatId(null)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                title="Cerrar"
+              >
+                <X size={24} />
+              </button>
+            </div>
+          </div>
+
+          <div className="max-w-7xl mx-auto">
+            <DynamicPackingListReview
+              ctpatId={editPackingListCtpatId}
+              onContinue={() => setEditPackingListCtpatId(null)}
+            />
           </div>
         </div>
       )}

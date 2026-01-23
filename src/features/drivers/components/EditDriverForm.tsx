@@ -42,9 +42,9 @@ export default function EditDriverForm({data,driverId,}: EditDriverFormProps) {
       toast.error(error.message);
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["drivers"] });
+      queryClient.invalidateQueries({ queryKey: ["driver"] });
       queryClient.invalidateQueries({ queryKey: ["editDriver", driverId] });
-      toast.success(data);
+      toast.success(data.message);
       navigate("/driver");
     },
   });

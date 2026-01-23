@@ -6,13 +6,15 @@ import { Spinner } from "@/shared/components/Spinner";
 import { toast } from "react-toastify";
 
 import PackingListHeader from "@/features/packing-List/components/PackingListHeader";
-import PackingListItemsTable from "@/features/packing-List/pages/PackingListItemsTable";
-import AddItemModal from "@/features/packing-List/components/AddItemToPackingListModal";
-import EditPackingListItemForm from "@/features/packing-List/components/EditItemForm";
-import { getPackingListById, deleteItemAPI } from "@/features/packing-List/api/PackingListAPI";
+import PackingListItemsTable from "@/features/frozen-items/page/FrozenItemsTable";
+import AddItemModal from "@/features/frozen-items/component/AddFrozenItemToPackingListModal";
+import EditPackingListItemForm from "@/features/frozen-items/component/EditFrozenItemForm";
+import { deleteItemAPI } from "@/features/frozen-items/api/frozenItemAPI";
+import { getPackingListById} from "@/features/packing-List/api/PackingListAPI";
+
 import type { PackingListItemTable } from "@/features/packing-List/schemas/packingList";
 
-export default function EditItemView() {
+export default function EditFronzenItemView() {
   const navigate = useNavigate();
   const { id } = useParams();
   const ctpatId = Number(id);
@@ -145,7 +147,7 @@ export default function EditItemView() {
         <AddItemModal
           open={openAddModal}
           onClose={() => setOpenAddModal(false)}
-          packingListId={packingList.id}
+          frozenPackingListId={packingList.id}
           ctpatId={ctpatId}
         />
 

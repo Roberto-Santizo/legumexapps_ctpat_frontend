@@ -5,17 +5,17 @@ import EditDriverForm from "@/features/drivers/components/EditDriverForm";
 
 export default function EditDriver() {
   const params = useParams();
-  const driverId = params.driverId! //(!)This helps to confirm that driverId will olways be present
+  const driverId = Number(params.driverId)
 
   const { data, isLoading, isError} = useQuery({
     queryKey: ["editDriver", driverId],
-    queryFn: () => getDriverByIdAPI(+driverId),
+    queryFn: () => getDriverByIdAPI(driverId),
     retry: 1,
   });
 
   if (isLoading) return <p>Cargando datos...</p>;
   if (isError) return <Navigate to='/404'/>;
   if (data?.response)
-  return <EditDriverForm data={data.response} driverId={+driverId} />;
+  return <EditDriverForm data={data.response} driverId={driverId} />;
 
 }

@@ -8,12 +8,8 @@ export async function createConditionsAPI(formData: ConditionFormData) {
     return data
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      const backendData = error.response.data || {};
-      const message =
-        backendData.message || backendData.error || "Error al conectar con el servidor";
-      throw new Error(message);
-    }
-    throw new Error("Error desconocido al crear la condición");
+      throw new Error(error.response.data.message)
+      }
   }
 }
 
@@ -57,11 +53,8 @@ export async function getConditionByIdAPI(id: Condition['id']) {
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      console.error("Error en getConditionByIdAPI", error.response.data);
-    } else {
-      console.error("Error desconocido en getConditionByIdAPI:", error);
-    }
-    throw error;
+      throw new Error (error.response.data.message)
+    } 
   }
 }
 
@@ -79,8 +72,7 @@ export async function updateConditionAPI({ formData, conditionId }: ConditionAPI
     return data.message;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.message || "Error al actualizar la condición");
+      throw new Error(error.response.data.message);
     }
-    throw new Error("Error desconocido al actualizar la condición");
   }
 }

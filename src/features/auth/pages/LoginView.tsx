@@ -56,7 +56,7 @@ export default function LoginView() {
             <div className="relative">
               <div>
                 <img 
-                  src="/src/assets/images/logo.png" 
+                  src={import.meta.env.VITE_IMAGE_LOGO} 
                   alt="Legumex Logo" 
                   className="w-28 h-16 mx-auto object-contain" 
                 />

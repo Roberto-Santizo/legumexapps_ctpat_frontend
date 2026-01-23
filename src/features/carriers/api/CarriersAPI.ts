@@ -32,9 +32,7 @@ export async function getCarriersAPI(
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       console.error("Error en getCarriersAPI:", error.response.data);
-    } else {
-      console.error("Error desconocido en getCarriersAPI:", error);
-    }
+    } 
     throw error;
   }
 }
@@ -45,7 +43,7 @@ export async function getCarrierByIdAPI(id: number){
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.error);
+      throw new Error(error.response.data.message);
     }
   }
 }
@@ -60,7 +58,7 @@ export async function updateCarrierAPI({ formData, id }: CarrierAPIType) {
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response){
-      throw new Error (error.response.data.error);
+      throw new Error (error.response.data.message);
     }
   }
 }

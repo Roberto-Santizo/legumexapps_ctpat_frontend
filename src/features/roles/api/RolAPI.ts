@@ -9,9 +9,8 @@ export async function createRoleAPI(formData: CreateRolFormData) {
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.error || "Error al crear el rol");
+      throw new Error(error.response.data.message);
     }
-    throw error;
   }
 }
 

@@ -1,8 +1,10 @@
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import type { createCarrierFormSchema, CarrierUpdateData } from "@/features/carriers/schemas/types";
 import { updateCarrierAPI } from "@/features/carriers/api/CarriersAPI";
 import CarrierForm from "./CarriersForm";
@@ -65,7 +67,27 @@ export default function EditCarrierForm({ data, id }: EditCarrierFormProps) {
             Editar Transportista
           </h1>
         </div>
-
+        <div className="mb-6">
+          <Link
+            to="/carriers"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-[var(--color-primary-dark)] font-semibold rounded-xl shadow-md hover:shadow-lg hover:bg-[var(--color-bg-secondary)] transition-all duration-200 border border-[var(--color-border-light)]"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
+            </svg>
+            Regresar
+          </Link>
+        </div>
         <div className="bg-white rounded-2xl shadow-xl border border-[var(--color-border-light)] overflow-hidden">
           <div className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] h-2"></div>
 

@@ -20,12 +20,16 @@ export const productListSchema = z.object({
 export const productUpdateSchema = z.object({
   name: z.string(),
   code: z.string(),
+  presentation: z.string(),
+  lbs_presentation: z.number()
+
 });
 
 // SELECT
 export const productSelectSchema = z.object({
   id: z.number(),
   name: z.string(),
+  code: z.string(),
 });
 
 export const productSelectResponseSchema = z.object({

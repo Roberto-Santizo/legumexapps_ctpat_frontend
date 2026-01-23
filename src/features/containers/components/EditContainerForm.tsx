@@ -35,7 +35,7 @@ export default function EditContainerForm({data, containerId }: EditContainerFor
         onSuccess: (data) => {
             queryClient.invalidateQueries({queryKey: ['containers']})
             queryClient.invalidateQueries({queryKey: ['editContainer', containerId]})
-            toast.success(data)
+            toast.success(data.message)
             navigate('/container')
         }
     })

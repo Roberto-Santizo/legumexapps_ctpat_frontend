@@ -27,11 +27,8 @@ export async function getProductAPI(page: number = 1) {
       }
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      console.error(error.response.data);
-    } else {
-      console.error(error);
-    }
-    throw error;
+      throw new Error(error.response.data.message)
+    } 
   }
 }
 
@@ -40,17 +37,12 @@ export async function getProductsForSelectAPI() {
     const { data } = await api.get("/products");
 
     const parsed = productSelectResponseSchema.safeParse(data);
+    return parsed.data?.response
 
-    if (!parsed.success) {
-      throw new Error("Formato inválido de productos para el select");
-    }
-
-    return parsed.data.response; 
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message);
     }
-    throw error;
   }
 }
 
@@ -62,9 +54,7 @@ export async function getProductByIdAPI(id: number) {
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       console.error("Error en getProductByIdAPI", error.response.data);
-    } else {
-      console.error("Error desconocido en getProductByIdAPI:", error);
-    }
+    } 
     throw error;
   }
 }
@@ -75,15 +65,11 @@ type ProductAPIType ={
 }
 export async function updateProductAPI({ formData, productId }: ProductAPIType) {
   try {
-    const { data } = await api.patch<{ message: string }>(
-      `/products/${productId}`,
-      formData
-    );
-    return data.message;
+    const { data } = await api.patch( `/products/${productId}`, formData);
+    return data
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message);
     }
-    throw new Error('Error desconocido al actualizar el producto');
   }
 }

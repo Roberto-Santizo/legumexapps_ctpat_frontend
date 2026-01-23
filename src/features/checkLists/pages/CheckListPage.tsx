@@ -25,34 +25,35 @@ export default function CheckListPage({ ctpatId }: Props) {
 
   const [values, setValues] = useState<Record<number, boolean>>({});
 
-  const { mutate } = useMutation({
-    mutationFn: () =>
-      createCheckListAPI(
-        ctpatId,
-        conditions.map((c) => ({
-          condition_id: c.id,
-          status: values[c.id] ?? true,
-        }))
-      ),
+const handleChecklistSuccess = () => {
+  updateStatus.mutate(
+    { id: ctpatId, status: 4 },
+    {
+      onSuccess: () => {
+        navigate("/ctpats");
+      },
+    }
+  );
+};
 
-    onSuccess: () => {
-      toast.success("Checklist guardado correctamente");
+const { mutate } = useMutation({
+  mutationFn: () =>
+    createCheckListAPI(
+      ctpatId,
+      conditions.map((c) => ({
+        condition_id: c.id,
+        status: values[c.id] ?? true,
+      }))
+    ),
+  onSuccess: (data) => {
+    toast.success(data.message);
+    handleChecklistSuccess();
+  },
+  onError: (error) => {
+    toast.error(error.message);
+  },
+});
 
-      updateStatus.mutate(
-        { id: ctpatId, status: 4 },
-        {
-          onSuccess: () => {
-            toast.success("CTPAT actualizado al estado 4");
-             navigate("/ctpats");
-          },
-        }
-      );
-    },
-
-    onError: (err) => {
-      toast.error(err.message);
-    },
-  });
 
   const handleSave = () => mutate();
 

@@ -40,7 +40,6 @@ export default function Header({sidebarOpen,setSidebarOpen,mobileMenuOpen,setMob
     };
   }, []);
   const handleProfile = () => {
-    console.log("Ir a perfil...");
     setProfileDropdownOpen(false);
   };
   const handleLogout = () => {
@@ -68,7 +67,7 @@ export default function Header({sidebarOpen,setSidebarOpen,mobileMenuOpen,setMob
 
           <div className="flex items-center gap-3">
             <div >
-              <img src="/src/assets/images/logo.png" alt="LegumexLogo" className="w-20 h-12 text-white" />
+              <img src= {import.meta.env.VITE_IMAGE_LOGO} alt="LegumexLogo" className="w-20 h-12 text-white" />
             </div>
             <div className="hidden sm:block">
               <h1 className="text-lg font-bold text-white tracking-tight">

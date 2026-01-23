@@ -13,7 +13,7 @@ export async function closeCtpatAPI({formData, ctpatId}:closeCtpatAPIType) {
     try {
         const {data} = await api.put(`/ctpat/closeCtpat/${ctpatId}`,formData);
         return data
-            
+
     } catch (error) {
       if (isAxiosError(error) && error.response) {
         throw new Error(error.response.data.error);

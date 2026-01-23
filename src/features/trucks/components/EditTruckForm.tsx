@@ -48,7 +48,7 @@ export default function EditTruckForm({ data, truckId }: TruckFormProps) {
   useEffect(() => {
     setValue("plate", data.plate);
     setValue("carrier_id", data.carrier_id);
-  }, [data]);
+  }, [data,setValue]);
 
   // Mutación
   const queryClient = useQueryClient();

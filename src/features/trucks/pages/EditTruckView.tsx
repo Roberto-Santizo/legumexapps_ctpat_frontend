@@ -4,16 +4,17 @@ import EditTruckForm from "@/features/trucks/components/EditTruckForm";
 import { getTruckByIdAPI } from "@/features/trucks/api/TruckAPI";
 
 export default function EditTruckView() {
-  const { truckId } = useParams();
+  const params = useParams()
+  const truckId = Number(params.truckId)
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["editTruck", truckId],
-    queryFn: () => getTruckByIdAPI(+truckId!),
+    queryFn: () => getTruckByIdAPI(truckId!),
     retry: 1,
   });
 
   if (isLoading) return <p>Cargando datos...</p>;
   if (isError) return <Navigate to="/404" />;
 
-  return <EditTruckForm data={data.response} truckId={+truckId!} />;
+  return <EditTruckForm data={data.response} truckId={truckId!} />;
 }

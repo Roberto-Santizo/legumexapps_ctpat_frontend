@@ -9,6 +9,7 @@ import {
   ClipboardCopy,
   Eye,
   UserRound,
+  BottleWine 
 } from "lucide-react";
 
 import NavLinkComponent from "../../shared/components/NavLinkComponent";
@@ -59,6 +60,12 @@ const NAV_ITEMS = [
     url: "/products",
     text: "Productos",
     icon: Apple,
+    roles: ROLE_GROUPS.CALIDAD,
+  },
+  {
+    url: "/juices",
+    text: "Jugos",
+    icon: BottleWine,
     roles: ROLE_GROUPS.CALIDAD,
   },
   {

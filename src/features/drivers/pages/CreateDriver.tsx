@@ -84,7 +84,9 @@ const handleForm = async (data: DriverFormData) => {
                 <form
                   //here we can update the className to add spacing between elements
                   className="p-8 space-y-6" 
-                  onSubmit={methods.handleSubmit(handleForm)} noValidate>
+                  onSubmit={methods.handleSubmit(handleForm)}
+                   noValidate
+                >
                     <DriverForm />
                   <button
                     type="submit"

@@ -35,21 +35,24 @@ const routes = [
   //this is to add an images 
   {path: "/ctpats/:id/upload-additional-images",component: lazy(() => import("@/features/ctpats/pages/UploadAdditionalImagesView")),roles: ROLE_GROUPS.ADMIN_Y_CALIDAD_ADMIN },
 
-  { path: "/products", component: lazy(() => import("@/features/products/pages/TableProducts")), roles: ROLE_GROUPS.CALIDAD },
-  { path: "/products/create", component: lazy(() => import("@/features/products/pages/CreateProduct")), roles: ROLE_GROUPS.CALIDAD },
-  { path: "/products/:productId/edit", component: lazy(() => import("@/features/products/pages/EditProduct")), roles: ROLE_GROUPS.CALIDAD },
+  { path: "/products", component: lazy(() => import("@/features/products/pages/TableProducts")), roles: ROLE_GROUPS.ADMIN_Y_CALIDAD_ADMIN },
+  { path: "/products/create", component: lazy(() => import("@/features/products/pages/CreateProduct")), roles: ROLE_GROUPS.ADMIN_Y_CALIDAD_ADMIN },
+  { path: "/products/:productId/edit", component: lazy(() => import("@/features/products/pages/EditProduct")), roles: ROLE_GROUPS.ADMIN_Y_CALIDAD_ADMIN },
 
   { path: "/conditions", component: lazy(() => import("@/features/conditions/pages/TableConditions")), roles: ROLE_GROUPS.ADMIN_Y_CALIDAD_ADMIN },
   { path: "/conditions/create", component: lazy(() => import("@/features/conditions/pages/CreateCondition")), roles: ROLE_GROUPS.ADMIN_Y_CALIDAD_ADMIN },
   { path: "/conditions/:conditionId/edit", component: lazy(() => import("@/features/conditions/pages/EditConditionView")), roles: ROLE_GROUPS.ADMIN_Y_CALIDAD_ADMIN },
 
   { path: "/packingList", component: lazy(() => import("@/features/packing-List/pages/CreatePackingList")), roles: ROLE_GROUPS.CALIDAD },
-  { path: "/packingList/document/:id", component: lazy(() => import("@/features/packing-List/packingListDocument/PackingListDocument")), roles: ROLE_GROUPS.CALIDAD },
+  { path: "/packingList/document/:id", component: lazy(() => import("@/features/packing-List/packingListDocument/DynamicPackingListDocumentWrapper")), roles: ROLE_GROUPS.CALIDAD },
 
-  //Edit packingList´s items 
-  {path: "/packing-list/editItem/:packingListId/:id/",component: lazy(() => import("@/features/packing-List/pages/EditItemView")),roles:ROLE_GROUPS.CALIDAD},
+  //Edit packingList´s items
+  {path: "/packing-list/editItem/:packingListId/:id/",component: lazy(() => import("@/features/frozen-items/page/EditFronzenItemView")),roles:ROLE_GROUPS.CALIDAD},
   {path: "/ctpats/:id/packing-list/manage-items",component: lazy(() => import("@/features/packing-List/pages/ManagePackingListItemsView")),roles: ROLE_GROUPS.ADMIN_Y_CALIDAD_ADMIN},
+  {path: "/ctpats/:id/juice-packing-list/manage-items",component: lazy(() => import("@/features/juice-Items/page/ManageJuicePackingListItemsView")),roles: ROLE_GROUPS.ADMIN_Y_CALIDAD_ADMIN},
 
+  //Juice packing-List
+   { path: "/juicePackingList", component: lazy(() => import("@/features/juicePacking-List/page/CreateJuicePackingListView")), roles: ROLE_GROUPS.CALIDAD },
 
   { path: "/trucks", component: lazy(() => import("@/features/trucks/pages/TableTruck")), roles: ROLE_GROUPS.CALIDAD },
   { path: "/trucks/create", component: lazy(() => import("@/features/trucks/pages/CreateTruck")), roles: ROLE_GROUPS.CALIDAD },
@@ -61,10 +64,15 @@ const routes = [
 
   { path: "/customers", component: lazy(() => import("@/features/customer/page/CustomerTable")), roles: ROLE_GROUPS.CALIDAD },
   { path: "/customers/create", component: lazy(() => import("@/features/customer/page/CreateCustomerView")), roles: ROLE_GROUPS.CALIDAD },
-  { path: "/customers/:customerId/edit", component: lazy(() => import("@/features/customer/page/EditCustomerView")), roles: ROLE_GROUPS },
+  { path: "/customers/:customerId/edit", component: lazy(() => import("@/features/customer/page/EditCustomerView")), roles: ROLE_GROUPS.CALIDAD },
+
+   { path: "/juices", component: lazy(() => import("@/features/juiceProduct/page/JuiceTable")), roles: ROLE_GROUPS.ADMIN_Y_CALIDAD_ADMIN },
+   { path: "/juices/create", component: lazy(() => import("@/features/juiceProduct/page/CreateJuiceView")), roles: ROLE_GROUPS.ADMIN_Y_CALIDAD_ADMIN },
+   { path: "/juices/:id/edit", component: lazy(() => import("@/features/juiceProduct/page/EditJuiceView")), roles: ROLE_GROUPS.ADMIN_Y_CALIDAD_ADMIN },
 
   { path: "/steps", component: lazy(() => import("@/features/process/page/FlowCtpatSteps")),roles:ROLE_GROUPS.CALIDAD },
   { path: "/steps/:id", component: lazy(() => import("@/features/process/page/FlowCtpatSteps")),roles:ROLE_GROUPS.CALIDAD },
+
 ];
 
 export default function AdminRoutes() {

@@ -6,16 +6,16 @@ import EditObservationForm from "@/features/observations/components/EditObservat
 
 export default function EditObservationView() {
   const params = useParams()
-  const observationId = params.observationId!
+  const observationId = Number(params.observationId)
 
   const { data, isLoading, isError } = useQuery({
       queryKey: ["editObservation", observationId],
-      queryFn: () => getObservationByIdAPI(+observationId),
+      queryFn: () => getObservationByIdAPI(observationId),
       retry: false,
   });
   if (isLoading) return <div>Loading...</div>
   if (isError) return <Navigate to='/404'/>
 
-  if (data) return <EditObservationForm data={data.response} observationId={+observationId}/>
+  if (data) return <EditObservationForm data={data.response} observationId={observationId}/>
 
 }

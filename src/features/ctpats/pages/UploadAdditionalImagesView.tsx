@@ -24,9 +24,9 @@ export default function UploadAdditionalImagesView() {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["ctpat", ctpatId],
+    queryKey: ["ctpat", id],
     queryFn: () => getCtpatByIdAPI(ctpatId),
-    enabled: !!ctpatId,
+    enabled: !!id,
   });
 
   // Mutación para subir imágenes
@@ -35,7 +35,7 @@ export default function UploadAdditionalImagesView() {
       uploadImagesAPI(ctpatId, payload),
     onSuccess: async () => {
       toast.success("Imágenes adicionales agregadas correctamente");
-      await queryClient.invalidateQueries({ queryKey: ["ctpat", ctpatId] });
+      await queryClient.invalidateQueries({ queryKey: ["ctpat", id] });
       setImages([]);
       // Regresar al documento
       navigate(`/ctpats/document/${ctpatId}`);

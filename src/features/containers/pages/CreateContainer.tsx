@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
@@ -16,11 +16,12 @@ export default function CreateContainer() {
   };
 
   const {register,handleSubmit,formState: { errors },} = useForm({defaultValues: initialValues});
-
+  const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: createContainerAPI,
     onError: (error) => toast.error(error.message),
     onSuccess: (response) => {
+      queryClient.invalidateQueries({queryKey:["containers"]})
       toast.success(response.message);
       navigate("/container");
     },

@@ -35,7 +35,8 @@ export const ctpat = z.object({
   departure_site: z.string(),
   container: z.string(),
   createdAt: z.string(),
-  status: z.number()
+  status: z.number(),
+  type: z.number().optional()
 });
 
 export const ctpatListSchema = ctpat.pick({
@@ -45,7 +46,8 @@ export const ctpatListSchema = ctpat.pick({
   departure_site: true,
   container: true,
   createdAt: true,
-  status: true
+  status: true,
+  type: true
 });
 
 export type uploadImages = z.infer<typeof ImageSchema>;
