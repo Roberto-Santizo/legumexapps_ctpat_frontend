@@ -42,7 +42,7 @@ type UpdateUserPasswordAPI = {
 }
 export async function updateUserPasswordAPI({userId,newPassword}:UpdateUserPasswordAPI) {
   try {
-    const {data} = await api.post(`/auth/change-password/${userId}`, {newPassword});
+    const {data} = await api.post(`/auth/change-password/${userId}`, {password: newPassword.newPassword});
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response){

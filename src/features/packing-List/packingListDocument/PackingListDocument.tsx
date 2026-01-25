@@ -259,7 +259,7 @@ const HeaderSection: React.FC<{ header: HeaderData }> = ({ header }) => (
     <View style={styles.headerGrid}>
       <View style={styles.logoCell}>
          {/* Tu imagen ... */}
-         <Image src="/src/assets/images/logo.png" style={{width: '100%', height:'100%', objectFit:'contain'}} />
+         <Image src="https://legumexappsapi-storage.s3.us-east-1.amazonaws.com/resources/LOGO_LX.png" style={{width: '100%', height:'100%', objectFit:'contain'}} />
       </View>
 
       <View style={{ width: "70%" }}>

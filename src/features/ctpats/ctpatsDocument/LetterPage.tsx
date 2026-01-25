@@ -16,7 +16,7 @@ export default function LetterPage({
       <div className="pb-4">
         <div className="grid grid-cols-3 items-center mb-4">
           <div>
-            <img src="/src/assets/images/logo.png" className="w-32" />
+            <img src= {import.meta.env.VITE_IMAGE_LOGO} alt="LegumexLogo" className="w-32" />
           </div>
           <div className="text-center">
             <h1 className="font-bold">FORMAT</h1>

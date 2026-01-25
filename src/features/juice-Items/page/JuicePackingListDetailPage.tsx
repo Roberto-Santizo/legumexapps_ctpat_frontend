@@ -15,12 +15,14 @@ type Props = {
   juicePackingListId?: number;
   packingListData?: JuicePackingListWithItems;
   onContinue?: () => void;
+  ctpatId?: number;
 };
 
 export default function JuicePackingListDetailPage({
   juicePackingListId,
   packingListData,
-  onContinue
+  onContinue,
+  ctpatId
 }: Props) {
   const [openAddModal, setOpenAddModal] = useState(false);
   const [editingItem, setEditingItem] = useState<JuiceItemTableType | null>(null); 
@@ -54,6 +56,12 @@ export default function JuicePackingListDetailPage({
       if (packingListData) {
         await queryClient.invalidateQueries({
           queryKey: ["juicePackingListByCtpat"],
+        });
+      }
+      // Invalidar la query del ctpat para actualizar el documento PDF
+      if (ctpatId) {
+        await queryClient.invalidateQueries({
+          queryKey: ["ctpat", ctpatId],
         });
       }
     },
@@ -179,6 +187,7 @@ export default function JuicePackingListDetailPage({
         open={openAddModal}
         onClose={() => setOpenAddModal(false)}
         juicePackingListId={actualPackingListId!}
+        ctpatId={ctpatId}
       />
 
       {editingItem && (
@@ -188,6 +197,7 @@ export default function JuicePackingListDetailPage({
           juicePackingListId={actualPackingListId!}
           itemId={editingItem.id}
           itemData={editingItem}
+          ctpatId={ctpatId}
         />
       )}
     </div>

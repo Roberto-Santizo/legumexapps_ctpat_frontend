@@ -80,7 +80,7 @@ const CompanyHeader: React.FC = () => (
     <View style={styles.logoContainer}>
       {/* Cambiar la URL del logo aquí */}
       <Image
-        src="/src/assets/images/logo.png"
+        src="https://legumexappsapi-storage.s3.us-east-1.amazonaws.com/resources/LOGO_LX.png"
         style={styles.logo}
       />
     </View>

@@ -20,7 +20,7 @@ export default function UpdateUserPasswordView() {
         mode: "onChange",
     });
     
-    const { mutate, isPending } = useMutation({
+    const { mutate } = useMutation({
         mutationFn: updateUserPasswordAPI,
         onSuccess: (response) => {
             toast.success(response);
@@ -42,9 +42,6 @@ export default function UpdateUserPasswordView() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <UpdateUserPasswordForm register={register} errors={errors} />
-      <button type="submit" disabled={isPending}>
-        Cambiar contraseña
-      </button>
     </form>
   );
 }

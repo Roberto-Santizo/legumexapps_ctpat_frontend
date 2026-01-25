@@ -4,7 +4,9 @@ interface CtpatGeneralInformationTableProps {
     destination: string;
     departure_site: string;
     container: string;
-    createdAt: string;
+    departure_date:string;
+    departure_hour: string;
+
 
     packingList: {
       seal: string;
@@ -70,7 +72,7 @@ export default function CtpatGeneralInformationTable({
               DEPARTURE DATE / Fecha de salida
             </td>
             <td className="border p-1">
-              {data.createdAt || ""}
+              {data.departure_date || ""}
             </td>
 
             <td className="border p-1 font-bold">
@@ -85,14 +87,21 @@ export default function CtpatGeneralInformationTable({
             <td className="border p-1 font-bold">
               DEPARTURE TIME / Hora de salida
             </td>
-            <td className="border p-1"></td>
+            <td className="border p-1">{data.departure_hour || ""} </td>
 
             <td className="border p-1 font-bold">
-              CONTAINER DIGIT CONTROL / Chequeo dígito de control
+              CONTAINER DIGIT CONTROL / Chequeo dígito de control:
+              <a 
+              href="www.sds.es/despiece/Espa/index.htm"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline ml-1"
+                >
+                www.sds.es/despiece/Espa/index.htm
+              </a>
             </td>
             <td className="border p-1"></td>
           </tr>
-
           <tr>
             <td className="border p-1 font-bold">
               RYAN No. / No. Sensor

@@ -92,6 +92,13 @@ return (
             )}
           </div>
 
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
+          >
+            Cambiar Contraseña
+          </button>
+
         </div>
       </div>
 

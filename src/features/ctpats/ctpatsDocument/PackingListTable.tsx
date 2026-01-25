@@ -97,7 +97,7 @@ export default function PackingListTable({data}:packingListProps) {
           <td className="border border-black p-1">{data.no_thermograph}</td>
 
           <td className="border border-black font-bold p-1">DESTINATION</td>
-          <td className="border border-black p-1">{}</td>
+          <td className="border border-black p-1">{data.client}</td>
 
         </tr>
 

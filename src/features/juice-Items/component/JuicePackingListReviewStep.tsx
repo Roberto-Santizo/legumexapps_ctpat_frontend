@@ -117,6 +117,7 @@ export default function JuicePackingListReviewStep({ ctpatId, onContinue }: Prop
         <JuicePackingListDetailPage
           packingListData={juicePackingList}
           onContinue={handleContinueWithConfirmation}
+          ctpatId={ctpatId}
         />
 
         {/* Modal para subir imágenes */}

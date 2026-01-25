@@ -244,7 +244,7 @@ export default function CreateFrozenItemForm({ register, errors }: Props) {
       </div>
 
       <div className="form-group">
-        <label className="form-label">GRN</label>
+        <label className="form-label">GRN *</label>
         <input
           type="text"
           id="grn"

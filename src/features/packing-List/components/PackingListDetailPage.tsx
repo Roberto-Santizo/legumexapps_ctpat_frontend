@@ -39,6 +39,10 @@ export default function PackingListDetailPage({ ctpatId, onContinue }: Props) {
       await queryClient.invalidateQueries({
         queryKey: ["packingList", ctpatId],
       });
+      // Invalidar la query del ctpat para actualizar el documento PDF
+      await queryClient.invalidateQueries({
+        queryKey: ["ctpat", ctpatId],
+      });
     },
     onError: (error: Error) => {
       toast.error(error.message);

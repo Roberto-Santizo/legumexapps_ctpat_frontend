@@ -11,12 +11,14 @@ type Props = {
   open: boolean;
   onClose: () => void;
   juicePackingListId: number;
+  ctpatId?: number;
 };
 
 export default function AddJuiceItemToPackingListModal({
   open,
   onClose,
   juicePackingListId,
+  ctpatId,
 }: Props) {
   const queryClient = useQueryClient();
 
@@ -41,6 +43,12 @@ export default function AddJuiceItemToPackingListModal({
       await queryClient.invalidateQueries({
         queryKey: ["juicePackingListByCtpat"],
       });
+      // Invalidar la query del ctpat para actualizar el documento PDF
+      if (ctpatId) {
+        await queryClient.invalidateQueries({
+          queryKey: ["ctpat", ctpatId],
+        });
+      }
       reset();
       onClose();
     },
