@@ -44,7 +44,7 @@ export default function CloseCtpatForm({ control, errors, register }: CloseCtpat
           <div className="input-icon-wrapper relative">
             <input
               id="exit_temp"
-              type="number"
+              type="text"
               placeholder="20"
               className={`form-input pl-10 ${
                 errors.exit_temp ? "form-input-error" : "form-input-normal"
