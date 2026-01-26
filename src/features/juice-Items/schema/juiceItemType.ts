@@ -18,7 +18,7 @@ export const juiceItemResponse = z.object({
   id: z.number(),
   juice_id: z.number(),
   boxes: z.number(),
-  temp: z.number(),
+  temp: z.string(),
   net_weight: z.number(),
   gross_weight: z.number(),
   client_id: z.number(),

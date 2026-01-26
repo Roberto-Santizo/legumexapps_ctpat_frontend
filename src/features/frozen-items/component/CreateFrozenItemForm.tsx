@@ -105,7 +105,7 @@ export default function CreateFrozenItemForm({ register, errors }: Props) {
       <div className="form-group">
         <label className="form-label">Temperatura *</label>
         <input
-          type="number"
+          type="text"
           step="any"
           placeholder="Ej: 1.5 o -1.5"
           className={`form-input ${
