@@ -77,15 +77,18 @@ export default function CreateJuiceItemForm({ register, errors }: Props) {
       <div className="form-group">
         <label className="form-label">Temperatura *</label>
         <input
-          type="number"
-          step="any"
+          type="text"
+          inputMode="decimal"
           placeholder="Ej: 1.5 o -1.5"
           className={`form-input ${
             errors.temp ? "form-input-error" : "form-input-normal"
           }`}
           {...register("temp", {
-            valueAsNumber: true,
             required: "La temperatura es obligatoria",
+            setValueAs: (value) => {
+              const num = parseFloat(value);
+              return isNaN(num) ? undefined : num;
+            }
           })}
         />
         {errors.temp && <ErrorMessage>{errors.temp.message}</ErrorMessage>}
