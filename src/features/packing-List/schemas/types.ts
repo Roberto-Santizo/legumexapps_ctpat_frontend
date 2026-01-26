@@ -50,7 +50,7 @@ export const getPackingListSchema = z.object({
         beginning_date:z.string(),
         no_thermograph: z.string(),
         exit_temp: z.string(),
-        exit_date: z.string(),
+        exit_date: z.string().nullable(),
         items: z.array(packingListItemSchema),
         totals: z.array(packingListTotalSchema),
 })

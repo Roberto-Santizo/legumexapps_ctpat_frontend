@@ -28,6 +28,7 @@ export async function getCtpatsAPI(page: number = 1) {
     if (isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message);
     }
+    throw error;
   }
 }
 

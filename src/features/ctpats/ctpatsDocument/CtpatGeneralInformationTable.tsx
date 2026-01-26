@@ -6,10 +6,10 @@ interface CtpatGeneralInformationTableProps {
     container: string;
     departure_date:string;
     departure_hour: string;
+    seal: string,
 
 
     packingList: {
-      seal: string;
       no_thermograph: string;
     };
 
@@ -79,7 +79,7 @@ export default function CtpatGeneralInformationTable({
               SEAL NUMBER / Número de sello
             </td>
             <td className="border p-1">
-              {data.packingList.seal || ""}
+              {data.seal || ""}
             </td>
           </tr>
 

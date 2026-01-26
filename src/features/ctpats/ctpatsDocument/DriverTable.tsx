@@ -10,7 +10,8 @@ interface DriverTableProps {
   };
   ctpat: {
     departure_site: string;
-    createdAt: string;
+    departure_date: string | null;
+    departure_hour: string | null;
     container: string;
     packingList: {
       carrier: string;
@@ -40,14 +41,14 @@ export default function DriverTable({ driver, ctpat }: DriverTableProps) {
           <div className="border-r border-black p-1">
             <p className="font-bold">DATE / FECHA:</p>
             <p className="text-blue-600 underline">
-              {ctpat.createdAt}
+              {ctpat.departure_date ?? "--"}
             </p>
           </div>
 
           <div className="p-1">
             <p className="font-bold">TIME / HORA:</p>
             <p className="text-blue-600 underline">
-              --
+              {ctpat.departure_hour ?? "--"}
             </p>
           </div>
         </div>

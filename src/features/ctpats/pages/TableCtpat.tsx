@@ -102,7 +102,6 @@ const { data, isLoading, isError } = useQuery({
                     <th>Usuario</th>
                     <th>Sitio de salida</th>
                     <th>Contenedor (Número) </th>
-                    <th>Fecha de creación</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                   </tr>
@@ -115,9 +114,7 @@ const { data, isLoading, isError } = useQuery({
                       <td>{ctpat.user}</td>
                       <td>{ctpat.departure_site}</td>
                       <td>{ctpat.container}</td>
-                      <td>
-                        {new Date(ctpat.createdAt).toLocaleDateString("es-ES")}
-                      </td>
+
                       <td>
                         <span
                           className={`px-2 py-1 text-xs font-semibold rounded-full border ${CTPAT_STATUS_COLORS[ctpat.status]}`}

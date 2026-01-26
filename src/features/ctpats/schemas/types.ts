@@ -31,10 +31,9 @@ export type CtpatResponseData = z.infer<typeof ctpatResponseSchema>;
 export const ctpat = z.object({
   id: z.number(),
   destination: z.string(),
-  user: z.string(),
   departure_site: z.string(),
+  user: z.string(),
   container: z.string(),
-  createdAt: z.string(),
   status: z.number(),
   type: z.number().optional()
 });
@@ -45,7 +44,6 @@ export const ctpatListSchema = ctpat.pick({
   user: true,
   departure_site: true,
   container: true,
-  createdAt: true,
   status: true,
   type: true
 });

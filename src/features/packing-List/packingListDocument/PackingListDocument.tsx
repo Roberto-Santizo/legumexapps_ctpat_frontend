@@ -81,7 +81,7 @@ const mapHeader = (api: PackingListFormData): HeaderData => ({
   beginningDate: new Date(api.beginning_date).toLocaleDateString(),
   thermographNo: api.no_thermograph,
   tempExit: api.exit_temp,
-  exitDate: new Date(api.exit_date).toLocaleDateString(),
+  exitDate: api.exit_date ? new Date(api.exit_date).toLocaleDateString() : "--",
 });
 
 const mapItems = (
