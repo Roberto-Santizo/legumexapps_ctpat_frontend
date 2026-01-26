@@ -77,6 +77,14 @@ export interface PackingListItemTable {
 // ============================================================================
 // HELPER: Convertir datos de tabla a formulario de edición
 // ============================================================================
+
+// Extraer solo YYYY-MM-DD de una fecha ISO para evitar desfase de timezone
+function toDateInputValue(dateStr: string): string {
+  if (!dateStr) return "";
+  // Si viene como ISO (2025-01-26T00:00:00.000Z), tomar solo la parte de fecha
+  return dateStr.includes("T") ? dateStr.split("T")[0] : dateStr;
+}
+
 export function tableItemToEditForm(
   item: PackingListItemTable
 ): EditPackingListItemFormData {
@@ -88,8 +96,8 @@ export function tableItemToEditForm(
     temp: item.temp,
     net_weight: item.net_weight,
     gross_weight: item.gross_weight,
-    production_date: item.production_date || item.expiration_date, 
-    expiration_date: item.expiration_date,
+    production_date: toDateInputValue(item.production_date || item.expiration_date),
+    expiration_date: toDateInputValue(item.expiration_date),
     client_id: item.client_id,
     po: item.po || "",
     grn: item.grn || "",
