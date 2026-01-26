@@ -51,7 +51,7 @@ export default function ConditionForm({register,errors,}: ConditionFormProps) {
             <option value="" disabled>
               Selecciona un tipo
             </option>
-            <option value="TRUCK_INSPECTION">INSPECCIÓN DE CONTENEDOR</option>
+            <option value="TRUCK_INSPECTION">INSPECCION DEL TRAILER</option>
             <option value="EXTERIOR_TRUCK_INSPECTION">INSPECCIÓN EXTERIOR DEL CONTENEDOR</option>
             <option value="INTERIOR_TRUCK_INSPECTION">INSPECCIÓN INTERIOR DEL CONTENEDOR</option>
             <option value="PEST_INSPECTION">INSPECCIÓN DE CONTROL DE PESTES</option>
