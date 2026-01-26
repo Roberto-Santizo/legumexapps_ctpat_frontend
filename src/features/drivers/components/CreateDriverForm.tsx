@@ -67,7 +67,7 @@ export default function DriverForm({ showCarrierField = true, showPhotoFields = 
           {...register("identification", { 
               required: "El número de DPI es obligatorio",
               pattern: {
-                value: /^\d{13}$/,
+                value: /^\d{14}$/,
                 message: "El DPI no tiene un formato válido"
               }
           })}
@@ -87,7 +87,7 @@ export default function DriverForm({ showCarrierField = true, showPhotoFields = 
             {...register("license", { 
                 required: "El número de licencia es obligatorio",
                 pattern: {
-                  value: /^(?:\d{6,12}|[A-Z]{1,2}-\d{6,8})$/,
+                  value: /^(?:\d{6,14}|[A-Z]{1,2}-\d{6,8})$/,
                   message: "El número de licencia no tiene un formato válido"
                 }
             })}
