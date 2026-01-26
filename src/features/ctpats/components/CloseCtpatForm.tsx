@@ -91,7 +91,7 @@ export default function CloseCtpatForm({ control, errors, register }: CloseCtpat
                       type="text"
                       placeholder="Ingrese detalle (opcional)"
                       {...register(`observations.${index}.data`, {
-                         setValueAs: toUpper,
+                         setValueAs: (value: string) => value?.trim() ? toUpper(value) : "N/A",
                       } )}
                       className="
                         w-full form-input
