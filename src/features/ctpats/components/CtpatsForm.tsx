@@ -95,7 +95,7 @@ export default function CtpatForm({
             Seleccione una opción
           </option>
           <option value={1}>Congelado</option>
-          <option value={2}>Jugo</option>
+          <option value={2}>Jugo/Fresco</option>
         </select>
 
         {errors?.type && (

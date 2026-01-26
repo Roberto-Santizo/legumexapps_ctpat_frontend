@@ -170,7 +170,7 @@ export default function CreateJuiceItemForm({ register, errors }: Props) {
       </div>
 
       <div className="form-group">
-          <label className="form-label">Cantidad de botellas *</label>
+          <label className="form-label">Cantidad de botellas / Bolsas *</label>
           <input
             type="number"
             className={`form-input ${
