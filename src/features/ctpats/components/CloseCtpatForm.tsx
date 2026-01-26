@@ -58,20 +58,6 @@ export default function CloseCtpatForm({ control, errors, register }: CloseCtpat
                 <ErrorMessage>{errors.exit_temp.message}</ErrorMessage>
               )}
         </div>
-      <SignatureField<CloseCtpatFormData>
-        name="signature_c"
-        control={control}
-        label="Firma control de calidad"
-        errors={errors}
-        rules={{ required: "La firma de control de calidad es obligatoria" }}
-      />
-      <SignatureField<CloseCtpatFormData>
-        name="signature_e"
-        control={control}
-        label="Firma del encargado de embarques"
-        errors={errors}
-        rules={{ required: "La firma del encargado de embarques es obligatoria" }}
-      />
         <div className="form-group">
           <label className="form-label text-lg font-semibold mb-2 block">
             Observaciones
@@ -89,9 +75,9 @@ export default function CloseCtpatForm({ control, errors, register }: CloseCtpat
                 <div
                   key={obs.id}
                   className="
-                    flex flex-col sm:flex-row sm:items-start 
-                    gap-4 p-4 
-                    border rounded-xl shadow-sm 
+                    flex flex-col sm:flex-row sm:items-start
+                    gap-4 p-4
+                    border rounded-xl shadow-sm
                     bg-white hover:shadow-md transition
                   "
                 >
@@ -108,8 +94,8 @@ export default function CloseCtpatForm({ control, errors, register }: CloseCtpat
                          setValueAs: toUpper,
                       } )}
                       className="
-                        w-full form-input 
-                        rounded-lg border-gray-300 
+                        w-full form-input
+                        rounded-lg border-gray-300
                         focus:ring-blue-500 focus:border-blue-500
                       "
                     />
@@ -131,6 +117,20 @@ export default function CloseCtpatForm({ control, errors, register }: CloseCtpat
             </ErrorMessage>
           )}
         </div>
+      <SignatureField<CloseCtpatFormData>
+        name="signature_c"
+        control={control}
+        label="Firma control de calidad"
+        errors={errors}
+        rules={{ required: "La firma de control de calidad es obligatoria" }}
+      />
+      <SignatureField<CloseCtpatFormData>
+        name="signature_e"
+        control={control}
+        label="Firma del encargado de embarques"
+        errors={errors}
+        rules={{ required: "La firma del encargado de embarques es obligatoria" }}
+      />
     </div>
   );
 }
