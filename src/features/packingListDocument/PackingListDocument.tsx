@@ -280,10 +280,12 @@ const HeaderSection: React.FC<{ header: HeaderData; companyLogo?: string | null 
     {/* Encabezado Principal */}
     <View style={styles.headerGrid}>
       <View style={styles.logoCell}>
-         <Image
-           src={companyLogo || "https://legumexappsapi-storage.s3.us-east-1.amazonaws.com/resources/LOGO_LX.png"}
-           style={{width: '100%', height:'100%', objectFit:'contain'}}
-         />
+         {companyLogo && (
+           <Image
+             src={companyLogo}
+             style={{width: '100%', height:'100%', objectFit:'contain'}}
+           />
+         )}
       </View>
 
       <View style={{ width: "70%" }}>
