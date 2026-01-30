@@ -1,5 +1,4 @@
 import z from 'zod';
 
-export const CompanyLogoSchema = z.object({
-  data: z.string(),  // Puede ser URL o base64
-})
+// La API devuelve directamente el string base64/URL, no un objeto
+export const CompanyLogoSchema = z.string();

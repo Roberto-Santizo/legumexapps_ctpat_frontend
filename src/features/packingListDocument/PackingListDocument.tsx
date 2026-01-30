@@ -15,7 +15,6 @@ import type { FrozenItemResponse } from "@/features/frozen-items/schema/frozenIt
 /* ===============================================================
   1. INTERFACES
 ================================================================ */
-
 interface HeaderData {
   carrier: string;
   productGeneral: string;
@@ -449,9 +448,9 @@ const PackingListGenerator: React.FC = () => {
           getCompanyLogoAPI(),
         ]);
 
-        // Guardar el logo de la empresa
-        if (logoResponse?.data) {
-          setCompanyLogo(logoResponse.data);
+        // Guardar el logo de la empresa (ahora logoResponse es directamente el string)
+        if (logoResponse) {
+          setCompanyLogo(logoResponse);
         }
 
         if (!packingList) return;

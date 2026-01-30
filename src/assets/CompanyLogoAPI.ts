@@ -7,13 +7,13 @@ export async function getCompanyLogoAPI(){
     try {
         const {data} = await api.get('/images')
         const response = CompanyLogoSchema.safeParse(data)
+
         if(response.success){
-            return response.data
-        } 
+            return response.data  // Ahora es directamente el string base64/URL
+        }
     } catch (error) {
         if (isAxiosError(error) && error.response) {
             throw new Error(error.response.data.message);
         }
     }
-  
 }
