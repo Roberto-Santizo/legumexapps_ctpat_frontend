@@ -5,13 +5,11 @@ import { ImagePlus } from "lucide-react";
 
 type Props = {
   ctpatId: number;
-  juicePackingListId: number;
   onContinue: () => void;
 };
 
 export default function JuicePackingListSection({
   ctpatId,
-  juicePackingListId,
   onContinue
 }: Props) {
   const [showImages, setShowImages] = useState(false);
@@ -31,7 +29,7 @@ export default function JuicePackingListSection({
 
       {/* Detalle del packing list de jugos */}
       <JuicePackingListDetailPage
-        juicePackingListId={juicePackingListId}
+        ctpatId={ctpatId}
         onContinue={onContinue}
       />
 

@@ -25,7 +25,6 @@ const IMAGE_LABELS = {
   PRODUCTS: "PRODUCTOS",
   LOADING_TEMPERATURE: "TEMPERATURA DE CARGA",
   FINAL_CONTAINER: "CONTENEDOR FINAL",
-  DRIVER_IDENTIFICATION: "IDENTIFICACIÓN DEL CONDUCTOR",
 } as const;
 
 const IMAGE_TYPES = [
@@ -34,7 +33,6 @@ const IMAGE_TYPES = [
   "PRODUCTS",
   "LOADING_TEMPERATURE",
   "FINAL_CONTAINER",
-  "DRIVER_IDENTIFICATION",
 ] as const;
 
 const DESCRIPTION_OPTIONS = [
@@ -45,7 +43,6 @@ const DESCRIPTION_OPTIONS = [
   { value: "INSIDE", label: "Interior" },
   { value: "FLOOR", label: "Piso" },
   { value: "LICENCE PLATE No.", label: "Placa" },
-  { value: "DRIVER ID", label: "Identificación del conductor" },
 ] as const;
 
 /* ======================================================
@@ -195,9 +192,9 @@ export default function PhotoCaptureModal<T extends boolean>({
                 value={type}
                 onChange={(e) => setType(e.target.value)}
               >
-                {IMAGE_TYPES.map((t) => (
-                  <option key={t} value={t}>
-                    {IMAGE_LABELS[t]}
+                {IMAGE_TYPES.map((imageType) => (
+                  <option key={imageType} value={imageType}>
+                    {IMAGE_LABELS[imageType]}
                   </option>
                 ))}
               </select>
@@ -214,9 +211,9 @@ export default function PhotoCaptureModal<T extends boolean>({
                   onChange={(e) => setDescription(e.target.value)}
                 >
                   <option value="">-- Sin descripción --</option>
-                  {DESCRIPTION_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
+                  {DESCRIPTION_OPTIONS.map((descriptionOption) => (
+                    <option key={descriptionOption.value} value={descriptionOption.value}>
+                      {descriptionOption.label}
                     </option>
                   ))}
                 </select>

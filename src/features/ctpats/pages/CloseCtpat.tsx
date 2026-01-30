@@ -13,7 +13,7 @@ type Props = {
 };
 export default function CloseCtpat({ ctpatId }: Props) {
   const navigate = useNavigate();
-    const { mutate: updateStatus } = useUpdateCtpatStatus();
+    const { mutate: updateStatus, isPending } = useUpdateCtpatStatus();
   const {register,control,handleSubmit,formState: { errors },} = useForm<CloseCtpatFormData>({
     defaultValues: {
       signature_c: "",
@@ -41,7 +41,8 @@ export default function CloseCtpat({ ctpatId }: Props) {
   });
 
   const handleFormSubmit = (data: CloseCtpatFormData) => {
-  mutation.mutate(data);
+    if (isPending) return;
+    mutation.mutate(data);
 };
 
   return (
@@ -73,9 +74,17 @@ export default function CloseCtpat({ ctpatId }: Props) {
 
             <button
               type="submit"
+              disabled={isPending}
               className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
             >
-              Guardar
+              {isPending ? (
+                  <span className="flex items-center gap-2">
+                    <span className="animate-spin">⏳</span>
+                    cerrando...
+                  </span>
+                ) : (
+                  "Cerrar CTPAT"
+                )}
             </button>
           </form>
         </div>

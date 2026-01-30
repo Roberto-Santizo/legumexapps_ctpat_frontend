@@ -160,20 +160,47 @@ export default function CtpatForm({
         <label htmlFor="departure_site" className="form-label">
           Sitio de salida <span className="required">*</span>
         </label>
-        <input
+
+        <select
           id="departure_site"
-          type="text"
-          placeholder="Ej. AGROINDUSTRIA LEGUMEX, EL TEJAR, CHIMALTENANGO, GUATEMALA"
           className={`form-input ${
             errors?.departure_site ? "form-input-error" : "form-input-normal"
           }`}
           {...register("departure_site", {
-            setValueAs: toUpper,
             required: "El sitio de salida es obligatorio",
           })}
-        />
+        >
+          <option value="">Seleccione una opción</option>
+          <option value="opcion_uno">AGROINDUSTRIAS LEGUMEX.S.A. EL TEJAR,CHIMALTENANGO </option>
+          <option value="opcion_dos">AGROINDUSTRIAS LEGUMEX.S.A. PARRAMOS,CHIMALTENANGO</option>
+        </select>
+
         {errors?.departure_site && (
           <ErrorMessage>{errors.departure_site.message}</ErrorMessage>
+        )}
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="planta" className="form-label">
+          Planta <span className="required">*</span>
+        </label>
+
+        <select
+          id="planta"
+          className={`form-input ${
+            errors?.planta ? "form-input-error" : "form-input-normal"
+          }`}
+          {...register("planta", {
+            required: "La planta es obligatoria",
+          })}
+        >
+          <option value="">Seleccione una planta</option>
+          <option value="1">Tejar</option>
+          <option value="2">Párramos</option>
+        </select>
+
+        {errors?.planta && (
+          <ErrorMessage>{errors.planta.message}</ErrorMessage>
         )}
       </div>
 

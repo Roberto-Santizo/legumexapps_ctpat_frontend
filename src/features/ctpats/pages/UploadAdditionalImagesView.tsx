@@ -36,6 +36,7 @@ export default function UploadAdditionalImagesView() {
     onSuccess: async () => {
       toast.success("Imágenes adicionales agregadas correctamente");
       await queryClient.invalidateQueries({ queryKey: ["ctpat", id] });
+      await queryClient.invalidateQueries({ queryKey: ["ctpat-images", id] });
       setImages([]);
       // Regresar al documento
       navigate(`/ctpats/document/${ctpatId}`);

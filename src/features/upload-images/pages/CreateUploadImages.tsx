@@ -14,7 +14,7 @@ type Props = {
 export default function CreateUploadImages({ ctpatId, type = "ctpat" }: Props) {
   const queryClient = useQueryClient();
 
-  const { mutate: uploadImages } = useMutation({
+  const { mutate: uploadImages, isPending } = useMutation({
     mutationFn: (data: uploadImagesFormData) => uploadImagesAPI(ctpatId, data),
 
     onSuccess: (data) => {
@@ -38,7 +38,7 @@ export default function CreateUploadImages({ ctpatId, type = "ctpat" }: Props) {
         {type === "juice" ? "Subir Imágenes de Jugos" : "Subir Imágenes"}
       </h1>
 
-      <UploadImagesForm onSubmit={(data) => uploadImages(data)} />
+      <UploadImagesForm onSubmit={(data) => uploadImages(data)} isPending={isPending} />
     </div>
   );
 }

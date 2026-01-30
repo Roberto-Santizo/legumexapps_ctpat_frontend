@@ -6,8 +6,9 @@ import PackingListHeader from "@/features/packing-List/components/PackingListHea
 import PackingListItemsTable from "@/features/frozen-items/page/FrozenItemsTable";
 import AddItemModal from "@/features/frozen-items/component/AddFrozenItemToPackingListModal";
 import EditItemForm from "@/features/frozen-items/component/EditFrozenItemForm";
-import { getPackingListById } from "@/features/packing-List/api/PackingListAPI";
-import { deleteItemAPI } from "@/features/frozen-items/api/frozenItemAPI";
+import { getFrozenPackingList } from "@/features/packing-List/api/PackingListAPI";
+import { getPackingListTotalsAPI } from "@/features/packing-List/api/PackingListTotals";
+import { deleteItemAPI, getfrozenItemsAPI } from "@/features/frozen-items/api/frozenItemAPI";
 import type { PackingListItemTable } from "@/features/packing-List/schemas/packingList";
 
 type Props = {
@@ -25,9 +26,21 @@ export default function FrozenPackingListContent({ ctpatId }: Props) {
     isError,
   } = useQuery({
     queryKey: ["packingList", ctpatId],
-    queryFn: () => getPackingListById(ctpatId),
+    queryFn: () => getFrozenPackingList(ctpatId),
     enabled: !!ctpatId,
     retry: 1,
+  });
+
+  const { data: frozenItems = [], isLoading: isLoadingItems } = useQuery({
+    queryKey: ["frozen-items", ctpatId],
+    queryFn: () => getfrozenItemsAPI(ctpatId),
+    enabled: !!ctpatId,
+  });
+
+  const { data: totals, isLoading: isLoadingTotals } = useQuery({
+    queryKey: ["packing-list-totals", ctpatId],
+    queryFn: () => getPackingListTotalsAPI(ctpatId),
+    enabled: !!ctpatId,
   });
 
   const deleteItemMutation = useMutation({
@@ -35,7 +48,27 @@ export default function FrozenPackingListContent({ ctpatId }: Props) {
     onSuccess: async () => {
       toast.success("Ítem eliminado correctamente");
       await queryClient.invalidateQueries({
+        queryKey: ["frozen-items", ctpatId],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["packing-list-totals", ctpatId],
+      });
+      // Invalidar queries del documento PDF (refetchType: 'all' para forzar refetch)
+      await queryClient.invalidateQueries({
+        queryKey: ["ctpat", ctpatId],
+        refetchType: "all",
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["packing-list-frozen-totals", ctpatId],
+        refetchType: "all",
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["packing-list-frozen", ctpatId],
+        refetchType: "all",
+      });
+      await queryClient.invalidateQueries({
         queryKey: ["packingList", ctpatId],
+        refetchType: "all",
       });
     },
     onError: (error: Error) => {
@@ -51,7 +84,7 @@ export default function FrozenPackingListContent({ ctpatId }: Props) {
     setEditingItem(itemData);
   };
 
-  if (isLoading) {
+  if (isLoading || isLoadingItems || isLoadingTotals) {
     return (
       <div className="p-6 flex items-center justify-center">
         <div className="text-center">
@@ -75,7 +108,7 @@ export default function FrozenPackingListContent({ ctpatId }: Props) {
     );
   }
 
-  const items = packingList.items ?? [];
+  const items = frozenItems ?? [];
 
   const headerData = {
     id: packingList.id,
@@ -85,7 +118,7 @@ export default function FrozenPackingListContent({ ctpatId }: Props) {
     no_container: packingList.no_container,
     container_type: packingList.container_type,
     seal: packingList.seal,
-    boxes: packingList.boxes,
+    boxes: totals?.reduce((sum, item) => sum + item.total_boxes, 0) ?? 0,
     beginning_date: packingList.beginning_date,
   };
 
@@ -112,7 +145,6 @@ export default function FrozenPackingListContent({ ctpatId }: Props) {
       <AddItemModal
         open={openAddModal}
         onClose={() => setOpenAddModal(false)}
-        frozenPackingListId={packingList.id}
         ctpatId={ctpatId}
       />
 
@@ -120,7 +152,6 @@ export default function FrozenPackingListContent({ ctpatId }: Props) {
         <EditItemForm
           open={true}
           onClose={() => setEditingItem(null)}
-          packingListId={packingList.id}
           itemId={editingItem.id}
           ctpatId={ctpatId}
           itemData={editingItem}

@@ -10,7 +10,7 @@ import JuicePackingListDetailPage from "@/features/juice-Items/page/JuicePacking
 import FrozenPackingListContent from "./FrozenPackingListContent";
 
 // APIs
-import { getJuicePackingListByCtpatIdAPI } from "@/features/juicePacking-List/api/JuicePacking-ListAPI";
+import { getJuicePackingListAPI } from "@/features/juicePacking-List/api/JuicePacking-ListAPI";
 
 import type { ProductTypeId } from "@/features/process/control flow/productTypes";
 
@@ -40,7 +40,7 @@ export default function ManagePackingListItemsDynamic() {
     isError: isErrorJuice
   } = useQuery({
     queryKey: ["juicePackingListByCtpat", ctpatId],
-    queryFn: () => getJuicePackingListByCtpatIdAPI(ctpatId),
+    queryFn: () => getJuicePackingListAPI(ctpatId),
     enabled: !!ctpatId && isJuice && !isLoadingCtpat,
     retry: 1,
   });
@@ -135,6 +135,7 @@ export default function ManagePackingListItemsDynamic() {
           {isJuice ? (
             // Packing list de jugos
             <JuicePackingListDetailPage
+              ctpatId={ctpatId}
               packingListData={juicePackingList}
             />
           ) : (

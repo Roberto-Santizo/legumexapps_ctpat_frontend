@@ -1,10 +1,13 @@
-import type { z } from "zod";
-import type { juicePackingListResponse } from "@/features/juicePacking-List/schema/juicePackingListType";
-
-type JuicePackingListHeaderView = z.infer<typeof juicePackingListResponse>;
+type JuicePackingListHeaderData = {
+  id: number;
+  box_type: string;
+  order: string;
+  customer: string;
+  thermograph_no: string;
+};
 
 type Props = {
-  packingList: JuicePackingListHeaderView;
+  packingList: JuicePackingListHeaderData;
 };
 
 export default function JuicePackingListHeader({ packingList }: Props) {

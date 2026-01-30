@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 
 import { updateJuiceItemAPI } from "@/features/juice-Items/api/JuiceItemAPI";
 import type { EditJuicePackingListItemFormData } from "@/features/juice-Items/schema/juiceItemType";
-import type { JuiceItemTableType } from "@/features/juicePacking-List/schema/juicePackingListType";
+import type { JuiceItemTableType } from "@/features/juice-Items/schema/juiceItemType";
 import { ErrorMessage } from "@/shared/components/ErrorMessage";
 import { getCustomersForSelectAPI } from "@/features/customer/api/CustomerAPI";
 import { getJuiceForSelectAPI } from "@/features/juiceProduct/api/JuiceApi";
@@ -13,29 +13,26 @@ import BaseModal from "@/shared/components/BaseModal";
 type Props = {
   open: boolean;
   onClose: () => void;
-  juicePackingListId: number;
+  ctpatId: number;
   itemId: number;
   itemData: JuiceItemTableType;
-  ctpatId?: number;
 };
 
 // Componente interno del formulario que solo se renderiza cuando las opciones están disponibles
 function EditJuiceItemFormContent({
   itemData,
-  juicePackingListId,
+  ctpatId,
   itemId,
   onClose,
   juices,
   customers,
-  ctpatId,
 }: {
   itemData: JuiceItemTableType;
-  juicePackingListId: number;
+  ctpatId: number;
   itemId: number;
   onClose: () => void;
   juices: { id: number; name: string }[];
   customers: { id: number; name: string }[];
-  ctpatId?: number;
 }) {
   const queryClient = useQueryClient();
 
@@ -56,6 +53,23 @@ function EditJuiceItemFormContent({
   const normalizeString = (str: string | undefined | null): string => {
     if (!str) return "";
     return str.trim().toLowerCase();
+  };
+
+  // Función para convertir fecha de "M/D/YYYY" a "YYYY-MM-DD" (formato input date)
+  const convertDateToInputFormat = (dateStr: string | undefined): string => {
+    if (!dateStr) return "";
+    // Si ya está en formato YYYY-MM-DD, retornarlo
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
+
+    // Convertir de "M/D/YYYY" a "YYYY-MM-DD"
+    const parts = dateStr.split("/");
+    if (parts.length === 3) {
+      const month = parts[0].padStart(2, "0");
+      const day = parts[1].padStart(2, "0");
+      const year = parts[2];
+      return `${year}-${month}-${day}`;
+    }
+    return dateStr;
   };
 
   // Buscar el juice_id por el nombre del producto
@@ -83,7 +97,7 @@ function EditJuiceItemFormContent({
       net_weight: itemData.net_weight,
       client_id: clientId ? String(clientId) : "",
       bottles: itemData.bottles,
-      date: itemData.date,
+      date: convertDateToInputFormat(itemData.date),
       grn: (itemDataAny.grn as string) || "",
     },
   });
@@ -91,25 +105,33 @@ function EditJuiceItemFormContent({
   const { mutate, isPending } = useMutation({
     mutationFn: (formData: EditJuicePackingListItemFormData) => {
       return updateJuiceItemAPI({
-        juicePackingListId,
+        ctpatId,
         juiceItemId: itemId,
         formData,
       });
     },
     onSuccess: async (data) => {
       toast.success(data.message || "Ítem actualizado correctamente");
+      // Invalidar la query de items de juice
       await queryClient.invalidateQueries({
-        queryKey: ["juicePackingList", juicePackingListId],
+        queryKey: ["juiceItems", ctpatId],
       });
       await queryClient.invalidateQueries({
-        queryKey: ["juicePackingListByCtpat"],
+        queryKey: ["juicePackingList", ctpatId],
       });
-      // Invalidar la query del ctpat para actualizar el documento PDF
-      if (ctpatId) {
-        await queryClient.invalidateQueries({
-          queryKey: ["ctpat", ctpatId],
-        });
-      }
+      await queryClient.invalidateQueries({
+        queryKey: ["juicePackingListByCtpat", ctpatId],
+      });
+      // Invalidar queries del documento PDF (sin ctpatId para invalidar por prefijo)
+      await queryClient.invalidateQueries({
+        queryKey: ["ctpat"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["packing-list-juice-totals"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["packing-list-juice"],
+      });
       onClose();
     },
     onError: (error: Error) => {
@@ -275,8 +297,35 @@ function EditJuiceItemFormContent({
         )}
       </div>
 
-      {/* FECHA (oculta pero necesaria) */}
-      <input type="hidden" {...register("date")} />
+      {/* GRN */}
+      <div className="form-group">
+        <label className="form-label">GRN *</label>
+        <input
+          type="text"
+          className={`form-input ${
+            errors.grn ? "form-input-error" : "form-input-normal"
+          }`}
+          {...register("grn", {
+            required: "El GRN es obligatorio",
+          })}
+        />
+        {errors.grn && <ErrorMessage>{errors.grn.message}</ErrorMessage>}
+      </div>
+
+      {/* FECHA */}
+      <div className="form-group">
+        <label className="form-label">Fecha *</label>
+        <input
+          type="date"
+          className={`form-input ${
+            errors.date ? "form-input-error" : "form-input-normal"
+          }`}
+          {...register("date", {
+            required: "La fecha es obligatoria",
+          })}
+        />
+        {errors.date && <ErrorMessage>{errors.date.message}</ErrorMessage>}
+      </div>
 
       {/* BOTONES */}
       <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4">
@@ -304,10 +353,9 @@ function EditJuiceItemFormContent({
 export default function EditJuiceItemModal({
   open,
   onClose,
-  juicePackingListId,
+  ctpatId,
   itemId,
   itemData,
-  ctpatId,
 }: Props) {
   // Cargar jugos
   const { data: juices } = useQuery({
@@ -329,12 +377,11 @@ export default function EditJuiceItemModal({
         <EditJuiceItemFormContent
           key={itemId}
           itemData={itemData}
-          juicePackingListId={juicePackingListId}
+          ctpatId={ctpatId}
           itemId={itemId}
           onClose={onClose}
           juices={juices}
           customers={customers}
-          ctpatId={ctpatId}
         />
       ) : (
         <div className="flex justify-center items-center py-8">

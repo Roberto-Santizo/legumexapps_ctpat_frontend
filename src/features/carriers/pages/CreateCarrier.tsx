@@ -18,9 +18,9 @@ export default function CreateCarrier() {
     mode: "onChange"
   });
   
-  const { handleSubmit } = methods;
+  const { handleSubmit} = methods;
   
-  const { mutate } = useMutation<CreateCarrierResponse, Error, createCarrierFormSchema>({
+  const { mutate, isPending } = useMutation<CreateCarrierResponse, Error, createCarrierFormSchema>({
     mutationFn: async (data) => {
       const response = await createCarriersAPI(data);
       return createCarrierResponseSchema.parse(response);
@@ -64,19 +64,28 @@ export default function CreateCarrier() {
           <div className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] h-2"></div>
 
           <FormProvider {...methods}>
-            <form className="p-8 space-y-6" onSubmit={handleSubmit(handleForm)} noValidate>
+            <form
+              className={`p-8 space-y-6 ${isPending ? "opacity-60 pointer-events-none" : ""}`}
+              onSubmit={handleSubmit(handleForm)}
+              noValidate
+            >
               <CarrierForm />
-
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
+                disabled={isPending}
+                className={`w-full font-bold py-4 px-6 rounded-xl uppercase tracking-wide transition-all duration-200
+                  ${
+                    isPending
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white shadow-lg hover:-translate-y-0.5"
+                  }
+                `}
               >
-                Crear Transportista
+                {isPending ? "Creando..." : "Crear Transportista"}
               </button>
             </form>
           </FormProvider>
         </div>
-
         <div className="mt-6 text-center text-sm text-[var(--color-text-tertiary)]">
           <p>Los cambios se aplicarán inmediatamente después de crear transportista</p>
         </div>

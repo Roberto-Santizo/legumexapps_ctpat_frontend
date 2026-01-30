@@ -23,6 +23,8 @@ export async function getCtpatsAPI(page: number = 1) {
     if (response.success) {
       return response.data;
     }
+    console.error("Schema validation failed:", response.error.format());
+    console.log("Received data:", data);
     throw new Error("Formato de respuesta inválido");
   } catch (error) {
     if (isAxiosError(error) && error.response) {

@@ -10,14 +10,12 @@ import type { AddItemToPackingListFormData } from "@/features/frozen-items/schem
 type Props = {
   open: boolean;
   onClose: () => void;
-  frozenPackingListId: number;
   ctpatId: number;
 };
 
 export default function AddFrozenItemToPackingListModal({
   open,
   onClose,
-  frozenPackingListId,
   ctpatId,
 }: Props) {
   const queryClient = useQueryClient();
@@ -31,16 +29,33 @@ export default function AddFrozenItemToPackingListModal({
 
   const { mutate, isPending } = useMutation({
     mutationFn: (data: AddItemToPackingListFormData) =>
-      addItemToPackingListAPI(frozenPackingListId, data),
+      addItemToPackingListAPI(ctpatId, data),
 
     onSuccess: async () => {
       toast.success("Ítem agregado");
+      // Invalidar la query de items (frozen-items)
+      await queryClient.invalidateQueries({
+        queryKey: ["frozen-items", ctpatId],
+      });
       await queryClient.invalidateQueries({
         queryKey: ["packingList", ctpatId],
       });
-      // Invalidar la query del ctpat para actualizar el documento PDF
+      // Invalidar queries del documento PDF (refetchType: 'all' para forzar refetch)
       await queryClient.invalidateQueries({
         queryKey: ["ctpat", ctpatId],
+        refetchType: "all",
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["packing-list-frozen-totals", ctpatId],
+        refetchType: "all",
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["packing-list-totals", ctpatId],
+        refetchType: "all",
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["packing-list-frozen", ctpatId],
+        refetchType: "all",
       });
       reset();
       onClose();
@@ -73,10 +88,18 @@ export default function AddFrozenItemToPackingListModal({
           <button
             type="submit"
             disabled={isPending}
-            className="px-4 py-2 rounded-lg bg-[var(--color-primary)]
-                       text-white disabled:opacity-50"
+            className="px-6 py-2.5 rounded-lg bg-amber-600 hover:bg-amber-700
+                       text-white disabled:opacity-50 disabled:cursor-not-allowed
+                       transition-colors font-medium shadow-md"
           >
-            {isPending ? "Guardando..." : "Guardar"}
+            {isPending ? (
+              <span className="flex items-center gap-2">
+                <span className="animate-spin">⏳</span>
+                Guardando...
+              </span>
+            ) : (
+              "Guardar Ítem"
+            )}
           </button>
         </div>
       </form>

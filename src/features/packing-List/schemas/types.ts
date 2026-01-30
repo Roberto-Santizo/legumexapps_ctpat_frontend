@@ -1,11 +1,10 @@
 import { z } from "zod";
 // packing-list
-export const packingList = z.object({
+export const createPackingList = z.object({
   box_type: z.string(),
   order: z.string(),
   customer: z.string(),
   thermograph_no: z.string(),
-  // exit_temp: z.number()
 })
 
 export const packingListTotalSchema = z.object({
@@ -15,46 +14,25 @@ export const packingListTotalSchema = z.object({
   net_weight: z.number(),
 });
 
-export const packingListItemSchema = z.object({
-  id: z.number(),
-  product: z.string(), // El backend SÍ envía este campo
-  product_id: z.number(),
-  no_tarima: z.number(),
-  lote: z.union([z.string(), z.number()]).transform(val => String(val)), // Acepta string o number, convierte a string
-  code: z.string(), // El backend SÍ envía este campo
-  boxes: z.number(),
-  net_weight: z.number(),
-  gross_weight: z.number(),
-  presentation: z.string(), // El backend SÍ envía este campo
-  temp: z.number(),
-  expiration_date: z.string(),
-  client: z.string(), // Campo adicional del backend
-  client_id: z.number(),
-  grn: z.string(),
-  po: z.string().optional(),
+export const responsePackingListSchema = z.object({
+    id: z.number(),
+    carrier: z.string(),
+    order: z.string(),
+    container_condition: z.string(),
+    box_type: z.string(),
+    no_container: z.string(),
+    container_type: z.string(),
+    lbs_per_box: z.string(),
+    seal: z.string(),
+    client: z.string(),
+    beginning_date: z.string(),
+    no_thermograph: z.string(),
+    exit_temp: z.string(),
+    exit_date: z.string().nullable(),
+    boxes: z.number().optional(),
+    products: z.string().optional(),
 })
 
-export const getPackingListSchema = z.object({
-        id: z.number(),
-        carrier: z.string(),
-        products: z.string(),
-        order: z.string(),
-        container_condition: z.string(),
-        box_type: z.string(),
-        no_container:  z.string(),
-        container_type: z.string(),
-        lbs_per_box: z.string(),
-        seal: z.string(),
-        client: z.string(),
-        boxes: z.number(),
-        beginning_date:z.string(),
-        no_thermograph: z.string(),
-        exit_temp: z.string(),
-        exit_date: z.string().nullable(),
-        items: z.array(packingListItemSchema),
-        totals: z.array(packingListTotalSchema),
-})
+export type ResponsePackingList = z.infer<typeof responsePackingListSchema>;
 
-export type PackingListFormData = z.infer<typeof getPackingListSchema>
-export type PackingList = z.infer<typeof packingList>
-export type PackignListFormData = Pick<PackingList, "box_type"|"order"|"customer"|"thermograph_no">
+export type CreatePackignListFormData = z.infer<typeof createPackingList>

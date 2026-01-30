@@ -1,11 +1,14 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import {Document, Page,View,Text,PDFViewer,Image,} from "@react-pdf/renderer";
-import { packingListDocumentSyles as styles } from "@/features/packing-List/packingListDocument/packingList.styles";
+import { packingListDocumentSyles as styles } from "@/features/packingListDocument/packingList.styles";
 import { useEffect } from "react";
 import { ClipLoader } from "react-spinners";
-import {getPackingListById} from "@/features/packing-List/api/PackingListAPI";
-import type {PackingListFormData} from "@/features/packing-List/schemas/types";
+import { getFrozenPackingList } from "@/features/packing-List/api/PackingListAPI";
+import { getPackingListTotalsAPI } from "@/features/packing-List/api/PackingListTotals";
+import { getfrozenItemsAPI } from "@/features/frozen-items/api/frozenItemAPI";
+import type { ResponsePackingList } from "@/features/packing-List/schemas/types";
+import type { FrozenItemResponse } from "@/features/frozen-items/schema/frozenItemType";
 
 /* ===============================================================
   1. INTERFACES
@@ -66,26 +69,43 @@ const HEADER_TEXT_COLOR = '#FFFFFF';
   2. MAPPERS (API → PDF)
 ================================================================ */
 
-const mapHeader = (api: PackingListFormData): HeaderData => ({
-  carrier: api.carrier,
-  productGeneral: api.products,
-  orderNo: api.order,
-  containerCondition: api.container_condition,
-  boxType: api.box_type,
-  containerNo: api.no_container,
-  containerType: api.container_type,
-  lbsPerBox: api.lbs_per_box,
-  seal: api.seal,
-  client: api.client,
-  boxesTotal: api.boxes,
-  beginningDate: new Date(api.beginning_date).toLocaleDateString(),
-  thermographNo: api.no_thermograph,
-  tempExit: api.exit_temp,
-  exitDate: api.exit_date ? new Date(api.exit_date).toLocaleDateString() : "--",
-});
+// Tipo para los totales del endpoint (ahora es un array)
+interface PackingListTotalsAPI {
+  product: string;
+  total_boxes: number;
+  gross_weight: number;
+  net_weight: number;
+}
+
+const mapHeader = (
+  api: ResponsePackingList,
+  totalsArray?: PackingListTotalsAPI[]
+): HeaderData => {
+  // Calcular totales sumando todos los productos
+  const totalBoxes = totalsArray?.reduce((sum, t) => sum + t.total_boxes, 0) ?? 0;
+  const products = totalsArray?.map(t => t.product).join(", ") ?? "-";
+
+  return {
+    carrier: api.carrier,
+    productGeneral: products,
+    orderNo: api.order,
+    containerCondition: api.container_condition,
+    boxType: api.box_type,
+    containerNo: api.no_container,
+    containerType: api.container_type,
+    lbsPerBox: api.lbs_per_box,
+    seal: api.seal,
+    client: api.client,
+    boxesTotal: totalBoxes,
+    beginningDate: new Date(api.beginning_date).toLocaleDateString(),
+    thermographNo: api.no_thermograph,
+    tempExit: api.exit_temp,
+    exitDate: api.exit_date ? new Date(api.exit_date).toLocaleDateString() : "--",
+  };
+};
 
 const mapItems = (
-  items: PackingListFormData["items"],
+  items: FrozenItemResponse[],
   beginningDate: string
 ): ItemData[] =>
   items.map((item) => ({
@@ -110,15 +130,15 @@ const calculateTotals = (items: ItemData[]): Totals => ({
   totalPesoNeto: items.reduce((a, b) => a + b.pesoNeto, 0),
 });
 
-const mapTotalsTable = (
-  totals: PackingListFormData["totals"]
-): TotalRow[] =>
-  totals.map((t) => ({
-    product: t.product,
-    totalBoxes: t.total_boxes,
-    weight: t.gross_weight,
-    netWeight: t.net_weight,
+const mapTotalsTable = (totalsArray?: PackingListTotalsAPI[]): TotalRow[] => {
+  if (!totalsArray || totalsArray.length === 0) return [];
+  return totalsArray.map(totals => ({
+    product: totals.product,
+    totalBoxes: totals.total_boxes,
+    weight: totals.gross_weight,
+    netWeight: totals.net_weight,
   }));
+};
 
 /* ===============================================================
   3. COMPONENTES DE TABLA
@@ -398,25 +418,34 @@ const PackingListGenerator: React.FC = () => {
   useEffect(() => {
     if (!id) return;
 
-    getPackingListById(Number(id))
-      .then((packing: PackingListFormData) => {
-        const headerMapped = mapHeader(packing);
+    const fetchData = async () => {
+      try {
+        // Llamar a los 3 endpoints en paralelo
+        const [packingList, frozenItems, packingTotals] = await Promise.all([
+          getFrozenPackingList(Number(id)),
+          getfrozenItemsAPI(Number(id)),
+          getPackingListTotalsAPI(Number(id)),
+        ]);
 
-        const itemsMapped = mapItems(
-          packing.items,
-          headerMapped.beginningDate
-        );
+        if (!packingList) return;
 
+        const headerMapped = mapHeader(packingList, packingTotals);
+        const beginningDate = new Date(packingList.beginning_date).toLocaleDateString();
+
+        const itemsMapped = mapItems(frozenItems ?? [], beginningDate);
         const totalsMapped = calculateTotals(itemsMapped);
-        const totalsTableMapped = mapTotalsTable(packing.totals);
-
+        const totalsTableMapped = mapTotalsTable(packingTotals);
 
         setHeader(headerMapped);
         setItems(itemsMapped);
         setTotals(totalsMapped);
         setTotalsTable(totalsTableMapped);
+      } catch (error) {
+        console.error("Error fetching packing list data:", error);
+      }
+    };
 
-      });
+    fetchData();
   }, [id]);
 
     const pdfDocument = React.useMemo(() => {

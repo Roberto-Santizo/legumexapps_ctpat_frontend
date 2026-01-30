@@ -3,8 +3,8 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import PackingListForm from "@/features/packing-List/components/CreatePackingListForm";
-import { createPackingListAPI } from "@/features/packing-List/api/PackingListAPI";
-import type { PackignListFormData } from "@/features/packing-List/schemas/types";
+import { createFrozenPackingListAPI } from "@/features/packing-List/api/PackingListAPI";
+import type { CreatePackignListFormData } from "@/features/packing-List/schemas/types";
 import { useUpdateCtpatStatus } from "@/features/ctpats/hooks/useUpdateCtpatStatus";
 
 export default function CreatePackingList() {
@@ -16,14 +16,14 @@ export default function CreatePackingList() {
   //update the ctpat status
   const { mutate: updateStatus } = useUpdateCtpatStatus();
   // REACT HOOK FORM  
-  const {register,handleSubmit,formState: { errors }} = useForm<PackignListFormData>();
+  const {register,handleSubmit,formState: { errors }} = useForm<CreatePackignListFormData>();
 
   // MUTATION
-  const { mutate: createPackingList } = useMutation({
-    mutationFn: (data: PackignListFormData) =>
-      createPackingListAPI(ctpatId, data),
+  const { mutate: createPackingList, isPending } = useMutation({
+    mutationFn: (data: CreatePackignListFormData) =>
+      createFrozenPackingListAPI(ctpatId, data),
 
-    onSuccess: async (res) => {
+    onSuccess: async (res: { message: string }) => {
       toast.success(res.message);
       updateStatus({ id: ctpatId, status: 2 });
        navigate("/ctpats");
@@ -35,9 +35,11 @@ export default function CreatePackingList() {
   });
 
   // MANEJAR SUBMIT DEL FORM
-  const handleForm = (data: PackignListFormData) => {
+  const handleForm = (data: CreatePackignListFormData) => {
+    if (isPending) return;
     createPackingList(data);
   };
+
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4 sm:px-6 lg:px-8">
@@ -82,9 +84,16 @@ export default function CreatePackingList() {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
+              disabled={isPending}
+              className={`w-full font-bold py-4 px-6 rounded-xl uppercase tracking-wide transition-all duration-200
+                  ${
+                    isPending
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white shadow-lg hover:-translate-y-0.5"
+                  }
+                `}
             >
-              Crear Packing List
+              {isPending ? "Creando..." : " Crear Packing List"}
             </button>
           </form>
         </div>

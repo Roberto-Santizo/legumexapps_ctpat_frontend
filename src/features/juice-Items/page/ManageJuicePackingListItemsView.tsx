@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 
 import JuicePackingListDetailPage from "@/features/juice-Items/page/JuicePackingListDetailPage";
-import { getJuicePackingListByCtpatIdAPI } from "@/features/juicePacking-List/api/JuicePacking-ListAPI";
+import { getJuicePackingListAPI } from "@/features/juicePacking-List/api/JuicePacking-ListAPI";
 
 export default function ManageJuicePackingListItemsView() {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ export default function ManageJuicePackingListItemsView() {
     isError,
   } = useQuery({
     queryKey: ["juicePackingListByCtpat", ctpatId],
-    queryFn: () => getJuicePackingListByCtpatIdAPI(ctpatId),
+    queryFn: () => getJuicePackingListAPI(ctpatId),
     enabled: !!ctpatId,
     retry: 1,
   });
@@ -81,6 +81,7 @@ export default function ManageJuicePackingListItemsView() {
         {/* Contenido - Reutilizando JuicePackingListDetailPage */}
         <div className="space-y-6">
           <JuicePackingListDetailPage
+            ctpatId={ctpatId}
             packingListData={juicePackingList}
           />
 

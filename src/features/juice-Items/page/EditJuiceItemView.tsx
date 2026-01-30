@@ -10,13 +10,13 @@ import JuiceItemsTable from "@/features/juice-Items/page/JuiceItemTable";
 import AddJuiceItemToPackingListModal from "@/features/juice-Items/component/AddJuiceItemToPackingListModal";
 import EditJuiceItemModal from "@/features/juice-Items/component/EditJuiceItemModal";
 import { getJuicePackingListAPI } from "@/features/juicePacking-List/api/JuicePacking-ListAPI";
-import { deletJuiceItemAPI } from "@/features/juice-Items/api/JuiceItemAPI";
-import type { JuiceItemTableType } from "@/features/juicePacking-List/schema/juicePackingListType";
+import { deletJuiceItemAPI, getJuiceItemsAPI } from "@/features/juice-Items/api/JuiceItemAPI";
+import type { JuiceItemTableType } from "@/features/juice-Items/schema/juiceItemType";
 
 export default function EditJuiceItemView() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const juicePackingListId = Number(id);
+  const ctpatId = Number(id);
 
   const [openAddModal, setOpenAddModal] = useState(false);
   const [editingItem, setEditingItem] = useState<JuiceItemTableType | null>(null);
@@ -24,20 +24,48 @@ export default function EditJuiceItemView() {
 
   const {
     data: juicePackingList,
-    isLoading,
+    isLoading: isLoadingPackingList,
     isError,
   } = useQuery({
-    queryKey: ["juicePackingList", juicePackingListId],
-    queryFn: () => getJuicePackingListAPI(juicePackingListId),
-    enabled: !!juicePackingListId,
+    queryKey: ["juicePackingList", ctpatId],
+    queryFn: () => getJuicePackingListAPI(ctpatId),
+    enabled: !!ctpatId,
   });
+
+  // Query para cargar los items de juice
+  const {
+    data: juiceItems = [],
+    isLoading: isLoadingItems,
+  } = useQuery({
+    queryKey: ["juiceItems", ctpatId],
+    queryFn: () => getJuiceItemsAPI(ctpatId),
+    enabled: !!ctpatId,
+  });
+
+  const isLoading = isLoadingPackingList || isLoadingItems;
 
   const deleteItemMutation = useMutation({
     mutationFn: deletJuiceItemAPI,
     onSuccess: async () => {
       toast.success("Ítem de jugo eliminado correctamente");
       await queryClient.invalidateQueries({
-        queryKey: ["juicePackingList", juicePackingListId],
+        queryKey: ["juiceItems", ctpatId],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["juicePackingList", ctpatId],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["juicePackingListByCtpat", ctpatId],
+      });
+      // Invalidar queries del documento PDF (sin ctpatId para invalidar por prefijo)
+      await queryClient.invalidateQueries({
+        queryKey: ["ctpat"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["packing-list-juice-totals"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["packing-list-juice"],
       });
     },
     onError: (error: Error) => {
@@ -82,29 +110,12 @@ export default function EditJuiceItemView() {
     );
   }
 
-  // Aplanar los items de la estructura anidada
-  const flattenedItems: JuiceItemTableType[] = [];
-  if (juicePackingList.items) {
-    juicePackingList.items.forEach((group: Record<string, JuiceItemTableType[]>) => {
-      const clientName = Object.keys(group)[0];
-      const clientItems = group[clientName];
-      if (Array.isArray(clientItems)) {
-        clientItems.forEach((item: JuiceItemTableType) => {
-          flattenedItems.push({
-            ...item,
-            client_name: clientName
-          });
-        });
-      }
-    });
-  }
-
   const headerData = {
     id: juicePackingList.id,
     box_type: juicePackingList.box_type,
     order: juicePackingList.order,
-    customer: juicePackingList.customer,
-    thermograph_no: juicePackingList.thermograph_no,
+    customer: juicePackingList.client,
+    thermograph_no: juicePackingList.no_thermograph,
   };
 
   return (
@@ -117,7 +128,7 @@ export default function EditJuiceItemView() {
               <span className="text-4xl">🧃</span>
               Editar Items del Packing List de Jugos
             </h1>
-            <p className="text-gray-600">Packing List ID: {juicePackingListId}</p>
+            <p className="text-gray-600">Packing List ID: {ctpatId}</p>
           </div>
 
           <button
@@ -144,7 +155,7 @@ export default function EditJuiceItemView() {
           </div>
 
           <JuiceItemsTable
-            items={flattenedItems}
+            items={juiceItems}
             onDelete={handleDeleteItem}
             onEdit={(_itemId: number, itemData: JuiceItemTableType) => handleEditItem(itemData)}
           />
@@ -161,7 +172,7 @@ export default function EditJuiceItemView() {
         <AddJuiceItemToPackingListModal
           open={openAddModal}
           onClose={() => setOpenAddModal(false)}
-          juicePackingListId={juicePackingList.id}
+          ctpatId={ctpatId}
         />
 
         {/* Modal editar */}
@@ -169,7 +180,7 @@ export default function EditJuiceItemView() {
           <EditJuiceItemModal
             open={true}
             onClose={() => setEditingItem(null)}
-            juicePackingListId={juicePackingList.id}
+            ctpatId={ctpatId}
             itemId={editingItem.id}
             itemData={editingItem}
           />

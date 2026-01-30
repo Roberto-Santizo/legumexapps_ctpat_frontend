@@ -1,31 +1,29 @@
-
 interface CtpatGeneralInformationTableProps {
   data: {
     destination: string;
     departure_site: string;
     container: string;
-    departure_date:string;
+    departure_date: string;
     departure_hour: string;
-    seal: string,
+    seal: string;
 
-
-    packingList: {
-      no_thermograph: string;
-    };
-
-    driver: { 
+    driver?: {
       name: string;
       identification: string;
     };
 
-    truck: {
+    truck?: {
       plate: string;
     };
   };
+  packingList?: {
+    no_thermograph?: string;
+  } | null;
 }
 
 export default function CtpatGeneralInformationTable({
   data,
+  packingList,
 }: CtpatGeneralInformationTableProps) {
   return (
     <div className="text-xs">
@@ -106,7 +104,7 @@ export default function CtpatGeneralInformationTable({
             <td className="border p-1 font-bold">
               RYAN No. / No. Sensor
             </td>
-            <td className="border p-1">{data.packingList.no_thermograph} </td>
+            <td className="border p-1">{packingList?.no_thermograph || ""} </td>
 
             <td className="border p-1 font-bold">
               CONTAINER ENTRY COUNTRY / Procedencia del contenedor:
@@ -127,7 +125,7 @@ export default function CtpatGeneralInformationTable({
               DRIVER NAME / Nombre del piloto
             </td>
             <td className="border p-1">
-              {data.driver.name || ""}
+              {data.driver?.name || ""}
             </td>
 
             <td className="border p-1 font-bold">
@@ -141,14 +139,14 @@ export default function CtpatGeneralInformationTable({
               DRIVER ID / DPI del piloto
             </td>
             <td className="border p-1">
-              {data.driver.identification || ""}
+              {data.driver?.identification || ""}
             </td>
 
             <td className="border p-1 font-bold">
               LICENCE PLATE No. / Placa
             </td>
             <td className="border p-1">
-              {data.truck.plate || ""}
+              {data.truck?.plate || ""}
             </td>
           </tr>
         </tbody>

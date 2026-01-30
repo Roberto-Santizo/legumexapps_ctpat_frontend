@@ -46,7 +46,7 @@ export const PRODUCT_TYPE_ID_MAP: Record<ProductType, ProductTypeId> = {
 // ============================================================================
 
 import type {PackingListItemTable } from "@/features/packing-List/schemas/packingList";
-import type { PackingListFormData } from "@/features/packing-List/schemas/types";
+import type { ResponsePackingList, CreatePackignListFormData } from "@/features/packing-List/schemas/types";
 
 
 import type { 
@@ -133,13 +133,13 @@ export interface ProductConfig {
     /** Crear packing list */
     createPackingList: (
       ctpatId: number,
-      formData: PackingListFormData | CreateJuicePackingListFormData
+      formData: CreatePackignListFormData | CreateJuicePackingListFormData
     ) => Promise<{ message: string }>;
-    
+
     /** Obtener packing list por CTPAT ID */
     getPackingList: (
       ctpatId: number
-    ) => Promise<PackingListFormData>;
+    ) => Promise<ResponsePackingList | undefined>;
     
     /** Agregar item al packing list */
     addItem: (

@@ -1,6 +1,5 @@
-
 interface DriverTableProps {
-  driver: {
+  driver?: {
     id: number;
     name: string;
     identification: string;
@@ -13,14 +12,15 @@ interface DriverTableProps {
     departure_date: string | null;
     departure_hour: string | null;
     container: string;
-    packingList: {
-      carrier: string;
-      seal: string;
-    };
+    seal?: string;
   };
+  packingList?: {
+    carrier?: string;
+    no_marchamo?: string;
+  } | null;
 }
 
-export default function DriverTable({ driver, ctpat }: DriverTableProps) {
+export default function DriverTable({ driver, ctpat, packingList }: DriverTableProps) {
     const IMAGES_URL = import.meta.env.VITE_IMAGES_BACKEND_URL;
   return (
     <>
@@ -63,7 +63,7 @@ export default function DriverTable({ driver, ctpat }: DriverTableProps) {
           <div className="col-span-2 border-r border-black p-1">
             <p className="font-bold">LICENSE:</p>
             <p className="text-blue-600 underline">
-              {driver.license}
+              {driver?.license || ""}
             </p>
           </div>
 
@@ -76,13 +76,13 @@ export default function DriverTable({ driver, ctpat }: DriverTableProps) {
           </div>
 
             <div className="p-1 flex items-center justify-center">
-            {driver.license_image ? (
+            {driver?.license_image ? (
                 <img
                 src={`${IMAGES_URL}/${driver.license_image}`}
                 alt="Driver ID"
                 className="w-32 h-20 object-contain border"
                 />
-                
+
             ) : (
                 <div className="w-32 h-20 border border-gray-400 bg-gray-100 flex items-center justify-center text-[9px]">
                 NO IMAGE
@@ -96,14 +96,14 @@ export default function DriverTable({ driver, ctpat }: DriverTableProps) {
           <div className="col-span-2 border-r border-black p-1">
             <p className="font-bold">NUMBER OF CARRIER REGISTRATION:</p>
             <p className="text-blue-600 underline">
-              {driver.identification}
+              {driver?.identification || ""}
             </p>
           </div>
 
           <div className="col-span-2 p-1">
             <p className="font-bold">LICENSE NUMBER:</p>
             <p className="text-blue-600 underline">
-              {driver.license}
+              {driver?.license || ""}
             </p>
           </div>
         </div>
@@ -112,7 +112,7 @@ export default function DriverTable({ driver, ctpat }: DriverTableProps) {
           <div className="col-span-2 border-r border-black p-1">
             <p className="font-bold">CARRIER NAME:</p>
             <p className="text-blue-600 underline">
-              {ctpat.packingList.carrier}
+              {packingList?.carrier || ""}
             </p>
           </div>
 
@@ -128,7 +128,7 @@ export default function DriverTable({ driver, ctpat }: DriverTableProps) {
           <div className="col-span-2 border-r border-black p-1">
             <p className="font-bold">TRAILER SEAL:</p>
             <p className="text-blue-600 underline">
-              {ctpat.packingList.seal}
+              {packingList?.no_marchamo || ctpat.seal || ""}
             </p>
           </div>
 

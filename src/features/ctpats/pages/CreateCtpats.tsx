@@ -20,11 +20,7 @@ export default function CreateCtpat() {
     mode: "onChange",
   });
   const queryClient = useQueryClient();
-  const { mutate } = useMutation<
-    CreateCtpatAPIResponse,
-    Error,
-    CreateCtpatFormData
-  >({
+  const { mutate,isPending } = useMutation<CreateCtpatAPIResponse,Error,CreateCtpatFormData>({
     mutationFn: (formData) => createCtpatsAPI(formData),
       onSuccess(data) {
             queryClient.invalidateQueries({queryKey:["ctpats"]})
@@ -78,7 +74,7 @@ export default function CreateCtpat() {
           <div className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] h-2"></div>
 
           <form
-            className="p-8 space-y-6"
+              className={`p-8 space-y-6 ${isPending ? "opacity-60 pointer-events-none" : ""}`}
             onSubmit={handleSubmit(handleForm)}
             noValidate
           >
@@ -90,7 +86,13 @@ export default function CreateCtpat() {
             />
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
+              className={`w-full font-bold py-4 px-6 rounded-xl uppercase tracking-wide transition-all duration-200
+                  ${
+                    isPending
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white shadow-lg hover:-translate-y-0.5"
+                  }
+                `}
             >
               Crear CTPAT
             </button>

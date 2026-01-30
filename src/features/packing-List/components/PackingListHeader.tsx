@@ -14,7 +14,6 @@ export default function PackingListHeader({ packingList }: Props) {
       <p><b>Contenedor:</b> {packingList.no_container}</p>
       <p><b>Tipo de contenedor:</b> {packingList.container_type}</p>
       <p><b>Sellos:</b> {packingList.seal}</p>
-      <p><b>Total cajas:</b> {packingList.boxes}</p>
       <p><b>Fecha inicio:</b> {new Date(packingList.beginning_date).toLocaleDateString()}</p>
     </div>
   );

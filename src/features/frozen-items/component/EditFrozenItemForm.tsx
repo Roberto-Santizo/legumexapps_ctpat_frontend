@@ -15,7 +15,6 @@ import BaseModal from "@/shared/components/BaseModal";
 type Props = {
   open: boolean;
   onClose: () => void;
-  packingListId: number;
   itemId: number;
   ctpatId: number;
   itemData: PackingListItemTable;
@@ -24,7 +23,6 @@ type Props = {
 // Componente interno del formulario que solo se renderiza cuando las opciones están disponibles
 function EditFrozenItemFormContent({
   itemData,
-  packingListId,
   itemId,
   ctpatId,
   onClose,
@@ -32,7 +30,6 @@ function EditFrozenItemFormContent({
   customers,
 }: {
   itemData: PackingListItemTable;
-  packingListId: number;
   itemId: number;
   ctpatId: number;
   onClose: () => void;
@@ -90,19 +87,36 @@ function EditFrozenItemFormContent({
   const { mutate, isPending } = useMutation({
     mutationFn: (formData: EditPackingListItemFormData) => {
       return updatePackingListItemAPI({
-        packingListId,
+        ctpatId,
         itemId,
         formData,
       });
     },
     onSuccess: async (data) => {
       toast.success(data.message);
+      // Invalidar la query de items (frozen-items)
+      await queryClient.invalidateQueries({
+        queryKey: ["frozen-items", ctpatId],
+      });
       await queryClient.invalidateQueries({
         queryKey: ["packingList", ctpatId],
       });
-      // Invalidar la query del ctpat para actualizar el documento PDF
+      // Invalidar queries del documento PDF (refetchType: 'all' para forzar refetch)
       await queryClient.invalidateQueries({
         queryKey: ["ctpat", ctpatId],
+        refetchType: "all",
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["packing-list-frozen-totals", ctpatId],
+        refetchType: "all",
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["packing-list-totals", ctpatId],
+        refetchType: "all",
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["packing-list-frozen", ctpatId],
+        refetchType: "all",
       });
       onClose();
     },
@@ -385,7 +399,6 @@ function EditFrozenItemFormContent({
 export default function EditFrozenItemForm({
   open,
   onClose,
-  packingListId,
   itemId,
   ctpatId,
   itemData,
@@ -414,7 +427,6 @@ export default function EditFrozenItemForm({
         <EditFrozenItemFormContent
           key={itemId}
           itemData={itemData}
-          packingListId={packingListId}
           itemId={itemId}
           ctpatId={ctpatId}
           onClose={onClose}

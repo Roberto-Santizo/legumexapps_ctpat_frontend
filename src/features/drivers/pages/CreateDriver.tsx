@@ -21,7 +21,7 @@ export default function CreateDriver() {
   });
 
   const queryClient = useQueryClient()
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: createDriverAPI,
      onError: (error) => {
        toast.error(error.message)
@@ -33,21 +33,22 @@ export default function CreateDriver() {
       }
     })
 
-const handleForm = async (data: DriverFormData) => {
+  const handleForm = async (data: DriverFormData) => {
+    if (isPending) return; 
 
-  // Validate that at least ONE image has been sent
-  if (!data.identification_image && !data.license_image) {
-    toast.error("Debes agregar al menos una fotografía (DPI o Licencia)");
-    return;
-  }
+    // Validate that at least ONE image has been sent
+    if (!data.identification_image && !data.license_image) {
+      toast.error("Debes agregar al menos una fotografía (DPI o Licencia)");
+      return;
+    }
 
-  const parsedData = {
-    ...data,
-    carrier_id: Number(data.carrier_id),
+    const parsedData = {
+      ...data,
+      carrier_id: Number(data.carrier_id),
+    };
+
+    mutate(parsedData);
   };
-
-  mutate(parsedData);
-};
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4 sm:px-6 lg:px-8">
@@ -90,10 +91,20 @@ const handleForm = async (data: DriverFormData) => {
                     <DriverForm />
                   <button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
+                    disabled={isPending}
+                    className="px-6 py-2.5 rounded-lg bg-amber-600 hover:bg-amber-700
+                              text-white disabled:opacity-50 disabled:cursor-not-allowed
+                              transition-colors font-medium shadow-md"
                   >
-                    Crear Piloto
-                  </button>
+                    {isPending ? (
+                      <span className="flex items-center gap-2">
+                        <span className="animate-spin">⏳</span>
+                        Creando...
+                      </span>
+                    ) : (
+                      "Crear Piloto"
+                    )}
+                </button>
                 </form>
               </FormProvider>
         </div>

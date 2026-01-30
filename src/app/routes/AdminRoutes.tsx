@@ -31,7 +31,8 @@ const routes = [
 
   { path: "/ctpats", component: lazy(() => import("@/features/ctpats/pages/TableCtpat")), roles: ROLE_GROUPS.CALIDAD_Y_EXPORTACIONES },
   { path: "/ctpats/create", component: lazy(() => import("@/features/ctpats/pages/CreateCtpats")), roles: ROLE_GROUPS.CALIDAD },
-  { path: "/ctpats/document/:id", component: lazy(() => import("@/features/ctpats/ctpatsDocument/CtpatDocument")), roles: ROLE_GROUPS.CALIDAD },
+  { path: "/ctpats/document/:id", component: lazy(() => import("@/features/ctpatsDocument/CtpatDocument")), roles: ROLE_GROUPS.CALIDAD },
+
   //this is to add an images 
   {path: "/ctpats/:id/upload-additional-images",component: lazy(() => import("@/features/ctpats/pages/UploadAdditionalImagesView")),roles: ROLE_GROUPS.ADMIN_Y_CALIDAD_ADMIN },
 
@@ -44,7 +45,7 @@ const routes = [
   { path: "/conditions/:conditionId/edit", component: lazy(() => import("@/features/conditions/pages/EditConditionView")), roles: ROLE_GROUPS.ADMIN_Y_CALIDAD_ADMIN },
 
   { path: "/packingList", component: lazy(() => import("@/features/packing-List/pages/CreatePackingList")), roles: ROLE_GROUPS.CALIDAD },
-  { path: "/packingList/document/:id", component: lazy(() => import("@/features/packing-List/packingListDocument/DynamicPackingListDocumentWrapper")), roles: ROLE_GROUPS.CALIDAD },
+  { path: "/packingList/document/:id", component: lazy(() => import("@/features/packingListDocument/DynamicPackingListDocumentWrapper")), roles: ROLE_GROUPS.CALIDAD },
 
   //Edit packingList´s items
   {path: "/packing-list/editItem/:packingListId/:id/",component: lazy(() => import("@/features/frozen-items/page/EditFronzenItemView")),roles:ROLE_GROUPS.CALIDAD},

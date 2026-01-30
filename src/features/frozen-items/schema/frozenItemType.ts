@@ -1,7 +1,11 @@
-// schemas/editPackingListItem.ts
+// schemas/packingListItem.ts
 import { z } from "zod";
 
-export const addItemToPackingListSchema = z.object({
+/* =======================
+   BASE
+======================= */
+
+const packingListItemBaseSchema = z.object({
   product_id: z.number(),
   no_pallet: z.number(),
   lote: z.string(),
@@ -12,28 +16,53 @@ export const addItemToPackingListSchema = z.object({
   production_date: z.string(),
   expiration_date: z.string(),
   client_id: z.number(),
+  grn: z.string(),
   po: z.string().optional(),
-  grn: z.string().optional(),
 });
 
-export type AddItemToPackingListFormData = z.infer<
-  typeof addItemToPackingListSchema
->;
+/* =======================
+   CREATE
+======================= */
 
-export const editPackingListItemSchema = z.object({
+export const addItemToPackingListSchema =
+  packingListItemBaseSchema;
+
+export type AddItemToPackingListFormData =
+  z.infer<typeof addItemToPackingListSchema>;
+
+/* =======================
+   EDIT
+======================= */
+
+export const editPackingListItemSchema = packingListItemBaseSchema;
+export type EditPackingListItemFormData = z.infer<typeof editPackingListItemSchema>;
+
+/* =======================
+   RESPONSE
+======================= */
+
+export const frozenItemResponseSchema = z.object({
+  id: z.number(),
+  product: z.string(),
   product_id: z.number(),
-  no_pallet: z.number().min(1),
-  lote: z.string().min(1),
-  boxes: z.number().min(1),
+  no_tarima: z.number(),
+  lote: z.union([z.string(), z.number()]),
+  code: z.string(),
+  boxes: z.number(),
   temp: z.number(),
-  net_weight: z.number().positive(),
-  gross_weight: z.number().positive(),
-  grn: z.string().min(1),
-  po: z.string().optional(),
+  net_weight: z.number(),
+  gross_weight: z.number(),
+  presentation: z.string(),
+  expiration_date: z.string(),
+  production_date: z.string().optional(),
+  client: z.string(),
   client_id: z.number(),
-  production_date: z.string(),
-  expiration_date: z.string().min(1),
+  grn: z.string(),
+  po: z.string().optional(),
 });
 
-export type EditPackingListItemFormData =
-  z.infer<typeof editPackingListItemSchema>;
+export type FrozenItemResponse = z.infer<typeof frozenItemResponseSchema>;
+
+// Schema para array de items
+export const frozenItemsArraySchema = z.array(frozenItemResponseSchema);
+export type FrozenItemsArray = z.infer<typeof frozenItemsArraySchema>;

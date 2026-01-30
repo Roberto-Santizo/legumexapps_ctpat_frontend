@@ -3,11 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import {getCustomersForSelectAPI} from "@/features/customer/api/CustomerAPI"
 
 import { ErrorMessage } from "@/shared/components/ErrorMessage";
-import type { PackignListFormData } from "@/features/packing-List/schemas/types";
+import type { CreatePackignListFormData } from "@/features/packing-List/schemas/types";
 
 type PackingListFormProps = {
-    register: UseFormRegister<PackignListFormData>
-    errors: FieldErrors<PackignListFormData>;
+    register: UseFormRegister<CreatePackignListFormData>
+    errors: FieldErrors<CreatePackignListFormData>;
 }
 
 export default function PackingListForm({register, errors}: PackingListFormProps) {

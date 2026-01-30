@@ -5,7 +5,7 @@ import { ImagePlus } from "lucide-react";
 
 import JuicePackingListDetailPage from "@/features/juice-Items/page/JuicePackingListDetailPage";
 import CreateUploadImages from "@/features/upload-images/pages/CreateUploadImages";
-import { getJuicePackingListByCtpatIdAPI } from "@/features/juicePacking-List/api/JuicePacking-ListAPI";
+import { getJuicePackingListAPI } from "@/features/juicePacking-List/api/JuicePacking-ListAPI";
 import { Spinner } from "@/shared/components/Spinner";
 
 type Props = {
@@ -27,7 +27,7 @@ export default function JuicePackingListReviewStep({ ctpatId, onContinue }: Prop
     isError,
   } = useQuery({
     queryKey: ["juicePackingListByCtpat", ctpatId],
-    queryFn: () => getJuicePackingListByCtpatIdAPI(ctpatId),
+    queryFn: () => getJuicePackingListAPI(ctpatId),
     enabled: !!ctpatId,
   });
 

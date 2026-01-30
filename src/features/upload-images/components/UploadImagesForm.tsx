@@ -7,9 +7,10 @@ import { toast } from "react-toastify";
 
 type Props = {
   onSubmit: (data: uploadImagesFormData) => void;
+  isPending?: boolean;
 };
 
-export default function UploadImagesForm({ onSubmit }: Props) {
+export default function UploadImagesForm({ onSubmit, isPending = false }: Props) {
   const [images, setImages] = useState<{ image: string; type: string }[]>([]);
   const [showModal, setShowModal] = useState(false);
 
@@ -66,7 +67,9 @@ export default function UploadImagesForm({ onSubmit }: Props) {
         ))}
       </div>
 
-      <Button onClick={handleSubmit} className="w-full">Enviar</Button>
+      <Button onClick={handleSubmit} className="w-full" disabled={isPending}>
+        {isPending ? "Enviando..." : "Enviar"}
+      </Button>
 
       {showModal && (
         <PhotoCaptureModal

@@ -10,14 +10,12 @@ import type { CreateJuiceItemFormData } from "@/features/juice-Items/schema/juic
 type Props = {
   open: boolean;
   onClose: () => void;
-  juicePackingListId: number;
-  ctpatId?: number;
+  ctpatId: number;
 };
 
 export default function AddJuiceItemToPackingListModal({
   open,
   onClose,
-  juicePackingListId,
   ctpatId,
 }: Props) {
   const queryClient = useQueryClient();
@@ -31,24 +29,32 @@ export default function AddJuiceItemToPackingListModal({
 
   const { mutate, isPending } = useMutation({
     mutationFn: (data: CreateJuiceItemFormData) =>
-      createJuiceItemAPI(juicePackingListId, data),
+      createJuiceItemAPI(ctpatId, data),
 
     onSuccess: async () => {
       toast.success("Ítem de jugo agregado correctamente");
+      // Invalidar la query de items de juice
+      await queryClient.invalidateQueries({
+        queryKey: ["juiceItems", ctpatId],
+      });
       // Invalidar la query específica del packing list
       await queryClient.invalidateQueries({
-        queryKey: ["juicePackingList", juicePackingListId],
+        queryKey: ["juicePackingList", ctpatId],
       });
       // También invalidar la query por CTPAT (usada en el flujo dinámico)
       await queryClient.invalidateQueries({
-        queryKey: ["juicePackingListByCtpat"],
+        queryKey: ["juicePackingListByCtpat", ctpatId],
       });
-      // Invalidar la query del ctpat para actualizar el documento PDF
-      if (ctpatId) {
-        await queryClient.invalidateQueries({
-          queryKey: ["ctpat", ctpatId],
-        });
-      }
+      // Invalidar queries del documento PDF (sin ctpatId para invalidar por prefijo)
+      await queryClient.invalidateQueries({
+        queryKey: ["ctpat"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["packing-list-juice-totals"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["packing-list-juice"],
+      });
       reset();
       onClose();
     },

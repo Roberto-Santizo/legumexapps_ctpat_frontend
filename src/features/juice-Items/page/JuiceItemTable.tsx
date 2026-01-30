@@ -1,4 +1,4 @@
-import type { JuiceItemTableType } from "@/features/juicePacking-List/schema/juicePackingListType";
+import type { JuiceItemTableType } from "@/features/juice-Items/schema/juiceItemType";
 import { Trash2, Pencil } from "lucide-react";
 
 // Exportar el tipo para que otros archivos lo puedan usar
@@ -47,8 +47,8 @@ export function JuiceItemTable({
                 <td className="px-4 py-3 text-center text-sm">{item.code}</td>
                 <td className="px-4 py-3 text-center font-semibold">{item.total_boxes}</td>
                 <td className="px-4 py-3 text-center font-medium">{item.bottles}</td>
-                <td className="px-4 py-3 text-center">{item.gross_weight.toFixed(2)}</td>
-                <td className="px-4 py-3 text-center">{item.net_weight.toFixed(2)}</td>
+                <td className="px-4 py-3 text-center">{(item.gross_weight ?? 0).toFixed(2)}</td>
+                <td className="px-4 py-3 text-center">{(item.net_weight ?? 0).toFixed(2)}</td>
                 <td className="px-4 py-3 text-center text-sm">{item.wrapper}</td>
                 <td className="px-4 py-3 text-center">
                   <span className="inline-flex items-center px-2 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">

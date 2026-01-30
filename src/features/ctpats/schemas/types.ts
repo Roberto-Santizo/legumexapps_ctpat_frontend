@@ -21,6 +21,7 @@ export const CtpatSchema = z.object({
   destination: z.string(),
   container_id: z.number(),
   departure_site: z.string(),
+  planta: z.number(),
   type : z.number(),
   images: z.array(ImageSchema),
 });
@@ -33,19 +34,21 @@ export const ctpat = z.object({
   destination: z.string(),
   departure_site: z.string(),
   user: z.string(),
-  container: z.string(),
+  container: z.string().optional(),
   status: z.number(),
-  type: z.number().optional()
+  type: z.number().optional(),
+  createdAt: z.string().optional(),
 });
 
-export const ctpatListSchema = ctpat.pick({
-  id: true,
-  destination: true,
-  user: true,
-  departure_site: true,
-  container: true,
-  status: true,
-  type: true
+export const ctpatListSchema = z.object({
+  id: z.number(),
+  destination: z.string(),
+  departure_site: z.string(),
+  user: z.string(),
+  container: z.string().optional(),
+  status: z.number(),
+  type: z.number().optional(),
+  createdAt: z.string().optional(),
 });
 
 export type uploadImages = z.infer<typeof ImageSchema>;
