@@ -25,6 +25,7 @@ export default function AddFrozenItemToPackingListModal({
     handleSubmit,
     formState: { errors },
     reset,
+    control,
   } = useForm<AddItemToPackingListFormData>();
 
   const { mutate, isPending } = useMutation({
@@ -71,7 +72,7 @@ export default function AddFrozenItemToPackingListModal({
       title="Agregar Ítem al Packing List"
     >
       <form onSubmit={handleSubmit((data) => mutate(data))} noValidate>
-        <CreateItemForm register={register} errors={errors} />
+        <CreateItemForm register={register} errors={errors} control={control} />
 
         {/* FOOTER */}
         <div className="mt-6 flex flex-col-reverse sm:flex-row justify-end gap-2">

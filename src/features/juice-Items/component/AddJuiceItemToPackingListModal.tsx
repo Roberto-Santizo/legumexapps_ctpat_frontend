@@ -25,6 +25,7 @@ export default function AddJuiceItemToPackingListModal({
     handleSubmit,
     formState: { errors },
     reset,
+    control,
   } = useForm<CreateJuiceItemFormData>();
 
   const { mutate, isPending } = useMutation({
@@ -77,7 +78,7 @@ export default function AddJuiceItemToPackingListModal({
       title="Agregar Ítem de Jugo"
     >
       <form onSubmit={handleSubmit((data) => mutate(data))} className="space-y-6" noValidate>
-        <CreateJuiceItemForm register={register} errors={errors} />
+        <CreateJuiceItemForm register={register} errors={errors} control={control} />
 
         {/* FOOTER */}
         <div className="mt-6 flex flex-col-reverse sm:flex-row justify-end gap-3">

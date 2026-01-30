@@ -9,9 +9,11 @@ type Props = {
   ctpatId: number;
   /** Opcional: solo para mostrar título diferente */
   type?: "ctpat" | "juice";
+  /** Callback que se ejecuta después de subir imágenes exitosamente */
+  onSuccess?: () => void;
 };
 
-export default function CreateUploadImages({ ctpatId, type = "ctpat" }: Props) {
+export default function CreateUploadImages({ ctpatId, type = "ctpat", onSuccess }: Props) {
   const queryClient = useQueryClient();
 
   const { mutate: uploadImages, isPending } = useMutation({
@@ -22,6 +24,8 @@ export default function CreateUploadImages({ ctpatId, type = "ctpat" }: Props) {
         toast.success(data.message);
         // Invalidar la query del ctpat para que se actualice automáticamente
         queryClient.invalidateQueries({ queryKey: ["ctpat", String(ctpatId)] });
+        // Llamar callback de éxito (para cerrar modal, etc.)
+        onSuccess?.();
       } else {
         toast.error(data?.message);
       }

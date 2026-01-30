@@ -58,6 +58,7 @@ export default function JuicePackingListSection({
             <CreateUploadImages
               type="juice"
               ctpatId={ctpatId}
+              onSuccess={() => setShowImages(false)}
             />
           </div>
         </div>

@@ -142,7 +142,7 @@ export default function JuicePackingListReviewStep({ ctpatId, onContinue }: Prop
                 </button>
               </div>
 
-              <CreateUploadImages type="juice" ctpatId={ctpatId} />
+              <CreateUploadImages type="juice" ctpatId={ctpatId} onSuccess={() => setShowImages(false)} />
             </div>
           </div>
         )}

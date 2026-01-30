@@ -2,10 +2,12 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getCtpatByIdAPI } from "@/features/ctpats/api/CtpatsAPI";
 import { getImagesAPI } from "@/features/upload-images/api/getImagesAPI";
-// APIs para Frozen
+import { getCtpatObservationsAPI } from "@/features/observations/api/ObservationsAPI";
+import { getCheckListByCtpatIdAPI } from "@/features/checkLists/api/CheckListAPI";
+// Frozen APIs
 import { getFrozenPackingList } from "@/features/packing-List/api/PackingListAPI";
 import { getPackingListTotalsAPI } from "@/features/packing-List/api/PackingListTotals";
-// APIs para Juice
+// Juice APIs
 import { getJuicePackingListAPI } from "@/features/juicePacking-List/api/JuicePacking-ListAPI";
 import { getJuicePackingListTotalsAPI } from "@/features/juicePacking-List/api/JuicePackingListTotals";
 
@@ -31,8 +33,6 @@ export default function CtpatDocument() {
   const { user } = useAuth();
   const ctpatId = Number(id);
 
-  // DEBUG: Este log debería aparecer SIEMPRE que entres al documento
-  console.log("🔴 DOCUMENTO CARGADO - ctpatId:", ctpatId, "id:", id);
 
   // 1. Primero cargar el CTPAT para conocer el tipo de producto
   const { data, isLoading, isError } = useQuery({
@@ -50,6 +50,20 @@ export default function CtpatDocument() {
   const { data: images = [], isLoading: isLoadingImages } = useQuery({
     queryKey: ["ctpat-images", ctpatId],
     queryFn: () => getImagesAPI(ctpatId),
+    enabled: !!id,
+  });
+
+  // 3. Cargar observaciones del CTPAT
+  const { data: observations = [], isLoading: isLoadingObservations } = useQuery({
+    queryKey: ["ctpat-observations", ctpatId],
+    queryFn: () => getCtpatObservationsAPI(ctpatId),
+    enabled: !!id,
+  });
+
+  // 4. Cargar checklist del CTPAT
+  const { data: checklistItems = [], isLoading: isLoadingChecklist } = useQuery({
+    queryKey: ["ctpat-checklist", ctpatId],
+    queryFn: () => getCheckListByCtpatIdAPI(ctpatId),
     enabled: !!id,
   });
 
@@ -90,17 +104,7 @@ export default function CtpatDocument() {
   const packingList = isFrozen ? frozenPackingList : juicePackingList;
   const packingListTotals = isFrozen ? frozenTotals : juiceTotals;
 
-  // DEBUG: Ver qué datos llegan al documento (eliminar después de debuggear)
-  console.log("=== DEBUG DOCUMENTO ===");
-  console.log("ctpatId:", ctpatId);
-  console.log("productType:", productType, "isJuice:", isJuice, "isFrozen:", isFrozen);
-  console.log("juicePackingList:", juicePackingList);
-  console.log("juiceTotals:", juiceTotals);
-  console.log("packingList (usado):", packingList);
-  console.log("packingListTotals (usado):", packingListTotals);
-  console.log("========================");
-
-  if (isLoading || isLoadingImages || isLoadingPackingList) return <p>Cargando documento...</p>;
+  if (isLoading || isLoadingImages || isLoadingPackingList || isLoadingObservations || isLoadingChecklist) return <p>Cargando documento...</p>;
   if (isError) return <p>Error al cargar el documento.</p>;
 
   const ctpat = data.response;
@@ -114,8 +118,8 @@ export default function CtpatDocument() {
       totals={packingListTotals}
     />,
     <DriverTable driver={ctpat.driver} ctpat={ctpat} packingList={packingList} />,
-    <ChecklistTables items={ctpat.checklist?.items ?? []} />,
-    <ObservationsTable observations={ctpat.observations ?? []} />,
+    <ChecklistTables items={checklistItems} />,
+    <ObservationsTable observations={observations} />,
     <FinalCtpatSignatures
       signatureC={ctpat.signature_c}
       signatureE={ctpat.signature_e}

@@ -1,7 +1,7 @@
 import api from "@/shared/api/axios";
 import { isAxiosError  } from "axios";
-import { observationSchema,getObservationSchema } from "@/features/observations/schemas/types"
-import type { ObservationUpdateData,ObservationCreateData } from "@/features/observations/schemas/types";
+import { observationSchema, getObservationSchema, getCtpatObservationsSchema } from "@/features/observations/schemas/types"
+import type { ObservationUpdateData, ObservationCreateData } from "@/features/observations/schemas/types";
 
 
 export async function createObservationAPI(data: ObservationCreateData) {
@@ -45,6 +45,21 @@ export async function getObservationByIdAPI(id: number){
         if (isAxiosError(error) && error.response){
             const message = error.response?.data?.message ?? "Error al obtener la observación";
             throw new Error (message);
+        }
+        throw error;
+    }
+}
+
+// Obtener las observaciones de un CTPAT específico (para mostrar en documento CTPAT)
+export async function getCtpatObservationsAPI(ctpatId: number) {
+    try {
+        const response = await api.get(`/ctpat/getCtpatObservations/${ctpatId}`);
+        const parsed = getCtpatObservationsSchema.parse(response.data);
+        return parsed.response;
+    } catch (error) {
+        if (isAxiosError(error) && error.response) {
+            const message = error.response?.data?.message ?? "Error al obtener las observaciones del CTPAT";
+            throw new Error(message);
         }
         throw error;
     }

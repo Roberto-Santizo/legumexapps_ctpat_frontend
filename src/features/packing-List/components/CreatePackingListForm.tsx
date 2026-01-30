@@ -1,20 +1,30 @@
-import type {UseFormRegister,FieldErrors} from "react-hook-form";
+import type {UseFormRegister, FieldErrors, Control} from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
+import Select from "react-select";
 import {getCustomersForSelectAPI} from "@/features/customer/api/CustomerAPI"
 
 import { ErrorMessage } from "@/shared/components/ErrorMessage";
+import { searchableSelectStyles, getSelectClassNames } from "@/shared/components/SearchableSelect/searchableSelectStyles";
 import type { CreatePackignListFormData } from "@/features/packing-List/schemas/types";
 
 type PackingListFormProps = {
     register: UseFormRegister<CreatePackignListFormData>
     errors: FieldErrors<CreatePackignListFormData>;
+    control: Control<CreatePackignListFormData>;
 }
 
-export default function PackingListForm({register, errors}: PackingListFormProps) {
+export default function PackingListForm({register, errors, control}: PackingListFormProps) {
     const { data: customers, isLoading } = useQuery({
         queryKey: ["customers-select"],
         queryFn: getCustomersForSelectAPI,
     });
+
+    // Opciones para el select de clientes (guarda el nombre, no el ID)
+    const customerOptions = customers?.map((c) => ({
+        value: c.name,
+        label: c.name,
+    })) ?? [];
 
     if (isLoading) {
      return <p>Cargando clientes...</p>;
@@ -62,23 +72,25 @@ export default function PackingListForm({register, errors}: PackingListFormProps
                 Cliente <span className="required">*</span>
             </label>
 
-            <select
-                id="customer"
-                className={`form-input ${
-                errors?.customer ? "form-input-error" : "form-input-normal"
-                }`}
-                {...register("customer", {
-                required: "El cliente es obligatorio",
-                })}
-            >
-                <option value="">Seleccione un cliente</option>
-
-                {customers?.map((customer) => (
-                <option key={customer.id} value={customer.name}>
-                    {customer.name}
-                </option>
-                ))}
-            </select>
+            <Controller
+                name="customer"
+                control={control}
+                rules={{ required: "El cliente es obligatorio" }}
+                render={({ field }) => (
+                    <Select<{ value: string; label: string }>
+                        {...field}
+                        options={customerOptions}
+                        placeholder="Escribe para buscar cliente..."
+                        isClearable
+                        isSearchable
+                        noOptionsMessage={() => "No se encontraron clientes"}
+                        value={customerOptions.find((opt) => opt.value === field.value) || null}
+                        onChange={(selected) => field.onChange(selected?.value ?? "")}
+                        classNames={getSelectClassNames(!!errors?.customer)}
+                        styles={searchableSelectStyles}
+                    />
+                )}
+            />
 
             {errors?.customer && (
                 <ErrorMessage>{errors.customer.message}</ErrorMessage>

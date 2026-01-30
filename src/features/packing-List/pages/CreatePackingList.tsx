@@ -15,8 +15,8 @@ export default function CreatePackingList() {
   const ctpatId = Number(id);
   //update the ctpat status
   const { mutate: updateStatus } = useUpdateCtpatStatus();
-  // REACT HOOK FORM  
-  const {register,handleSubmit,formState: { errors }} = useForm<CreatePackignListFormData>();
+  // REACT HOOK FORM
+  const {register, handleSubmit, formState: { errors }, control} = useForm<CreatePackignListFormData>();
 
   // MUTATION
   const { mutate: createPackingList, isPending } = useMutation({
@@ -80,7 +80,7 @@ export default function CreatePackingList() {
             onSubmit={handleSubmit(handleForm)}
             noValidate
           >
-            <PackingListForm register={register} errors={errors} />
+            <PackingListForm register={register} errors={errors} control={control} />
 
             <button
               type="submit"

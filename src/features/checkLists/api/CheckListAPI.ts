@@ -1,6 +1,7 @@
 import api from "@/shared/api/axios";
 import { isAxiosError } from "axios";
 import type {CheckListCreateData,CheckListUpdateData} from "@/features/checkLists/schemas/types"
+import { checkListResponseSchema } from "@/features/checkLists/schemas/types"
 
 
 
@@ -9,6 +10,19 @@ export async function createCheckListAPI(ctpatId: number, formData:CheckListCrea
         const payload = { data: formData };
         const { data } = await api.post(`/checklist/${ctpatId}`, payload);
         return data
+    } catch (error) {
+        if (isAxiosError(error) && error.response) {
+            throw new Error(error.response.data.message);
+        }
+        throw error;
+    }
+}
+
+export async function getCheckListByCtpatIdAPI(ctpatId: number) {
+    try {
+        const {data} = await api.get(`/ctpat/getCtpatChecklist/${ctpatId}`);
+        const response = checkListResponseSchema.parse(data);
+        return response.response.items;
     } catch (error) {
         if (isAxiosError(error) && error.response) {
             throw new Error(error.response.data.message);

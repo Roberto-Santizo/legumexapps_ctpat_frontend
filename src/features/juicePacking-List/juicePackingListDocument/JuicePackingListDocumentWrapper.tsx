@@ -1,15 +1,32 @@
 import { useQuery } from "@tanstack/react-query";
-import { PDFViewer } from "@react-pdf/renderer";
+import { PDFViewer, BlobProvider } from "@react-pdf/renderer";
 import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Download, Eye } from "lucide-react";
 import { getCtpatByIdAPI } from "@/features/ctpats/api/CtpatsAPI";
 import { getJuicePackingListAPI } from "@/features/juicePacking-List/api/JuicePacking-ListAPI";
 import { getJuicePackingListTotalsAPI } from "@/features/juicePacking-List/api/JuicePackingListTotals";
 import { getJuiceItemsGroupedAPI } from "@/features/juice-Items/api/JuiceItemAPI";
 import { PackingListTableDocument } from "./JuicePackingListDocument";
 
+// Detectar si es dispositivo móvil
+const isMobileDevice = () => {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    || window.innerWidth < 768;
+};
+
 export default function JuicePackingListDocumentWrapper() {
   const { id } = useParams();
   const ctpatId = Number(id);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detectar móvil al montar
+  useEffect(() => {
+    setIsMobile(isMobileDevice());
+    const handleResize = () => setIsMobile(isMobileDevice());
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // 1. Cargar el CTPAT para verificar el tipo
   const { data: ctpatData, isLoading: isLoadingCtpat, isError: isErrorCtpat } = useQuery({
@@ -113,11 +130,74 @@ export default function JuicePackingListDocumentWrapper() {
     totals: totals || { total_boxes: 0, net_weight: 0, gross_weight: 0, bottles: 0 },
   };
 
+  const pdfDocument = <PackingListTableDocument apiPackingList={apiPackingList} />;
+
+  // Vista para MÓVIL - Usar BlobProvider para descarga/apertura
+  if (isMobile) {
+    return (
+      <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            Packing List Juice
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Contenedor: {apiPackingList.no_container}
+          </p>
+
+          <BlobProvider document={pdfDocument}>
+            {({ blob, loading, error }) => {
+              if (loading) {
+                return (
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+                    <p className="text-gray-500">Generando PDF...</p>
+                  </div>
+                );
+              }
+
+              if (error) {
+                return <p className="text-red-500">Error al generar PDF</p>;
+              }
+
+              const pdfUrl = blob ? URL.createObjectURL(blob) : '';
+
+              return (
+                <div className="flex flex-col gap-4">
+                  {/* Botón para ABRIR en nueva pestaña */}
+                  <a
+                    href={pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full py-4 px-6 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition-colors"
+                  >
+                    <Eye size={20} />
+                    Abrir PDF
+                  </a>
+
+                  {/* Botón para DESCARGAR */}
+                  <a
+                    href={pdfUrl}
+                    download={`PackingList_Juice_${apiPackingList.no_container}.pdf`}
+                    className="flex items-center justify-center gap-2 w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
+                  >
+                    <Download size={20} />
+                    Descargar PDF
+                  </a>
+                </div>
+              );
+            }}
+          </BlobProvider>
+        </div>
+      </div>
+    );
+  }
+
+  // Vista para DESKTOP - PDFViewer normal
   return (
     <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
       <div className="w-full h-[90vh] bg-white rounded-xl shadow-md overflow-hidden">
         <PDFViewer width="100%" height="100%">
-          <PackingListTableDocument apiPackingList={apiPackingList} />
+          {pdfDocument}
         </PDFViewer>
       </div>
     </div>
