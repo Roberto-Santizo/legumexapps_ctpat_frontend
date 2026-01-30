@@ -5,7 +5,7 @@ import { CompanyLogoSchema } from "@/assets/CompanyLogoSchema";
 
 export async function getCompanyLogoAPI(){
     try {
-        const {data} = await api.get('/api/images')
+        const {data} = await api.get('/images')
         const response = CompanyLogoSchema.safeParse(data)
         if(response.success){
             return response.data
