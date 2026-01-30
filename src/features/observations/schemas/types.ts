@@ -34,5 +34,5 @@ export type CtpatObservationItem = z.infer<typeof ctpatObservationItemSchema>;
 export type ObservationCreateData = z.infer<typeof observationSchema>;
 export type ObservationList = z.infer<typeof observationListSchema>;
 export type ObservationListResponse = z.infer<typeof getObservationSchema>;
-export type GetAllObservationsResponse = z.infer<typeof getAllObservationsSchema>;
+export type GetAllObservationsResponse = z.infer<typeof getObservationSchema>;
 export type ObservationUpdateData = z.infer<typeof observationUpdateSchema>;

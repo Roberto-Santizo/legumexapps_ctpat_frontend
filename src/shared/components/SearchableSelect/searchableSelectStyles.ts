@@ -1,7 +1,9 @@
+import type { CSSObjectWithLabel, ControlProps, OptionProps, GroupBase } from "react-select";
+
 // Estilos personalizados para react-select con mejor visibilidad del texto de búsqueda
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const searchableSelectStyles: any = {
-  control: (base, state) => ({
+  control: (base: CSSObjectWithLabel, state: ControlProps<unknown, false, GroupBase<unknown>>) => ({
     ...base,
     minHeight: "44px",
     borderColor: state.isFocused ? "#3b82f6" : "#d1d5db",
@@ -10,23 +12,23 @@ export const searchableSelectStyles: any = {
       borderColor: "#3b82f6",
     },
   }),
-  input: (base) => ({
+  input: (base: CSSObjectWithLabel) => ({
     ...base,
     color: "#111827",
     fontSize: "16px", // Importante para móviles (evita zoom automático)
     fontWeight: 500,
   }),
-  placeholder: (base) => ({
+  placeholder: (base: CSSObjectWithLabel) => ({
     ...base,
     color: "#9ca3af",
     fontSize: "14px",
   }),
-  singleValue: (base) => ({
+  singleValue: (base: CSSObjectWithLabel) => ({
     ...base,
     color: "#111827",
     fontSize: "14px",
   }),
-  option: (base, state) => ({
+  option: (base: CSSObjectWithLabel, state: OptionProps<unknown, false, GroupBase<unknown>>) => ({
     ...base,
     backgroundColor: state.isSelected
       ? "#3b82f6"
@@ -40,24 +42,24 @@ export const searchableSelectStyles: any = {
       backgroundColor: "#dbeafe",
     },
   }),
-  menu: (base) => ({
+  menu: (base: CSSObjectWithLabel) => ({
     ...base,
     zIndex: 9999,
     boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
     borderRadius: "8px",
     overflow: "hidden",
   }),
-  menuList: (base) => ({
+  menuList: (base: CSSObjectWithLabel) => ({
     ...base,
     maxHeight: "200px",
     padding: 0,
   }),
-  noOptionsMessage: (base) => ({
+  noOptionsMessage: (base: CSSObjectWithLabel) => ({
     ...base,
     color: "#6b7280",
     padding: "12px",
   }),
-  clearIndicator: (base) => ({
+  clearIndicator: (base: CSSObjectWithLabel) => ({
     ...base,
     cursor: "pointer",
     color: "#9ca3af",
@@ -65,7 +67,7 @@ export const searchableSelectStyles: any = {
       color: "#ef4444",
     },
   }),
-  dropdownIndicator: (base) => ({
+  dropdownIndicator: (base: CSSObjectWithLabel) => ({
     ...base,
     cursor: "pointer",
     color: "#9ca3af",
