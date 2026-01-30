@@ -28,6 +28,7 @@
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.63.0",
     "react-router-dom": "^7.9.3",
+    "react-select": "^5.10.2",
     "react-signature-canvas": "^1.1.0-alpha.2",
     "react-spinners": "^0.17.0",
     "react-toastify": "^11.0.5",

@@ -41,6 +41,7 @@ export default function PackingListSection({ ctpatId, onContinue }: Props) {
 
             <CreateUploadImages
               ctpatId={ctpatId}
+              onSuccess={() => setShowImages(false)}
             />
           </div>
         </div>

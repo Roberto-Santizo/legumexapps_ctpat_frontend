@@ -1,7 +1,10 @@
-import type { UseFormRegister, FieldErrors } from "react-hook-form";
+import type { UseFormRegister, FieldErrors, Control } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
+import Select from "react-select";
 
 import { ErrorMessage } from "@/shared/components/ErrorMessage";
+import { searchableSelectStyles, getSelectClassNames } from "@/shared/components/SearchableSelect/searchableSelectStyles";
 import { getCustomersForSelectAPI } from "@/features/customer/api/CustomerAPI";
 import type {CreateJuiceItemFormData} from "@/features/juice-Items/schema/juiceItemType"
 import {getJuiceForSelectAPI} from "@/features/juiceProduct/api/JuiceApi"
@@ -10,9 +13,10 @@ import {toUpper} from "@/shared/helpers/textTransformUppercase"
 type Props = {
   register: UseFormRegister<CreateJuiceItemFormData>;
   errors: FieldErrors<CreateJuiceItemFormData>;
+  control: Control<CreateJuiceItemFormData>;
 };
 
-export default function CreateJuiceItemForm({ register, errors }: Props) {
+export default function CreateJuiceItemForm({ register, errors, control }: Props) {
   const { data: juices } = useQuery({
     queryKey: ["juice-select"],
     queryFn: getJuiceForSelectAPI,
@@ -23,28 +27,43 @@ export default function CreateJuiceItemForm({ register, errors }: Props) {
     queryFn: getCustomersForSelectAPI,
   });
 
+  // Opciones para el select de jugos
+  const juiceOptions = juices?.map((juice) => ({
+    value: juice.id,
+    label: `${juice.name} (${juice.code})`,
+  })) ?? [];
+
+  // Opciones para el select de clientes
+  const customerOptions = customers?.map((c) => ({
+    value: c.id,
+    label: c.name,
+  })) ?? [];
+
   return (
     <div className="space-y-6">
       <div className="form-group">
         <label className="form-label">
           Jugo <span className="required">*</span>
         </label>
-        <select
-          className={`form-input ${
-            errors.juice_id ? "form-input-error" : "form-input-normal"
-          }`}
-          {...register("juice_id", {
-            valueAsNumber: true,
-            required: "El jugo es obligatorio",
-          })}
-        >
-          <option value="">Seleccione un jugo</option>
-          {juices?.map((juice) => (
-            <option key={juice.id} value={juice.id}>
-              {juice.name}  ({juice.code})
-            </option>
-          ))}
-        </select>
+        <Controller
+          name="juice_id"
+          control={control}
+          rules={{ required: "El jugo es obligatorio" }}
+          render={({ field }) => (
+            <Select<{ value: number; label: string }>
+              {...field}
+              options={juiceOptions}
+              placeholder="Escribe para buscar jugo..."
+              isClearable
+              isSearchable
+              noOptionsMessage={() => "No se encontraron jugos"}
+              value={juiceOptions.find((opt) => opt.value === field.value) || null}
+              onChange={(selected) => field.onChange(selected?.value ?? null)}
+              classNames={getSelectClassNames(!!errors.juice_id)}
+              styles={searchableSelectStyles}
+            />
+          )}
+        />
         {errors.juice_id && (
           <ErrorMessage>{errors.juice_id.message}</ErrorMessage>
         )}
@@ -146,22 +165,25 @@ export default function CreateJuiceItemForm({ register, errors }: Props) {
         <label className="form-label">
           Cliente <span className="required">*</span>
         </label>
-        <select
-          className={`form-input ${
-            errors.client_id ? "form-input-error" : "form-input-normal"
-          }`}
-          {...register("client_id", {
-            valueAsNumber: true,
-            required: "El cliente es obligatorio",
-          })}
-        >
-          <option value="">Seleccione un cliente</option>
-          {customers?.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
-          ))}
-        </select>
+        <Controller
+          name="client_id"
+          control={control}
+          rules={{ required: "El cliente es obligatorio" }}
+          render={({ field }) => (
+            <Select<{ value: number; label: string }>
+              {...field}
+              options={customerOptions}
+              placeholder="Escribe para buscar cliente..."
+              isClearable
+              isSearchable
+              noOptionsMessage={() => "No se encontraron clientes"}
+              value={customerOptions.find((opt) => opt.value === field.value) || null}
+              onChange={(selected) => field.onChange(selected?.value ?? null)}
+              classNames={getSelectClassNames(!!errors.client_id)}
+              styles={searchableSelectStyles}
+            />
+          )}
+        />
         {errors.client_id && (
           <ErrorMessage>{errors.client_id.message}</ErrorMessage>
         )}

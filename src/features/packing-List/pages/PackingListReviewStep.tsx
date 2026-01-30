@@ -101,7 +101,7 @@ export default function PackingListReviewStep({
                 </button>
               </div>
 
-              <CreateUploadImages ctpatId={ctpatId} />
+              <CreateUploadImages ctpatId={ctpatId} onSuccess={() => setShowImages(false)} />
             </div>
           </div>
         )}

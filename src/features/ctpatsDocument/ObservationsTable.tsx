@@ -31,9 +31,7 @@ export default function ObservationsTable({
                   {index + 1}. {obs.observation}
                 </td>
                 <td className="border border-black p-2 w-2/5">
-                  <span className="text-blue-600">
-                    {obs.data}
-                  </span>
+                  <span className="text-blue-600">{obs.data}</span>
                 </td>
               </tr>
             ))

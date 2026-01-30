@@ -1,12 +1,14 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import {Document, Page,View,Text,PDFViewer,Image,} from "@react-pdf/renderer";
+import {Document, Page, View, Text, PDFViewer, Image, BlobProvider} from "@react-pdf/renderer";
 import { packingListDocumentSyles as styles } from "@/features/packingListDocument/packingList.styles";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
+import { Download, Eye } from "lucide-react";
 import { getFrozenPackingList } from "@/features/packing-List/api/PackingListAPI";
 import { getPackingListTotalsAPI } from "@/features/packing-List/api/PackingListTotals";
 import { getfrozenItemsAPI } from "@/features/frozen-items/api/frozenItemAPI";
+import { getCompanyLogoAPI } from "@/assets/CompanyLogoAPI";
 import type { ResponsePackingList } from "@/features/packing-List/schemas/types";
 import type { FrozenItemResponse } from "@/features/frozen-items/schema/frozenItemType";
 
@@ -273,13 +275,15 @@ const TotalsSection: React.FC<{ totals: TotalRow[] }> = ({ totals }) => (
 /* ===============================================================
   4. HEADER
 ================================================================ */
-const HeaderSection: React.FC<{ header: HeaderData }> = ({ header }) => (
+const HeaderSection: React.FC<{ header: HeaderData; companyLogo?: string | null }> = ({ header, companyLogo }) => (
   <>
     {/* Encabezado Principal */}
     <View style={styles.headerGrid}>
       <View style={styles.logoCell}>
-         {/* Tu imagen ... */}
-         <Image src="https://legumexappsapi-storage.s3.us-east-1.amazonaws.com/resources/LOGO_LX.png" style={{width: '100%', height:'100%', objectFit:'contain'}} />
+         <Image
+           src={companyLogo || "https://legumexappsapi-storage.s3.us-east-1.amazonaws.com/resources/LOGO_LX.png"}
+           style={{width: '100%', height:'100%', objectFit:'contain'}}
+         />
       </View>
 
       <View style={{ width: "70%" }}>
@@ -367,13 +371,14 @@ const PackingListDocument: React.FC<{
   totals: Totals;
   totalsTable: TotalRow[];
   variant?: PackingListVariant;
-}> = ({ header, items, totals,totalsTable, variant = "NORMAL" }) => {
+  companyLogo?: string | null;
+}> = ({ header, items, totals, totalsTable, variant = "NORMAL", companyLogo }) => {
   const showPoGrn = variant === "WITH_PO_GRN";
 
 return (
   <Page size="LETTER" style={styles.page}>
     <View style={styles.section}>
-      <HeaderSection header={header} />
+      <HeaderSection header={header} companyLogo={companyLogo} />
 
       {/* TABLA PRINCIPAL */}
       <View style={styles.table}>
@@ -406,26 +411,46 @@ return (
   6. GENERATOR (API + UI)
 ================================================================ */
 
+// Detectar si es dispositivo móvil
+const isMobileDevice = () => {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    || window.innerWidth < 768;
+};
+
 const PackingListGenerator: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const [isMobile, setIsMobile] = useState(false);
 
-    const [header, setHeader] = React.useState<HeaderData | null>(null);
-    const [items, setItems] = React.useState<ItemData[]>([]);
-    const [totals, setTotals] = React.useState<Totals | null>(null);
-    const [totalsTable, setTotalsTable] = React.useState<TotalRow[]>([]);
+  const [header, setHeader] = React.useState<HeaderData | null>(null);
+  const [items, setItems] = React.useState<ItemData[]>([]);
+  const [totals, setTotals] = React.useState<Totals | null>(null);
+  const [totalsTable, setTotalsTable] = React.useState<TotalRow[]>([]);
+  const [companyLogo, setCompanyLogo] = React.useState<string | null>(null);
 
+  // Detectar móvil al montar
+  useEffect(() => {
+    setIsMobile(isMobileDevice());
+    const handleResize = () => setIsMobile(isMobileDevice());
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (!id) return;
 
     const fetchData = async () => {
       try {
-        // Llamar a los 3 endpoints en paralelo
-        const [packingList, frozenItems, packingTotals] = await Promise.all([
+        const [packingList, frozenItems, packingTotals, logoResponse] = await Promise.all([
           getFrozenPackingList(Number(id)),
           getfrozenItemsAPI(Number(id)),
           getPackingListTotalsAPI(Number(id)),
+          getCompanyLogoAPI(),
         ]);
+
+        // Guardar el logo de la empresa
+        if (logoResponse?.data) {
+          setCompanyLogo(logoResponse.data);
+        }
 
         if (!packingList) return;
 
@@ -448,56 +473,112 @@ const PackingListGenerator: React.FC = () => {
     fetchData();
   }, [id]);
 
-    const pdfDocument = React.useMemo(() => {
-      if (!header || !totals) return null;
+  const pdfDocument = React.useMemo(() => {
+    if (!header || !totals) return null;
 
-      return (
-        <Document>
-          {/* HOJA 1 - SIN PO / GRN */}
+    return (
+      <Document>
         <PackingListDocument
           header={header}
           items={items}
           totals={totals}
           totalsTable={totalsTable}
           variant="NORMAL"
+          companyLogo={companyLogo}
         />
+        <PackingListDocument
+          header={header}
+          items={items}
+          totals={totals}
+          totalsTable={totalsTable}
+          variant="WITH_PO_GRN"
+          companyLogo={companyLogo}
+        />
+      </Document>
+    );
+  }, [header, items, totals, totalsTable, companyLogo]);
 
-          {/* HOJA 2 - CON PO / GRN */}
-          <PackingListDocument
-            header={header}
-            items={items}
-            totals={totals}
-            totalsTable={totalsTable}
-            variant="WITH_PO_GRN"
-          />
-
-        </Document>
-      );
-    }, [header, items, totals,totalsTable]);
-
-    if (!header || !totals || !pdfDocument) {
-      return <p>Cargando PDF...</p>;
-    }
-
+  if (!header || !totals || !pdfDocument) {
     return (
       <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
-        {!pdfDocument ? (
-          <div className="flex flex-col items-center gap-4">
-            <ClipLoader size={60} color="#16a34a" />
-            <p className="text-gray-600 font-medium">
-              Generando documento PDF...
-            </p>
-          </div>
-        ) : (
-          <div className="w-full h-[80vh] bg-white rounded-xl shadow-md overflow-hidden">
-            <PDFViewer width="100%" height="100%">
-              {pdfDocument}
-            </PDFViewer>
-          </div>
-        )}
+        <div className="flex flex-col items-center gap-4">
+          <ClipLoader size={60} color="#16a34a" />
+          <p className="text-gray-600 font-medium">Cargando PDF...</p>
+        </div>
       </div>
     );
+  }
 
+  // Vista para MÓVIL - Usar BlobProvider para descarga/apertura
+  if (isMobile) {
+    return (
+      <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            Packing List Frozen
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Contenedor: {header.containerNo}
+          </p>
+
+          <BlobProvider document={pdfDocument}>
+            {({ blob, loading, error }) => {
+              if (loading) {
+                return (
+                  <div className="flex flex-col items-center gap-4">
+                    <ClipLoader size={40} color="#16a34a" />
+                    <p className="text-gray-500">Generando PDF...</p>
+                  </div>
+                );
+              }
+
+              if (error) {
+                return <p className="text-red-500">Error al generar PDF</p>;
+              }
+
+              const pdfUrl = blob ? URL.createObjectURL(blob) : '';
+
+              return (
+                <div className="flex flex-col gap-4">
+                  {/* Botón para ABRIR en nueva pestaña */}
+                  <a
+                    href={pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full py-4 px-6 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition-colors"
+                  >
+                    <Eye size={20} />
+                    Abrir PDF
+                  </a>
+
+                  {/* Botón para DESCARGAR */}
+                  <a
+                    href={pdfUrl}
+                    download={`PackingList_${header.containerNo}.pdf`}
+                    className="flex items-center justify-center gap-2 w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
+                  >
+                    <Download size={20} />
+                    Descargar PDF
+                  </a>
+                </div>
+              );
+            }}
+          </BlobProvider>
+        </div>
+      </div>
+    );
+  }
+
+  // Vista para DESKTOP - PDFViewer normal
+  return (
+    <div className="p-6 bg-gray-100 min-h-screen flex items-center justify-center">
+      <div className="w-full h-[80vh] bg-white rounded-xl shadow-md overflow-hidden">
+        <PDFViewer width="100%" height="100%">
+          {pdfDocument}
+        </PDFViewer>
+      </div>
+    </div>
+  );
 };
 
 export default PackingListGenerator;
