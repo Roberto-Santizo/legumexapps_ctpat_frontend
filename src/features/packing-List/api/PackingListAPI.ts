@@ -24,8 +24,6 @@ export async function getFrozenPackingList(ctpatId: number){
     if (response.success) {
       return response.data;
     }
-    console.error("Schema validation failed for packing list:", response.error.format());
-    console.log("Received packing list data:", data);
     return null;
   } catch (error) {
     if (isAxiosError(error) && error.response) {

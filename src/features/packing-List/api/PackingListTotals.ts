@@ -12,14 +12,10 @@ export async function getPackingListTotalsAPI(ctpatId: number): Promise<PackingL
         if (response.success) {
             return response.data;
         }
-        console.error("Schema validation failed for frozen totals:", response.error.format());
         return [];
     } catch (error) {
         if (isAxiosError(error) && error.response) {
-            if (error.response.status === 404) {
-                return [];
-            }
-            console.error("Error fetching frozen totals:", error.response.data.message);
+            throw new Error(error.response.data.message);
         }
         return [];
     }

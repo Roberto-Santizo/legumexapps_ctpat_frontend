@@ -6,6 +6,7 @@ import JuicePackingListHeader from "@/features/juicePacking-List/page/JuicePacki
 import AddJuiceItemToPackingListModal from "@/features/juice-Items/component/AddJuiceItemToPackingListModal";
 import EditJuiceItemModal from "@/features/juice-Items/component/EditJuiceItemModal";
 import { getJuicePackingListAPI } from "@/features/juicePacking-List/api/JuicePacking-ListAPI";
+import { getJuicePackingListTotalsAPI } from "@/features/juicePacking-List/api/JuicePackingListTotals";
 import { deletJuiceItemAPI, getJuiceItemsAPI } from "@/features/juice-Items/api/JuiceItemAPI";
 import { JuiceItemTable } from "@/features/juice-Items/page/JuiceItemTable";
 import type { JuiceItemTableType } from "@/features/juice-Items/schema/juiceItemType";
@@ -57,6 +58,13 @@ export default function JuicePackingListDetailPage({
     enabled: !!ctpatId,
   });
 
+  // Query para obtener los totales de juice
+  const { data: totals } = useQuery({
+    queryKey: ["juicePackingListTotals", ctpatId],
+    queryFn: () => getJuicePackingListTotalsAPI(ctpatId),
+    enabled: !!ctpatId,
+  });
+
   // Usar packingListData si se proporcionó, sino usar los datos de la query
   const juicePackingList = packingListData || fetchedPackingList;
 
@@ -83,6 +91,9 @@ export default function JuicePackingListDetailPage({
       });
       await queryClient.invalidateQueries({
         queryKey: ["packing-list-juice"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["juicePackingListTotals", ctpatId],
       });
     },
     onError: (error: Error) => {
@@ -154,7 +165,7 @@ export default function JuicePackingListDetailPage({
 
   return (
     <div className="space-y-6">
-      <JuicePackingListHeader packingList={headerData} />
+      <JuicePackingListHeader packingList={headerData} totals={totals} />
 
       <div className="flex justify-between items-center">
         <button
@@ -191,6 +202,7 @@ export default function JuicePackingListDetailPage({
         items={juiceItems}
         onDelete={handleDeleteItem}
         onEdit={(_itemId: number, itemData: JuiceItemTableType) => handleEditItem(itemData)}
+        totals={totals}
       />
 
       <AddJuiceItemToPackingListModal

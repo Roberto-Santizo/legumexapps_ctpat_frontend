@@ -154,7 +154,7 @@ export default function PackingListDetailPage({ ctpatId, onContinue }: Props) {
 
   return (
     <div className="p-6 space-y-6">
-      <PackingListHeader packingList={headerData} />
+      <PackingListHeader packingList={headerData} totals={totals} />
 
       <div className="flex justify-between">
         <button
@@ -183,6 +183,7 @@ export default function PackingListDetailPage({ ctpatId, onContinue }: Props) {
         onDelete={handleDeleteItem}
         onEdit={(_, itemData) => handleEditItem(itemData)}
         ctpatId={ctpatId}
+        totals={totals}
       />
 
       {/* Modal agregar */}

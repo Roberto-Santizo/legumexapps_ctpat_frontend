@@ -50,8 +50,6 @@ export async function getfrozenItemsAPI(ctpatId: number) {
     if(response.success){
       return response.data
     }
-    console.error("Schema validation failed for frozen items:", response.error.format());
-    console.log("Received data:", data);
     return [];
   } catch (error) {
     if(isAxiosError(error) && error.response){

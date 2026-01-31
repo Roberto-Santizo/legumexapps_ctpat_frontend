@@ -1,4 +1,5 @@
 import type { JuiceItemTableType } from "@/features/juice-Items/schema/juiceItemType";
+import type { JuicePackingListTotal } from "@/features/juicePacking-List/schema/JuicePackingListTotals";
 import { Trash2, Pencil } from "lucide-react";
 
 // Exportar el tipo para que otros archivos lo puedan usar
@@ -8,12 +9,14 @@ type Props = {
   items: JuiceItemTableType[];
   onDelete: (itemId: number) => void;
   onEdit: (itemId: number, itemData: JuiceItemTableType) => void;
+  totals?: JuicePackingListTotal;
 };
 
-export function JuiceItemTable({ 
-  items, 
-  onDelete, 
-  onEdit
+export function JuiceItemTable({
+  items,
+  onDelete,
+  onEdit,
+  totals
 }: Props) {
   return (
     <div className="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200">
@@ -80,9 +83,33 @@ export function JuiceItemTable({
               </tr>
             ))}
           </tbody>
+
+          {/* Footer con totales */}
+          {items.length > 0 && totals && (
+            <tfoot className="bg-green-100 border-t-2 border-green-300">
+              <tr>
+                <td colSpan={2} className="px-4 py-3 text-right font-bold text-green-800">
+                  TOTALES:
+                </td>
+                <td className="px-4 py-3 text-center font-bold text-green-800">
+                  {totals.total_boxes.toFixed(2)}
+                </td>
+                <td className="px-4 py-3 text-center font-bold text-green-800">
+                  {totals.bottles.toFixed(2)}
+                </td>
+                <td className="px-4 py-3 text-center font-bold text-green-800">
+                  {totals.gross_weight.toFixed(2)}
+                </td>
+                <td className="px-4 py-3 text-center font-bold text-green-800">
+                  {totals.net_weight.toFixed(2)}
+                </td>
+                <td colSpan={5}></td>
+              </tr>
+            </tfoot>
+          )}
         </table>
       </div>
-      
+
       {items.length === 0 && (
         <div className="py-12 text-center">
           <p className="text-gray-500 text-lg">

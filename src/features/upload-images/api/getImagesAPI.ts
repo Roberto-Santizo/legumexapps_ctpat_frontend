@@ -11,16 +11,13 @@ export async function getImagesAPI(ctpatId: number) {
         if (response.success) {
             return response.data;
         }
-        console.error("Schema validation failed for images:", response.error.format());
-        return []; // Retornar array vacío si la validación falla
+        return [];
     } catch (error) {
         if (isAxiosError(error) && error.response) {
-            // Si es 404, retornar array vacío (no hay imágenes)
             if (error.response.status === 404) {
                 return [];
             }
-            console.error("Error fetching images:", error.response.data.message);
         }
-        return []; // Retornar array vacío en caso de error
+        return [];
     }
 }

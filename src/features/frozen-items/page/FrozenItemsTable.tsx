@@ -1,4 +1,5 @@
 import type { PackingListItemTable } from "@/features/packing-List/schemas/packingList";
+import type { PackingListTotal } from "@/features/packing-List/schemas/PackingListTotals";
 import { Trash2, Pencil } from "lucide-react";
 
 type Props = {
@@ -6,13 +7,19 @@ type Props = {
   onDelete: (itemId: number) => void;
   onEdit: (itemId: number, itemData: PackingListItemTable) => void;
   ctpatId?: number;
+  totals?: PackingListTotal[];
 };
 
-export default function PackingListItemsTable({ 
-  items, 
-  onDelete, 
-  onEdit
+export default function PackingListItemsTable({
+  items,
+  onDelete,
+  onEdit,
+  totals = []
 }: Props) {
+  // Calcular totales sumados
+  const totalBoxes = totals.reduce((sum, t) => sum + t.total_boxes, 0);
+  const totalGrossWeight = totals.reduce((sum, t) => sum + t.gross_weight, 0);
+  const totalNetWeight = totals.reduce((sum, t) => sum + t.net_weight, 0);
   return (
     <div className="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200">
       <div className="overflow-x-auto">
@@ -140,6 +147,27 @@ export default function PackingListItemsTable({
               </tr>
             ))}
           </tbody>
+
+          {/* Footer con totales */}
+          {items.length > 0 && (
+            <tfoot className="bg-orange-100 border-t-2 border-orange-300">
+              <tr>
+                <td colSpan={4} className="px-2 py-3 text-right font-bold text-orange-800">
+                  TOTALES:
+                </td>
+                <td className="px-2 py-3 text-center font-bold text-orange-800">
+                  {totalBoxes.toFixed(2)}
+                </td>
+                <td className="px-2 py-3 text-center font-bold text-orange-800">
+                  {totalGrossWeight.toFixed(2)}
+                </td>
+                <td className="px-2 py-3 text-center font-bold text-orange-800">
+                  {totalNetWeight.toFixed(2)}
+                </td>
+                <td colSpan={7}></td>
+              </tr>
+            </tfoot>
+          )}
         </table>
       </div>
       {items.length === 0 && (

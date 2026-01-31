@@ -23,7 +23,6 @@ export async function getJuicePackingListAPI(ctpatId: number) {
         if(response.success){
             return response.data
         }
-        console.error("Schema validation failed for juice packing list:", response.error.format());
         return null;
     } catch (error) {
         if(isAxiosError(error)&& error.response){

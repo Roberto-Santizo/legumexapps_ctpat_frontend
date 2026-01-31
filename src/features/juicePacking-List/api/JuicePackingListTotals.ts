@@ -11,7 +11,6 @@ export async function getJuicePackingListTotalsAPI(ctpatId: number) {
         if (response.success) {
             return response.data;
         }
-        console.error("Schema validation failed for juice totals:", response.error.format());
         // Retornar valores por defecto si la validación falla
         return {
             total_boxes: 0,
