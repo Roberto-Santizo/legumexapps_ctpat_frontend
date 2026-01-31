@@ -70,6 +70,17 @@ const HEADER_TEXT_COLOR = '#FFFFFF';
   2. MAPPERS (API → PDF)
 ================================================================ */
 
+// Función para formatear fechas sin problemas de zona horaria
+// Convierte "2027-01-30" o "2027-01-30T00:00:00" a "30/1/2027"
+const formatDateString = (dateStr: string | null | undefined): string => {
+  if (!dateStr) return "--";
+  // Extraer solo la parte de la fecha (YYYY-MM-DD)
+  const datePart = dateStr.split('T')[0];
+  const [year, month, day] = datePart.split('-');
+  // Retornar en formato DD/M/YYYY (sin ceros a la izquierda en el mes)
+  return `${parseInt(day)}/${parseInt(month)}/${year}`;
+};
+
 // Tipo para los totales del endpoint (ahora es un array)
 interface PackingListTotalsAPI {
   product: string;
@@ -98,10 +109,10 @@ const mapHeader = (
     seal: api.seal,
     client: api.client,
     boxesTotal: totalBoxes,
-    beginningDate: new Date(api.beginning_date).toLocaleDateString(),
+    beginningDate: formatDateString(api.beginning_date),
     thermographNo: api.no_thermograph,
     tempExit: api.exit_temp,
-    exitDate: api.exit_date ? new Date(api.exit_date).toLocaleDateString() : "--",
+    exitDate: formatDateString(api.exit_date),
   };
 };
 
@@ -120,7 +131,7 @@ const mapItems = (
     pesoNeto: item.net_weight,
     presentacion: item.presentation,
     temp: `${item.temp}°C`,
-    fechaExpiracion: new Date(item.expiration_date).toLocaleDateString(),
+    fechaExpiracion: formatDateString(item.expiration_date),
     po: item.po ?? "",
     grn: item.grn ?? "",
   }));
@@ -456,7 +467,7 @@ const PackingListGenerator: React.FC = () => {
         if (!packingList) return;
 
         const headerMapped = mapHeader(packingList, packingTotals);
-        const beginningDate = new Date(packingList.beginning_date).toLocaleDateString();
+        const beginningDate = formatDateString(packingList.beginning_date);
 
         const itemsMapped = mapItems(frozenItems ?? [], beginningDate);
         const totalsMapped = calculateTotals(itemsMapped);
