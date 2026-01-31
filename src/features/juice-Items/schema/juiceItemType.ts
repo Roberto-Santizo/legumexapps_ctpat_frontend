@@ -9,7 +9,8 @@ export const createJuiceItemSchema = z.object({
   client_id: z.number(),
   bottles: z.number(),
   date: z.string(),
-  grn: z.string()
+  grn: z.string(),
+  code: z.string().optional() 
 })
 export type CreateJuiceItemFormData = z.infer<typeof createJuiceItemSchema>
 
@@ -68,7 +69,8 @@ export const editJuicePackingListItemSchema = z.object({
   client_id: z.number(),
   bottles: z.number(),
   date: z.string(),
-  grn:z.string()
+  grn: z.string(),
+  code: z.string().optional()
 });
 
 export type EditJuicePackingListItemFormData = z.infer<typeof editJuicePackingListItemSchema>;

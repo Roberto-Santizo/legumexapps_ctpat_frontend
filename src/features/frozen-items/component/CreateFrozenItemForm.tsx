@@ -280,6 +280,20 @@ export default function CreateFrozenItemForm({ register, errors, control }: Prop
         />
         {errors.grn && (<ErrorMessage>{errors.grn.message}</ErrorMessage> )}
       </div>
+
+      <div className="form-group">
+        <label className="form-label">CODIGO</label>
+        <input
+          type="text"
+          id="code"
+          className={`form-input ${
+            errors.code ? "form-input-error" : "form-input-normal"
+          }`}
+          {...register("code", {
+           setValueAs: (value) => value?.toUpperCase(),
+          })}
+        />
+      </div>
     </div>
   );
 }

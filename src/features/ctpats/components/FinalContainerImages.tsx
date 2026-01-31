@@ -14,6 +14,7 @@ type Props = {
 export default function FinalContainerImages({ ctpatId }: Props) {
   const [showModal, setShowModal] = useState(false);
   const [images, setImages] = useState<BuildImagePayload<true>[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
   const updateStatus = useUpdateCtpatStatus();
   const navigate = useNavigate();
 
@@ -35,6 +36,7 @@ export default function FinalContainerImages({ ctpatId }: Props) {
     }
 
     try {
+      setIsSaving(true);
       const payload = {
         images: images.map((img) => ({
           image: img.image,
@@ -48,6 +50,8 @@ export default function FinalContainerImages({ ctpatId }: Props) {
       navigate("/ctpats");
     } catch  {
       toast.error("Error al guardar las imágenes");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -58,7 +62,7 @@ export default function FinalContainerImages({ ctpatId }: Props) {
       </h2>
 
       <div className="flex justify-end">
-        <Button type="button" onClick={() => setShowModal(true)}>
+        <Button type="button" onClick={() => setShowModal(true)} disabled={isSaving}>
           Tomar Foto
         </Button>
       </div>
@@ -91,7 +95,8 @@ export default function FinalContainerImages({ ctpatId }: Props) {
             <button
               type="button"
               onClick={() => handleRemoveImage(index)}
-              className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 text-xs hover:bg-red-700"
+              disabled={isSaving}
+              className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 text-xs hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               ×
             </button>
@@ -102,9 +107,9 @@ export default function FinalContainerImages({ ctpatId }: Props) {
       <Button
         className="w-full"
         onClick={handleSaveImages}
-        disabled={images.length === 0}
+        disabled={images.length === 0 || isSaving}
       >
-        Guardar
+        {isSaving ? "Guardando..." : "Guardar"}
       </Button>
 
       {showModal && (

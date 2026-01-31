@@ -23,7 +23,6 @@ export async function getCtpatsAPI(page: number = 1) {
     if (response.success) {
       return response.data;
     }
-    throw new Error("Formato de respuesta inválido");
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       throw new Error(error.response.data.message);
@@ -88,7 +87,6 @@ export async function uploadImagesAPI(ctpatId: number, formData: uploadImagesFor
     };
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      console.error("Error desde backend:", error.response.data);
       throw new Error(error.response.data.message);
     }
   }

@@ -150,13 +150,25 @@ export default function EditJuiceItemForm({ register, errors }: Props) {
                 errors.grn ? "form-input-error" : "form-input-normal"
                 }`}
                 {...register("grn", {
-                  setValueAs: toUpper, 
+                  setValueAs: toUpper,
                   required: "El dato de grn es obligatorio",
                 })}
                 />
                 {errors.grn && (
                   <ErrorMessage>{errors.grn.message}</ErrorMessage>
                 )}
+      </div>
+
+      {/* CODIGO */}
+      <div className="form-group">
+        <label className="form-label">CODIGO</label>
+        <input
+          type="text"
+          className="form-input form-input-normal"
+          {...register("code", {
+            setValueAs: toUpper,
+          })}
+        />
       </div>
     </div>
   );

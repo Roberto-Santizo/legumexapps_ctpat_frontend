@@ -115,7 +115,7 @@ const { data, isLoading, isError } = useQuery({
                       <td>{ctpat.user}</td>
                       <td>{ctpat.departure_site}</td>
                       <td>{ctpat.container}</td>
-                      <td>{ctpat.createdAt}</td>
+                      <td>{ctpat.departure_date}</td>
                       <td>
                         <span
                           className={`px-2 py-1 text-xs font-semibold rounded-full border ${CTPAT_STATUS_COLORS[ctpat.status]}`}

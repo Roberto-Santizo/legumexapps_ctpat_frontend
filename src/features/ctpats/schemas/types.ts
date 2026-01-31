@@ -45,10 +45,10 @@ export const ctpatListSchema = z.object({
   destination: z.string(),
   departure_site: z.string(),
   user: z.string(),
-  container: z.string().optional(),
+  container: z.string().nullish(),
   status: z.number(),
-  type: z.number().optional(),
-  createdAt: z.string().optional(),
+  type: z.number().nullish(),
+  departure_date: z.string().nullish(),
 });
 
 export type uploadImages = z.infer<typeof ImageSchema>;

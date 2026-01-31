@@ -81,6 +81,7 @@ function EditFrozenItemFormContent({
       // Usar los IDs encontrados por nombre (o los originales si no se encontraron)
       product_id: productId ? String(productId) : "",
       client_id: clientId ? String(clientId) : "",
+      code: (itemData as unknown as Record<string, unknown>).code as string || "",
     },
   });
 
@@ -345,6 +346,16 @@ function EditFrozenItemFormContent({
           type="text"
           className="form-input form-input-normal"
           {...register("po", { setValueAs: toUpper })}
+        />
+      </div>
+
+      {/* CODIGO */}
+      <div className="form-group">
+        <label className="form-label">CODIGO</label>
+        <input
+          type="text"
+          className="form-input form-input-normal"
+          {...register("code", { setValueAs: toUpper })}
         />
       </div>
 

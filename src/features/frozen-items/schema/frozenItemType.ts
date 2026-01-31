@@ -18,14 +18,14 @@ const packingListItemBaseSchema = z.object({
   client_id: z.number(),
   grn: z.string(),
   po: z.string().optional(),
+  code: z.string().optional(),
 });
 
 /* =======================
    CREATE
 ======================= */
 
-export const addItemToPackingListSchema =
-  packingListItemBaseSchema;
+export const addItemToPackingListSchema = packingListItemBaseSchema;
 
 export type AddItemToPackingListFormData =
   z.infer<typeof addItemToPackingListSchema>;

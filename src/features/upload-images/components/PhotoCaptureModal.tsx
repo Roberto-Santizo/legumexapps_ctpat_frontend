@@ -14,6 +14,7 @@ type Props<T extends boolean> = {
   onClose: () => void;
   onSave: (img: BuildImagePayload<T>) => void;
   showDescription?: T;
+  isSaving?: boolean;
 };
 
 /* ======================================================
@@ -52,6 +53,7 @@ export default function PhotoCaptureModal<T extends boolean>({
   onClose,
   onSave,
   showDescription = true as T,
+  isSaving = false,
 }: Props<T>) {
   /* ======================================================
      REFS
@@ -160,16 +162,17 @@ export default function PhotoCaptureModal<T extends boolean>({
             />
 
             <div className="flex flex-wrap gap-3 justify-center">
-              <Button onClick={capture}>📸 Tomar foto</Button>
+              <Button onClick={capture} disabled={isSaving}>📸 Tomar foto</Button>
 
               <Button
                 variant="outline"
                 onClick={() => fileInputRef.current?.click()}
+                disabled={isSaving}
               >
                 🖼️ Subir imagen
               </Button>
 
-              <Button variant="outline" onClick={onClose}>
+              <Button variant="outline" onClick={onClose} disabled={isSaving}>
                 Cancelar
               </Button>
             </div>
@@ -221,11 +224,11 @@ export default function PhotoCaptureModal<T extends boolean>({
             )}
 
             <div className="flex justify-between mt-4">
-              <Button variant="outline" onClick={handleRetake}>
+              <Button variant="outline" onClick={handleRetake} disabled={isSaving}>
                 🔄 Retomar
               </Button>
-              <Button onClick={handleSave}>
-                💾 Guardar
+              <Button onClick={handleSave} disabled={isSaving}>
+                {isSaving ? "Guardando..." : "💾 Guardar"}
               </Button>
             </div>
           </div>
