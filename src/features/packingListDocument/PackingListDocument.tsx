@@ -72,13 +72,26 @@ const HEADER_TEXT_COLOR = '#FFFFFF';
 
 // Función para formatear fechas sin problemas de zona horaria
 // Convierte "2027-01-30" o "2027-01-30T00:00:00" a "30/1/2027"
+// También maneja fechas que ya vienen formateadas como "1/30/2027"
 const formatDateString = (dateStr: string | null | undefined): string => {
   if (!dateStr) return "--";
-  // Extraer solo la parte de la fecha (YYYY-MM-DD)
+
+  // Extraer solo la parte de la fecha (antes de T si existe)
   const datePart = dateStr.split('T')[0];
-  const [year, month, day] = datePart.split('-');
-  // Retornar en formato DD/M/YYYY (sin ceros a la izquierda en el mes)
-  return `${parseInt(day)}/${parseInt(month)}/${year}`;
+
+  // Si tiene guiones, es formato ISO (YYYY-MM-DD)
+  if (datePart.includes('-')) {
+    const [year, month, day] = datePart.split('-');
+    return `${parseInt(day)}/${parseInt(month)}/${year}`;
+  }
+
+  // Si tiene slashes, ya está formateada - retornar como está
+  if (datePart.includes('/')) {
+    return datePart;
+  }
+
+  // Si no tiene ninguno, retornar el valor original
+  return datePart;
 };
 
 // Tipo para los totales del endpoint (ahora es un array)
