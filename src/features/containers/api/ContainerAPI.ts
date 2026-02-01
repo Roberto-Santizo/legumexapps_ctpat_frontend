@@ -1,6 +1,7 @@
 import { isAxiosError } from "axios";
 import api from "@/shared/api/axios.ts";
 import type {ContainerFormData,GetContainerFormData,Container} from "@/features/containers/schemas/types"
+import { containerSelectSchema } from "@/features/containers/schemas/types"
 
 export async function createContainerAPI(formData: ContainerFormData) {
   try {
@@ -56,5 +57,26 @@ export async function updateContainerAPI({formData,containerId}:ContainerAPIType
       throw new Error (error.response.data.message)
     }
   }
-  
+
+}
+
+export async function getContainersForSelectAPI() {
+  try {
+    const { data } = await api.get('/containers');
+
+    const parsed = containerSelectSchema
+      .array()
+      .safeParse(data.response);
+
+    if (!parsed.success) {
+      throw new Error("Formato inválido de contenedores para el select");
+    }
+
+    return parsed.data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
+    }
+    throw error;
+  }
 }

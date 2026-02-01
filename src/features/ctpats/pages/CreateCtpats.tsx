@@ -9,7 +9,7 @@ import type {CreateCtpatFormData,CreateCtpatAPIResponse,} from "@/features/ctpat
 export default function CreateCtpat() {
   const navigate = useNavigate();
 
-  const {register,handleSubmit,setValue,watch,formState: { errors },
+  const {register,handleSubmit,setValue,watch,control,formState: { errors },
   } = useForm<CreateCtpatFormData>({
     defaultValues: {
       destination: "",
@@ -83,6 +83,7 @@ export default function CreateCtpat() {
               errors={errors}
               setValue={setValue}
               watch={watch}
+              control={control}
             />
             <button
               type="submit"

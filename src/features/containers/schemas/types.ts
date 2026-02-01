@@ -9,7 +9,13 @@ export const containerSchema = z.object({
   type: z.string()
 })
 
+export const containerSelectSchema = z.object({
+  id: z.number(),
+  container: z.string(),
+});
+
 export const getContainerSchema = paginationSchema(containerSchema)
 export type GetContainerFormData = z.infer<typeof getContainerSchema>;
 export type Container = z.infer<typeof containerSchema>
-export type ContainerFormData = Pick<Container,'container' |'seal' |'sensor' |'type'> 
+export type ContainerFormData = Pick<Container,'container' |'seal' |'sensor' |'type'>
+export type ContainerSelect = z.infer<typeof containerSelectSchema> 

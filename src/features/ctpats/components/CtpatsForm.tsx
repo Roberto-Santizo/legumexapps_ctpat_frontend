@@ -1,18 +1,23 @@
 import { useEffect, useState } from "react";
 import { ErrorMessage } from "../../../shared/components/ErrorMessage";
-import { getContainerAPI } from "@/features/containers/api/ContainerAPI";
+import { getContainersForSelectAPI } from "@/features/containers/api/ContainerAPI";
 import { Button } from "@/shared/components/button";
 import PhotoCaptureModal, {type BuildImagePayload} from "@/features/upload-images/components/PhotoCaptureModal";
-import type {UseFormRegister,FieldErrors,UseFormSetValue,UseFormWatch,} from "react-hook-form";
+import type {UseFormRegister,FieldErrors,UseFormSetValue,UseFormWatch, Control} from "react-hook-form";
+import { Controller } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
+import Select from "react-select";
 import type { CreateCtpatFormData } from "@/features/ctpats/schemas/types";
 import { toast } from "react-toastify";
 import { toUpper } from "@/shared/helpers/textTransformUppercase";
+import { searchableSelectStyles, getSelectClassNames } from "@/shared/components/SearchableSelect/searchableSelectStyles";
 
 type CtpatFormProps = {
   register: UseFormRegister<CreateCtpatFormData>;
   setValue: UseFormSetValue<CreateCtpatFormData>;
   watch: UseFormWatch<CreateCtpatFormData>;
   errors?: FieldErrors<CreateCtpatFormData>;
+  control: Control<CreateCtpatFormData>;
 };
 
 export default function CtpatForm({
@@ -20,29 +25,23 @@ export default function CtpatForm({
   errors,
   setValue,
   watch,
+  control,
 }: CtpatFormProps) {
-  const [containers, setContainers] = useState<
-    { id: number; container: string }[]
-  >([]);
-  const [loadingContainers, setLoadingContainers] = useState<boolean>(true);
   const [showModal, setShowModal] = useState(false);
 
   const images = watch("images") || [];
 
-  // Cargar contenedores
-  useEffect(() => {
-    const fetchContainers = async () => {
-      try {
-        const { response } = await getContainerAPI();
-        setContainers(response);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoadingContainers(false);
-      }
-    };
-    fetchContainers();
-  }, []);
+  // Cargar contenedores con useQuery (sin paginación)
+  const { data: containers, isLoading: loadingContainers } = useQuery({
+    queryKey: ["containers-select"],
+    queryFn: getContainersForSelectAPI,
+  });
+
+  // Opciones para el select de contenedores
+  const containerOptions = containers?.map((c) => ({
+    value: c.id,
+    label: c.container,
+  })) ?? [];
 
   // Validar campo images
   useEffect(() => {
@@ -131,24 +130,30 @@ export default function CtpatForm({
         <label htmlFor="container_id" className="form-label">
           Contenedor (Número) <span className="required">*</span>
         </label>
-        <select
-          id="container_id"
-          className={`form-input ${
-            errors?.container_id ? "form-input-error" : "form-input-normal"
-          }`}
-          {...register("container_id", {
-            required: "El contenedor es obligatorio",
-          })}
-          disabled={loadingContainers}
-        >
-          <option value="0">Selecciona un contenedor</option>
 
-          {containers.map((container) => (
-            <option key={container.id} value={container.id}>
-              {container.container}
-            </option>
-          ))}
-        </select>
+        {loadingContainers ? (
+          <p>Cargando contenedores...</p>
+        ) : (
+          <Controller
+            name="container_id"
+            control={control}
+            rules={{ required: "El contenedor es obligatorio" }}
+            render={({ field }) => (
+              <Select<{ value: number; label: string }>
+                {...field}
+                options={containerOptions}
+                placeholder="Escribe para buscar contenedor..."
+                isClearable
+                isSearchable
+                noOptionsMessage={() => "No se encontraron contenedores"}
+                value={containerOptions.find((opt) => opt.value === field.value) || null}
+                onChange={(selected) => field.onChange(selected?.value ?? 0)}
+                classNames={getSelectClassNames(!!errors?.container_id)}
+                styles={searchableSelectStyles}
+              />
+            )}
+          />
+        )}
 
         {errors?.container_id && (
           <ErrorMessage>{errors.container_id.message}</ErrorMessage>
