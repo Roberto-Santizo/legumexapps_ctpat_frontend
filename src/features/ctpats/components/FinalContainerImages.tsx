@@ -89,7 +89,7 @@ export default function FinalContainerImages({ ctpatId }: Props) {
                 <strong>Tipo:</strong> {img.type}
               </p>
               <p>
-                <strong>Descripción:</strong> {img.description || "N/A"}
+                <strong>Descripción:</strong> {img.description}
               </p>
             </div>
             <button

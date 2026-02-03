@@ -10,7 +10,8 @@ export const createJuiceItemSchema = z.object({
   bottles: z.number(),
   date: z.string(),
   grn: z.string(),
-  code: z.string().optional() 
+  code: z.string().optional(), 
+  expiration_date: z.string()
 })
 export type CreateJuiceItemFormData = z.infer<typeof createJuiceItemSchema>
 
@@ -24,7 +25,8 @@ export const juiceItemResponse = z.object({
     date: z.string(),
     client_id: z.number(),
     juice_id:  z.number(),
-    grn: z.string()
+    grn: z.string(),
+    expiration_date: z.string()
 })
 
 export type  JuiceResponseItemFormData = z.infer<typeof juiceItemResponse>
@@ -43,6 +45,7 @@ export const juiceItemTableSchema = z.object({
   wrapper: z.string(),
   temp: z.number(),
   grn: z.string(),
+  expiration_date: z.string(),
 });
 
 // Schema para la respuesta del endpoint getPackingListJuiceItems
@@ -70,7 +73,8 @@ export const editJuicePackingListItemSchema = z.object({
   bottles: z.number(),
   date: z.string(),
   grn: z.string(),
-  code: z.string().optional()
+  code: z.string().optional(),
+  expiration_date: z.string()
 });
 
 export type EditJuicePackingListItemFormData = z.infer<typeof editJuicePackingListItemSchema>;
@@ -92,4 +96,5 @@ export type JuiceItemTableType = {
   code?: string;
   wrapper?: string;
   ticket_number?: number;
+  expiration_date: string;
 };

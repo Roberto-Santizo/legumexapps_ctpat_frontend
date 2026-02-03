@@ -390,6 +390,7 @@ interface APIPackingListItem {
   bottles: number;
   wrapper: string;
   temp: number;
+  expiration_date: string;
 }
 
 interface APIGroupItem {
@@ -433,16 +434,6 @@ const formatDate = (dateString: string): string => {
   }
 };
 
-const calculateBestBy = (dateString: string): string => {
-  try {
-    const date = new Date(dateString);
-    date.setMonth(date.getMonth() + 3);
-    return date.toLocaleDateString('en-US');
-  } catch {
-    return '';
-  }
-};
-
 const transformAPIData = (apiPackingList: APIPackingList) => {
   const containerInfo: ContainerInfo = {
     naviera: apiPackingList.carrier || '',
@@ -480,7 +471,7 @@ const transformAPIData = (apiPackingList: APIPackingList) => {
         cantidadBotellas: apiItem.bottles,
         tipoEmpaque: apiItem.wrapper,
         temp: `${apiItem.temp}°C`,
-        bestBy: calculateBestBy(apiItem.date),
+        bestBy: apiItem.expiration_date || '',
       })),
       totals: {
         totalCajas: groupTotals.total_boxes,

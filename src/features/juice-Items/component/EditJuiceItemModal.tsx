@@ -99,6 +99,8 @@ function EditJuiceItemFormContent({
       bottles: itemData.bottles,
       date: convertDateToInputFormat(itemData.date),
       grn: (itemDataAny.grn as string) || "",
+      code: itemData.code || "",
+      expiration_date: itemData.expiration_date || "",
     },
   });
 

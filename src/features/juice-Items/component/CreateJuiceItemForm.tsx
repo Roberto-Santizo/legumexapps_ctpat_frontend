@@ -258,6 +258,24 @@ export default function CreateJuiceItemForm({ register, errors, control }: Props
            setValueAs: (value) => value?.toUpperCase(),
           })}
         />
+
+        <div className="form-group">
+          <label className="form-label">Fecha de expiración *</label>
+          <input
+            type="text"
+            className={`form-input ${
+              errors.expiration_date ? "form-input-error" : "form-input-normal"
+            }`}
+            {...register("expiration_date", {
+              setValueAs: toUpper, 
+              required: "La fecha de expiración es obligatoria",
+            })}
+          />
+          {errors.expiration_date && (
+            <ErrorMessage>{errors.expiration_date.message}</ErrorMessage>
+          )}
+        </div>
+
       </div>
         
     </div>
