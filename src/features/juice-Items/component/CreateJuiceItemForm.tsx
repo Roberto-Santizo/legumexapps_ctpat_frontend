@@ -262,12 +262,11 @@ export default function CreateJuiceItemForm({ register, errors, control }: Props
         <div className="form-group">
           <label className="form-label">Fecha de expiración *</label>
           <input
-            type="text"
+            type="date"
             className={`form-input ${
               errors.expiration_date ? "form-input-error" : "form-input-normal"
             }`}
             {...register("expiration_date", {
-              setValueAs: toUpper, 
               required: "La fecha de expiración es obligatoria",
             })}
           />
