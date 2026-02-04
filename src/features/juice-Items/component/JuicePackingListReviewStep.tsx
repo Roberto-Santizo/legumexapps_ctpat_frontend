@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
-import { ImagePlus } from "lucide-react";
+import { ImagePlus, CheckCircle } from "lucide-react";
 
 import JuicePackingListDetailPage from "@/features/juice-Items/page/JuicePackingListDetailPage";
 import PhotoCaptureModal, { type BuildImagePayload } from "@/features/upload-images/components/PhotoCaptureModal";
@@ -10,6 +10,14 @@ import { getJuicePackingListAPI } from "@/features/juicePacking-List/api/JuicePa
 import { Spinner } from "@/shared/components/Spinner";
 import { toast } from "react-toastify";
 import { Button } from "@/shared/components/button";
+
+// Tipo para las imágenes de la sesión actual
+interface SessionImage {
+  id: string;
+  image: string;
+  type: string;
+  description?: string;
+}
 
 type Props = {
   ctpatId: number;
@@ -21,10 +29,12 @@ type Props = {
  * Equivalente a PackingListReviewStep pero para jugos
  */
 export default function JuicePackingListReviewStep({ ctpatId, onContinue }: Props) {
+  const queryClient = useQueryClient();
   const [showImages, setShowImages] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [images, setImages] = useState<BuildImagePayload<true>[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+  // Imágenes de la sesión actual (solo para mostrar en el modal)
+  const [sessionImages, setSessionImages] = useState<SessionImage[]>([]);
 
   // Obtener el packing list de jugos por CTPAT ID
   const {
@@ -37,40 +47,47 @@ export default function JuicePackingListReviewStep({ ctpatId, onContinue }: Prop
     enabled: !!ctpatId,
   });
 
-  const handleAddImage = (newImage: BuildImagePayload<true>) => {
-    setImages((prev) => [...prev, newImage]);
+  // Guardar imagen inmediatamente al tomarla/elegirla
+  const handleAddImage = async (newImage: BuildImagePayload<true>) => {
     setShowModal(false);
-    toast.success("Foto agregada correctamente");
-  };
+    setIsSaving(true);
 
-  const handleRemoveImage = (index: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleSaveImages = async () => {
-    if (images.length === 0) {
-      toast.error("Debes agregar al menos una imagen");
-      return;
-    }
+    // Agregar a las imágenes de la sesión para mostrar en el modal
+    const tempId = `temp-${Date.now()}`;
+    const sessionImg: SessionImage = {
+      id: tempId,
+      image: newImage.image,
+      type: newImage.type,
+      description: newImage.description,
+    };
+    setSessionImages((prev) => [...prev, sessionImg]);
 
     try {
-      setIsSaving(true);
       const payload = {
-        images: images.map((img) => ({
-          image: img.image,
-          type: img.type,
-        })),
+        images: [{
+          image: newImage.image,
+          type: newImage.type,
+          description: newImage.description,
+        }],
       };
 
       await uploadImagesAPI(ctpatId, payload);
-      toast.success("Imágenes guardadas correctamente");
-      setImages([]);
-      setShowImages(false);
+      // Invalidar query de imágenes para actualizar el documento CTPAT
+      queryClient.invalidateQueries({ queryKey: ["ctpat-images", ctpatId] });
+      toast.success("Imagen guardada correctamente");
     } catch {
-      toast.error("Error al guardar las imágenes");
+      toast.error("Error al guardar la imagen");
+      // Quitar la imagen de la sesión si falló
+      setSessionImages((prev) => prev.filter((img) => img.id !== tempId));
     } finally {
       setIsSaving(false);
     }
+  };
+
+  // Cerrar modal y limpiar imágenes de la sesión
+  const handleFinishImages = () => {
+    setShowImages(false);
+    setSessionImages([]);
   };
 
   const handleContinueWithConfirmation = async () => {
@@ -166,7 +183,7 @@ export default function JuicePackingListReviewStep({ ctpatId, onContinue }: Prop
         {showImages && (
           <div
             className="fixed inset-0 bg-black/40 flex justify-end z-50"
-            onClick={() => !isSaving && setShowImages(false)}
+            onClick={() => !isSaving && handleFinishImages()}
           >
             <div
               className="bg-white w-full max-w-lg p-6 shadow-xl overflow-y-auto"
@@ -174,10 +191,10 @@ export default function JuicePackingListReviewStep({ ctpatId, onContinue }: Prop
             >
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold text-gray-800">
-                  Imágenes del Packing List de Jugos
+                  Subir Imágenes
                 </h2>
                 <button
-                  onClick={() => setShowImages(false)}
+                  onClick={handleFinishImages}
                   disabled={isSaving}
                   className="text-gray-500 hover:text-gray-700 text-2xl leading-none disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -186,56 +203,61 @@ export default function JuicePackingListReviewStep({ ctpatId, onContinue }: Prop
               </div>
 
               <div className="space-y-4">
-                <div className="flex justify-end">
+                <div className="flex justify-between items-center">
+                  <p className="text-sm text-gray-500">
+                    {sessionImages.length > 0
+                      ? `${sessionImages.length} imagen(es) agregadas`
+                      : "Toma fotos para agregar"}
+                  </p>
                   <Button type="button" onClick={() => setShowModal(true)} disabled={isSaving}>
-                    Tomar Foto
+                    {isSaving ? "Guardando..." : "Tomar Foto"}
                   </Button>
                 </div>
 
-                {images.length === 0 && (
-                  <p className="text-sm text-gray-500 text-center py-4">
-                    No se han agregado fotos aún.
-                  </p>
+                {sessionImages.length === 0 && (
+                  <div className="text-center py-8 text-gray-400 border-2 border-dashed border-gray-200 rounded-lg">
+                    <ImagePlus size={40} className="mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No hay fotos en esta sesión</p>
+                    <p className="text-xs">Las fotos se guardan automáticamente</p>
+                  </div>
                 )}
 
                 <div className="grid grid-cols-2 gap-4">
-                  {images.map((img, index) => (
+                  {sessionImages.map((img) => (
                     <div
-                      key={index}
+                      key={img.id}
                       className="relative border rounded-lg overflow-hidden shadow-sm"
                     >
                       <img
                         src={img.image}
-                        alt={img.description}
+                        alt={img.description || img.type}
                         className="w-full h-32 object-cover"
                       />
                       <div className="p-2 text-xs bg-gray-50">
                         <p>
                           <strong>Tipo:</strong> {img.type}
                         </p>
-                        <p>
-                          <strong>Descripción:</strong> {img.description || "N/A"}
-                        </p>
+                        {img.description && (
+                          <p>
+                            <strong>Descripción:</strong> {img.description}
+                          </p>
+                        )}
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveImage(index)}
-                        disabled={isSaving}
-                        className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 text-xs hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        ×
-                      </button>
+                      <div className="absolute top-1 right-1 bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                        <CheckCircle size={14} />
+                      </div>
                     </div>
                   ))}
                 </div>
 
-                {images.length > 0 && (
+                {/* Botón Listo */}
+                {sessionImages.length > 0 && (
                   <Button
-                    className="w-full"
-                    onClick={handleSaveImages}
+                    className="w-full bg-green-600 hover:bg-green-700"
+                    onClick={handleFinishImages}
                     disabled={isSaving}
                   >
-                    {isSaving ? "Guardando..." : "Guardar Imágenes"}
+                    Listo
                   </Button>
                 )}
               </div>

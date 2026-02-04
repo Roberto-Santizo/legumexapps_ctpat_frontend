@@ -96,7 +96,7 @@ export default function CreateCtpatAssignment({ ctpatId }: { ctpatId: number }) 
               noValidate
             >
               <CtpatTruckDriverAssignmentForm
-                register={methods.register}
+                control={methods.control}
                 errors={methods.formState.errors}
               />
 

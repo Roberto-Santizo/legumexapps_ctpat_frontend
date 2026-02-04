@@ -22,7 +22,15 @@ export const truckUpdateSchema = z.object({
 
 export const getTruckSchema = paginationSchema(truckListSchema)
 
+// Schema para select (sin paginación)
+export const truckSelectSchema = z.object({
+  id: z.number(),
+  plate: z.string(),
+  carrier: z.string(),
+});
+
 export type TruckCreateData = z.infer<typeof truckCreateSchema>;
 export type TruckList = z.infer<typeof truckListSchema>;
 export type TruckListResponse = z.infer<typeof getTruckSchema>;
 export type TruckUpdateData = z.infer<typeof truckUpdateSchema>;
+export type TruckSelectItem = z.infer<typeof truckSelectSchema>;

@@ -35,6 +35,14 @@ export default function ChecklistTables({ items }: ChecklistTablesProps) {
         <p>C-TPAT TRAILER DE EXPORTACION/ FORMULARIO DE INSPECCIÓN DE CONTENEDORES</p>
         <p>TRUCK INSPECTION/ INSPECCION DEL TRAILER</p>
       </div>
+
+      {(!items || items.length === 0) && (
+        <div className="text-center py-8 text-gray-500 border border-dashed border-gray-300">
+          <p className="font-medium">Checklist pendiente</p>
+          <p className="text-[10px]">El checklist aún no ha sido completado</p>
+        </div>
+      )}
+
       {Object.entries(grouped).map(([type, conditions]) => (
         <div key={type} className="break-inside-avoid">
           

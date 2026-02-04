@@ -5,7 +5,6 @@ import { imagesResponse } from "@/features/upload-images/schema/imagestype";
 export async function getImagesAPI(ctpatId: number) {
     try {
         const { data } = await api.get(`/ctpat/getImages/${ctpatId}`);
-        // La respuesta viene envuelta en {statusCode, response}
         const responseData = data.response ?? data;
         const response = imagesResponse.safeParse(responseData);
         if (response.success) {
@@ -19,5 +18,15 @@ export async function getImagesAPI(ctpatId: number) {
             }
         }
         return [];
+    }
+}
+export async function deleteImageAPI(imageId: number) {
+    try {
+        const { data } = await api.delete(`/ctpat/deleteImage/${imageId}`);
+        return data;
+    } catch (error) {
+        if (isAxiosError(error) && error.response) {
+            throw new Error(error.response.data.message);
+        }
     }
 }

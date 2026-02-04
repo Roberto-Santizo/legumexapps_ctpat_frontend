@@ -42,7 +42,14 @@ export const createDriverSchema =  z.object({
     license_image: z.string(),
   })
 
+// Schema para select (sin paginación)
+export const driverSelectSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+});
+
 export type DriverFormData = z.infer<typeof createDriverSchema>;
 export type CreateDriver = z.infer<typeof driverSchema>;
 export const getDriversSchema = paginationSchema(driverListSchema)
 export type EditDriverFormData = z.infer<typeof editDriverSchema>;
+export type DriverSelectItem = z.infer<typeof driverSelectSchema>;

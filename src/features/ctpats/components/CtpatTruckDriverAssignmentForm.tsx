@@ -1,13 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
+import { Controller } from "react-hook-form";
+import type { Control, FieldErrors } from "react-hook-form";
+import Select from "react-select";
+
 import { ErrorMessage } from "@/shared/components/ErrorMessage";
-import type { UseFormRegister, FieldErrors } from "react-hook-form";
-import { getTrucksAPI } from "../../trucks/api/TruckAPI";
-import { getDriverAPI } from "@/features/drivers/api/DriversAPI";
+import { searchableSelectStyles, getSelectClassNames } from "@/shared/components/SearchableSelect/searchableSelectStyles";
+import { getTrucksForSelectAPI } from "../../trucks/api/TruckAPI";
+import { getDriversForSelectAPI } from "@/features/drivers/api/DriversAPI";
 
 import DriverModalCreate from "../../drivers/components/DriverModalCreate";
 import TruckModalCreate from "../../trucks/components/TruckModalCreate";
 import { useState } from "react";
-import {Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 
 export type CreateCtpatAssignmentForm = {
   truck_id: number;
@@ -15,33 +19,44 @@ export type CreateCtpatAssignmentForm = {
 };
 
 type Props = {
-  register: UseFormRegister<CreateCtpatAssignmentForm>;
+  control: Control<CreateCtpatAssignmentForm>;
   errors: FieldErrors<CreateCtpatAssignmentForm>;
 };
 
-export default function CtpatTruckDriverAssignmentForm({ register, errors }: Props) {
-
+export default function CtpatTruckDriverAssignmentForm({ control, errors }: Props) {
   const [truckModalOpen, setTruckModalOpen] = useState(false);
   const [driverModalOpen, setDriverModalOpen] = useState(false);
 
-  // --- OBTENER CAMIONES ---
-  const { data: trucksData, isLoading: loadingTrucks, refetch: refetchTrucks } = useQuery({
-    queryKey: ["trucks-cptat"],
-    queryFn: () => getTrucksAPI(1),
+  // --- OBTENER CAMIONES PARA SELECT ---
+  const { data: trucks, isLoading: loadingTrucks, refetch: refetchTrucks } = useQuery({
+    queryKey: ["trucks-select"],
+    queryFn: getTrucksForSelectAPI,
   });
 
-  // --- OBTENER PILOTOS ---
-  const { data: driversData, isLoading: loadingDrivers, refetch: refetchDrivers  } = useQuery({
-    queryKey: ["drivers-cptat"],
-    queryFn: () => getDriverAPI(1),
+  // --- OBTENER PILOTOS PARA SELECT ---
+  const { data: drivers, isLoading: loadingDrivers, refetch: refetchDrivers } = useQuery({
+    queryKey: ["drivers-select"],
+    queryFn: getDriversForSelectAPI,
   });
 
-  const trucks = trucksData?.response || [];
-  const drivers = driversData?.response || [];
+  // Opciones para el select de camiones
+  const truckOptions = trucks?.map((t) => ({
+    value: t.id,
+    label: `${t.plate} - ${t.carrier}`,
+  })) ?? [];
 
-   return (
+  // Opciones para el select de pilotos
+  const driverOptions = drivers?.map((d) => ({
+    value: d.id,
+    label: d.name,
+  })) ?? [];
+
+  if (loadingTrucks || loadingDrivers) {
+    return <p>Cargando datos...</p>;
+  }
+
+  return (
     <div className="form-container space-y-6">
-
       {/* SELECT DE CAMION */}
       <div className="form-group">
         <label className="form-label">
@@ -49,29 +64,32 @@ export default function CtpatTruckDriverAssignmentForm({ register, errors }: Pro
         </label>
 
         <div className="flex gap-2 items-center">
-          
-          <select
-            className={`form-input ${
-              errors?.truck_id ? "form-input-error" : "form-input-normal"
-            }`}
-            {...register("truck_id", { required: "Debes seleccionar un camión" })}
-          >
-            <option value="">Seleccione...</option>
-            {loadingTrucks ? (
-              <option>Cargando...</option>
-            ) : (
-              trucks.map(t => (
-                <option key={t.id} value={t.id}>
-                  {t.plate} - {t.carrier}
-                </option>
-              ))
-            )}
-          </select>
+          <div className="flex-1">
+            <Controller
+              name="truck_id"
+              control={control}
+              rules={{ required: "Debes seleccionar un camión", validate: (value) => value !== 0 || "Debes seleccionar un camión" }}
+              render={({ field }) => (
+                <Select<{ value: number; label: string }>
+                  {...field}
+                  options={truckOptions}
+                  placeholder="Escribe para buscar camión..."
+                  isClearable
+                  isSearchable
+                  noOptionsMessage={() => "No se encontraron camiones"}
+                  value={truckOptions.find((opt) => opt.value === field.value) || null}
+                  onChange={(selected) => field.onChange(selected?.value ?? 0)}
+                  classNames={getSelectClassNames(!!errors?.truck_id)}
+                  styles={searchableSelectStyles}
+                />
+              )}
+            />
+          </div>
 
           <button
             type="button"
             onClick={() => setTruckModalOpen(true)}
-            className=" hover:bg-gray-300 rounded-lg p-2"
+            className="hover:bg-gray-300 rounded-lg p-2"
           >
             <Plus className="text-orange-500 w-8 h-8" strokeWidth={2.5} />
           </button>
@@ -89,29 +107,32 @@ export default function CtpatTruckDriverAssignmentForm({ register, errors }: Pro
         </label>
 
         <div className="flex gap-2 items-center">
-
-          <select
-            className={`form-input ${
-              errors?.driver_id ? "form-input-error" : "form-input-normal"
-            }`}
-            {...register("driver_id", { required: "Debes seleccionar un piloto" })}
-          >
-            <option value="">Seleccione...</option>
-            {loadingDrivers ? (
-              <option>Cargando...</option>
-            ) : (
-              drivers.map(d => (
-                <option key={d.id} value={d.id}>
-                  {d.name}
-                </option>
-              ))
-            )}
-          </select>
+          <div className="flex-1">
+            <Controller
+              name="driver_id"
+              control={control}
+              rules={{ required: "Debes seleccionar un piloto", validate: (value) => value !== 0 || "Debes seleccionar un piloto" }}
+              render={({ field }) => (
+                <Select<{ value: number; label: string }>
+                  {...field}
+                  options={driverOptions}
+                  placeholder="Escribe para buscar piloto..."
+                  isClearable
+                  isSearchable
+                  noOptionsMessage={() => "No se encontraron pilotos"}
+                  value={driverOptions.find((opt) => opt.value === field.value) || null}
+                  onChange={(selected) => field.onChange(selected?.value ?? 0)}
+                  classNames={getSelectClassNames(!!errors?.driver_id)}
+                  styles={searchableSelectStyles}
+                />
+              )}
+            />
+          </div>
 
           <button
             type="button"
             onClick={() => setDriverModalOpen(true)}
-            className=" hover:bg-gray-300 rounded-lg p-2"
+            className="hover:bg-gray-300 rounded-lg p-2"
           >
             <Plus className="text-orange-500 w-8 h-8" strokeWidth={2.5} />
           </button>

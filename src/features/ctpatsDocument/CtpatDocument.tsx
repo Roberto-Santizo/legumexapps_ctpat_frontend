@@ -1,7 +1,8 @@
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 import { getCtpatByIdAPI } from "@/features/ctpats/api/CtpatsAPI";
-import { getImagesAPI } from "@/features/upload-images/api/getImagesAPI";
+import { getImagesAPI, deleteImageAPI } from "@/features/upload-images/api/getImagesAPI";
 import { getCtpatObservationsAPI } from "@/features/observations/api/ObservationsAPI";
 import { getCheckListByCtpatIdAPI } from "@/features/checkLists/api/CheckListAPI";
 // Frozen APIs
@@ -32,6 +33,7 @@ export default function CtpatDocument() {
   const { id } = useParams();
   const { user } = useAuth();
   const ctpatId = Number(id);
+  const queryClient = useQueryClient();
 
 
   // 1. Primero cargar el CTPAT para conocer el tipo de producto
@@ -104,6 +106,18 @@ export default function CtpatDocument() {
   const packingList = isFrozen ? frozenPackingList : juicePackingList;
   const packingListTotals = isFrozen ? frozenTotals : juiceTotals;
 
+  // Función para eliminar imagen
+  const handleDeleteImage = async (imageId: number) => {
+    try {
+      await deleteImageAPI(imageId);
+      toast.success("Imagen eliminada correctamente");
+      queryClient.invalidateQueries({ queryKey: ["ctpat-images", ctpatId] });
+    } catch {
+      toast.error("Error al eliminar la imagen");
+      throw new Error("Error al eliminar");
+    }
+  };
+
   if (isLoading || isLoadingImages || isLoadingPackingList || isLoadingObservations || isLoadingChecklist) return <p>Cargando documento...</p>;
   if (isError) return <p>Error al cargar el documento.</p>;
 
@@ -111,7 +125,13 @@ export default function CtpatDocument() {
 
   const pages = [
     <CtpatGeneralInformationTable data={ctpat} packingList={packingList} />,
-    <CtpatImages images={images} />,
+    <CtpatImages
+      images={images}
+      truck={ctpat.truck}
+      driver={ctpat.driver}
+      status={ctpat.status}
+      onDeleteImage={handleDeleteImage}
+    />,
     <DynamicPackingListTable
       productType={productType}
       packingListData={packingList}

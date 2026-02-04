@@ -1,7 +1,7 @@
 import api from "@/shared/api/axios"
 import { isAxiosError } from "axios";
 import type { TruckCreateData,TruckUpdateData } from "@/features/trucks/schemas/types";
-import { getTruckSchema } from "@/features/trucks/schemas/types";
+import { getTruckSchema, truckSelectSchema } from "@/features/trucks/schemas/types";
 
 export async function createTruckAPI(formData: TruckCreateData) {
   try {
@@ -59,13 +59,33 @@ export async function updateTruckAPI({ formData, truckId }: TruckAPIType) {
   try {
     const { data } = await api.patch(`/truck/${truckId}`, formData);
     if (data) {
-      return data; 
+      return data;
     }
     throw new Error(data?.message);
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       const backendMessage = error.response.data?.message;
       throw new Error(backendMessage);
+    }
+    throw error;
+  }
+}
+
+// Endpoint para select sin paginación
+export async function getTrucksForSelectAPI() {
+  try {
+    const { data } = await api.get("/truck");
+
+    const parsed = truckSelectSchema.array().safeParse(data.response);
+
+    if (!parsed.success) {
+      throw new Error("Formato inválido de camiones para el select");
+    }
+
+    return parsed.data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
     }
     throw error;
   }

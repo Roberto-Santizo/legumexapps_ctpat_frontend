@@ -1,5 +1,5 @@
 import type { DriverFormData,EditDriverFormData } from "@/features/drivers/schemas/types";
-import { getDriversSchema } from "@/features/drivers/schemas/types";
+import { getDriversSchema, driverSelectSchema } from "@/features/drivers/schemas/types";
 import api from "@/shared/api/axios";
 import { isAxiosError } from "axios";
 
@@ -48,11 +48,31 @@ type DriverAPIType = {
 export async function updateDriver({ formData, driverId }: DriverAPIType) {
   try {
     const { data } = await api.patch(`/drivers/${driverId}`, formData);
-      return data; 
+      return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
        throw new Error(error.response.data.message)
     }
+  }
+}
+
+// Endpoint para select sin paginación
+export async function getDriversForSelectAPI() {
+  try {
+    const { data } = await api.get("/drivers");
+
+    const parsed = driverSelectSchema.array().safeParse(data.response);
+
+    if (!parsed.success) {
+      throw new Error("Formato inválido de pilotos para el select");
+    }
+
+    return parsed.data;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.message);
+    }
+    throw error;
   }
 }
 

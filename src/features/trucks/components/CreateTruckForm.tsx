@@ -78,12 +78,14 @@ export default function CreateTruckForm({
 
       {showPhotoFields && (
         <div className="form-group mt-6">
-          <label className="form-label font-bold">Foto de la placa</label>
+          <label className="form-label font-bold">
+            Foto de la placa <span className="required">*</span>
+          </label>
 
           {plateImage ? (
             <img src={plateImage} className="h-40 w-40 rounded-lg border mb-2 shadow" />
           ) : (
-            <div className="h-40 w-40 border rounded-lg flex items-center justify-center text-gray-400">
+            <div className={`h-40 w-40 border rounded-lg flex items-center justify-center text-gray-400 ${errors.plate_image ? "border-red-500" : ""}`}>
               Sin foto
             </div>
           )}
@@ -96,7 +98,7 @@ export default function CreateTruckForm({
             Tomar foto de placa
           </button>
 
-          <input type="hidden" {...register("plate_image")} />
+          <input type="hidden" {...register("plate_image", { required: "La foto de la placa es obligatoria" })} />
 
           {errors.plate_image && <ErrorMessage>{errors.plate_image.message}</ErrorMessage>}
         </div>

@@ -134,16 +134,18 @@ const { data, isLoading, isError } = useQuery({
                                 <Pencil size={16} />
                               </button>
                           )}
+
+                          {/* Ver documento CTPAT - disponible siempre */}
+                          <Link
+                            className="btn-icon btn-icon-primary"
+                            to={`/ctpats/document/${ctpat.id}`}
+                            title="Ver documento CTPAT"
+                          >
+                            <Eye size={16} />
+                          </Link>
+
                           {ctpat.status === 7 && (
                             <>
-                              <Link
-                                className="btn-icon btn-icon-primary"
-                                to={`/ctpats/document/${ctpat.id}`}
-                                title="Ver ctp"
-                              >
-                                <Eye size={16} />
-                              </Link>
-
                               <Link
                                 className="btn-icon btn-icon-primary"
                                 to={`/packingList/document/${ctpat.id}`}
@@ -159,7 +161,7 @@ const { data, isLoading, isError } = useQuery({
                                 >
                                   <FilePenLine size={16} />
                                 </button>
-                              )} 
+                              )}
                             </>
                           )}
                         </div>
