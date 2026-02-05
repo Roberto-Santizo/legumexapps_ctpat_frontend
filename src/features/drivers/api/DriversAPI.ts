@@ -56,7 +56,6 @@ export async function updateDriver({ formData, driverId }: DriverAPIType) {
   }
 }
 
-// Endpoint para select sin paginación
 export async function getDriversForSelectAPI() {
   try {
     const { data } = await api.get("/drivers");

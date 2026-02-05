@@ -36,7 +36,7 @@ export default function EditDriverForm({data,driverId,}: EditDriverFormProps) {
     }
   }, [data, reset]);
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: updateDriver,
     onError: (error: Error) => {
       toast.error(error.message);
@@ -107,9 +107,14 @@ export default function EditDriverForm({data,driverId,}: EditDriverFormProps) {
               />
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
+                disabled={isPending}
+                className={`w-full font-bold py-4 px-6 rounded-xl shadow-lg transition-all duration-200 uppercase tracking-wide ${
+                  isPending
+                    ? "bg-gray-400 cursor-not-allowed text-gray-200"
+                    : "bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5"
+                }`}
               >
-                Guardar Cambios
+                {isPending ? "Guardando..." : "Guardar Cambios"}
               </button>
             </form>
           </FormProvider>

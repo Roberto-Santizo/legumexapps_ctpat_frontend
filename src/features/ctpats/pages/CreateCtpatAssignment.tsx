@@ -20,7 +20,7 @@ export default function CreateCtpatAssignment({ ctpatId }: { ctpatId: number }) 
     mode: "onChange",
   });
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: (formData: CreateCtpatAssignmentForm) =>
       updateCtpatTruckDriver({
         ctpatId: Number(ctpatId),
@@ -102,9 +102,14 @@ export default function CreateCtpatAssignment({ ctpatId }: { ctpatId: number }) 
 
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] text-white font-bold py-4 px-6 rounded-xl shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
+                disabled={isPending}
+                className={`w-full text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all duration-200 uppercase tracking-wide ${
+                  isPending
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] transform hover:-translate-y-0.5"
+                }`}
               >
-                Guardar Asignación
+                {isPending ? "Guardando..." : "Guardar Asignación"}
               </button>
             </form>
           </FormProvider>

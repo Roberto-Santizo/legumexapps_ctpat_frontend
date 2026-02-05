@@ -15,7 +15,7 @@ export default function CreateCondition() {
 
   const {register,handleSubmit,formState: { errors },} = useForm({defaultValues: initialValues});
   const queryClient = useQueryClient();
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: createConditionsAPI,
     onError: (error) => toast.error(error.message),
     onSuccess: (response) => {
@@ -25,7 +25,10 @@ export default function CreateCondition() {
     },
   });
 
-  const handleForm = (formData: ConditionFormData) => mutate(formData);
+  const handleForm = (formData: ConditionFormData) => {
+    if (isPending) return;
+    mutate(formData);
+  };
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4 sm:px-6 lg:px-8">
@@ -70,11 +73,19 @@ export default function CreateCondition() {
               register={register}
               errors={errors}
             />
-            <input
+            <button
               type="submit"
-              value= "Crear condición"
-              className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
-            />
+              disabled={isPending}
+              className={`w-full font-bold py-4 px-6 rounded-xl uppercase tracking-wide transition-all duration-200
+                ${
+                  isPending
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white shadow-lg hover:-translate-y-0.5"
+                }
+              `}
+            >
+              {isPending ? "Creando..." : "Crear condición"}
+            </button>
           </form>
         </div>
 

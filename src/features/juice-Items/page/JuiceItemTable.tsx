@@ -33,8 +33,10 @@ export function JuiceItemTable({
               <th className="px-4 py-3 text-center font-semibold text-amber-700">Presentación</th>
               <th className="px-4 py-3 text-center font-semibold text-amber-700">Temp</th>
               <th className="px-4 py-3 text-center font-semibold text-amber-700">Cliente</th>
-              <th className="px-4 py-3 text-center font-semibold text-amber-700">Fecha</th>
+              <th className="px-4 py-3 text-center font-semibold text-amber-700">Fecha Producción</th>
+              <th className="px-4 py-3 text-center font-semibold text-amber-700">Fecha de expiración</th>
               <th className="px-4 py-3 text-center font-semibold text-amber-700">Acciones</th>
+
             </tr>
           </thead>
           
@@ -61,6 +63,9 @@ export function JuiceItemTable({
                 <td className="px-4 py-3 text-center text-sm">{item.client_name}</td>
                 <td className="px-4 py-3 text-center text-sm">
                   {new Date(item.date).toLocaleDateString('es-GT')}
+                </td>
+                <td className="px-4 py-3 text-center text-sm">
+                  {item.expiration_date ? new Date(item.expiration_date).toLocaleDateString('es-GT') : '-'}
                 </td>
                 <td className="px-4 py-3 text-center">
                   <div className="flex justify-center gap-3">
@@ -103,7 +108,7 @@ export function JuiceItemTable({
                 <td className="px-4 py-3 text-center font-bold text-green-800">
                   {totals.net_weight.toFixed(2)}
                 </td>
-                <td colSpan={5}></td>
+                <td colSpan={6}></td>
               </tr>
             </tfoot>
           )}

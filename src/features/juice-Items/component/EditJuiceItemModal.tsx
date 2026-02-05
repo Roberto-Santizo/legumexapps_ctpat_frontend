@@ -100,7 +100,7 @@ function EditJuiceItemFormContent({
       date: convertDateToInputFormat(itemData.date),
       grn: (itemDataAny.grn as string) || "",
       code: itemData.code || "",
-      expiration_date: itemData.expiration_date || "",
+      expiration_date: convertDateToInputFormat(itemData.expiration_date) || "",
     },
   });
 
@@ -327,6 +327,21 @@ function EditJuiceItemFormContent({
           })}
         />
         {errors.date && <ErrorMessage>{errors.date.message}</ErrorMessage>}
+      </div>
+
+      {/* FECHA DE EXPIRACIÓN */}
+      <div className="form-group">
+        <label className="form-label">Fecha de expiración *</label>
+        <input
+          type="date"
+          className={`form-input ${
+            errors.expiration_date ? "form-input-error" : "form-input-normal"
+          }`}
+          {...register("expiration_date", {
+            required: "La fecha de expiración es obligatoria",
+          })}
+        />
+        {errors.expiration_date && <ErrorMessage>{errors.expiration_date.message}</ErrorMessage>}
       </div>
 
       {/* BOTONES */}

@@ -17,7 +17,7 @@ export default function CreateContainer() {
 
   const {register,handleSubmit,formState: { errors },} = useForm({defaultValues: initialValues});
   const queryClient = useQueryClient();
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: createContainerAPI,
     onError: (error) => toast.error(error.message),
     onSuccess: (response) => {
@@ -27,7 +27,10 @@ export default function CreateContainer() {
     },
   });
 
-  const handleForm = (formData: ContainerFormData) => mutate(formData);
+  const handleForm = (formData: ContainerFormData) => {
+    if (isPending) return;
+    mutate(formData)
+  };
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4 sm:px-6 lg:px-8">
@@ -74,8 +77,13 @@ export default function CreateContainer() {
             />
             <input
               type="submit"
-              value= "Crear Contenedor"
-              className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
+              value={isPending ? "Creando..." : "Crear Contenedor"}
+              disabled={isPending}
+              className={`w-full text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all duration-200 uppercase tracking-wide ${
+                isPending
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5"
+              }`}
             />
           </form>
         </div>

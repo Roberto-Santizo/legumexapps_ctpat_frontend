@@ -15,7 +15,7 @@ export default function CreateCustomerView() {
   }
   const {register, handleSubmit, formState:{errors}}= useForm({defaultValues:initialValues})
   const queryClient = useQueryClient();
-  const {mutate} = useMutation({
+  const {mutate, isPending} = useMutation({
     mutationFn: createCustumerAPI,
     onError: (error) =>{
         toast.error(error.message)
@@ -27,7 +27,10 @@ export default function CreateCustomerView() {
     }
   })
 
-  const handleForm = (formData : CreateCustomer) =>mutate(formData);
+  const handleForm = (formData : CreateCustomer) =>{
+    if(isPending) return;
+    mutate(formData)
+  };
 
   return (
     <div className="min-h-screen bg-[var(--color-bg-primary)] py-12 px-4 sm:px-6 lg:px-8">
@@ -70,9 +73,14 @@ export default function CreateCustomerView() {
             <CreateCustomerForm register={register} errors={errors} />
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
+              disabled={isPending}
+              className={`w-full text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all duration-200 uppercase tracking-wide ${
+                isPending
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5"
+              }`}
             >
-              Crear Cliente
+              {isPending ? "Creando..." : "Crear Cliente"}
             </button>
           </form>
         </div>

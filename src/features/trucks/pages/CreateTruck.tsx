@@ -20,7 +20,7 @@ export default function CreateTruck() {
   });
   
   const queryClient = useQueryClient();
-  const { mutate } = useMutation({
+  const { mutate, isPending} = useMutation({
     mutationFn: (data: TruckCreateData) => createTruckAPI(data),
     onError: (error)=>{
       toast.error(error.message)
@@ -33,6 +33,7 @@ export default function CreateTruck() {
   });
 
 const handleForm = async (data: TruckCreateData) => {
+  if (isPending) return;
   if (!data.plate_image) {
     toast.error("Debes agregar la imagen de la placa del camión");
     return;
@@ -82,9 +83,16 @@ const handleForm = async (data: TruckCreateData) => {
                     <CreateTruckForm />
                   <button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-[var(--shadow-amber)] transform hover:-translate-y-0.5 transition-all duration-200 uppercase tracking-wide"
+                    disabled={isPending}
+                    className={`w-full font-bold py-4 px-6 rounded-xl uppercase tracking-wide transition-all duration-200
+                      ${
+                        isPending
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-primary)] hover:from-[var(--color-primary-darker)] hover:to-[var(--color-primary-dark)] text-white shadow-lg hover:-translate-y-0.5"
+                      }
+                    `}
                   >
-                    Crear Camión
+                    {isPending ? "Creando..." : "Crear Camión"}
                   </button>
                 </form>
               </FormProvider>
