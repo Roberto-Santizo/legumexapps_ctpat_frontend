@@ -1,7 +1,7 @@
 import api from "@/shared/api/axios.ts";
 import type { CarrierFormData } from "@/features/carriers/schemas/types.ts";
 import { isAxiosError } from "axios";
-import { getCarrierSchema } from "@/features/carriers/schemas/types.ts";
+import { getCarrierSchema, carrierSelectSchema } from "@/features/carriers/schemas/types.ts";
 import type {createCarrierFormSchema,CarrierUpdateData} from "@/features/carriers/schemas/types.tsx"
 
 export async function createCarriersAPI(formData: createCarrierFormSchema) {
@@ -37,15 +37,23 @@ export async function getCarriersAPI(
   }
 }
 
-export async function getCarrierSelectAPI(): Promise<CarrierFormData> {
+export async function getCarrierSelectAPI() {
   try {
     const { data } = await api.get("/carriers");
-    const parsedData = getCarrierSchema.parse(data);
-    return parsedData;
+
+    const parsed = carrierSelectSchema
+      .array()
+      .safeParse(data.response);
+
+    if (!parsed.success) {
+      throw new Error("Formato inválido de transportistas para el select");
+    }
+
+    return parsed.data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
-      console.error("Error en getCarriersAPI:", error.response.data);
-    } 
+      console.error("Error en getCarrierSelectAPI:", error.response.data);
+    }
     throw error;
   }
 }

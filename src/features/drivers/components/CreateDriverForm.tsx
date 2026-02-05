@@ -28,10 +28,11 @@ export default function DriverForm({ showCarrierField = true, showPhotoFields = 
   useEffect(() => {
     (async () => {
       try {
-        const { response } = await getCarrierSelectAPI();
-        const options = Array.isArray(response)
-          ? response.map((carrier) => ({ value: String(carrier.id), label: carrier.name }))
-          : [];
+        const carriers = await getCarrierSelectAPI();
+        const options = carriers.map((carrier) => ({
+          value: String(carrier.id),
+          label: carrier.name
+        }));
         setCarrierOptions(options);
       } catch (error) {
         console.error("Error cargando transportistas", error);

@@ -33,6 +33,11 @@ export const getCarrierByIdSchema = z.object({
     name: z.string(),
   }),
 });
+
+export const carrierSelectSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+});
 export const updatecarrierSchema = z.object({
   name: z.string(),
 });
