@@ -1,10 +1,12 @@
 import { ErrorMessage } from "../../../shared/components/ErrorMessage";
-import { useEffect, useState } from "react";
-import { useFormContext } from "react-hook-form";
+import { useEffect, useMemo, useState } from "react";
+import { Controller, useFormContext } from "react-hook-form";
+import Select from "react-select";
 import { getCarriersAPI } from "@/features/carriers/api/CarriersAPI";
 import type { TruckCreateData } from "@/features/trucks/schemas/types";
 import DriverCaptureModal from "@/features/upload-images/components/PhothoDriverCaptureModal";
 import { toUpper } from "@/shared/helpers/textTransformUppercase";
+import { getSelectClassNames, searchableSelectStyles } from "@/shared/components/SearchableSelect/searchableSelectStyles";
 
 type TruckFormProps = {
   showCarrierField?: boolean;
@@ -15,13 +17,18 @@ export default function CreateTruckForm({
   showCarrierField = true,
   showPhotoFields = true,
 }: TruckFormProps) {
-  const { register, setValue, formState: { errors } } = useFormContext<TruckCreateData>();
+  const { register, setValue, control, formState: { errors } } = useFormContext<TruckCreateData>();
 
   const [plateImage, setPlateImage] = useState<string | null>(null);
   const [openCamera, setOpenCamera] = useState(false);
 
   const [carriers, setCarriers] = useState<{ id: number; name: string }[]>([]);
   const [loadingCarriers, setLoadingCarriers] = useState(true);
+
+  const carrierOptions = useMemo(
+    () => carriers.map((c) => ({ value: String(c.id), label: c.name })),
+    [carriers]
+  );
 
   useEffect(() => {
     (async () => {
@@ -60,17 +67,27 @@ export default function CreateTruckForm({
           <label htmlFor="carrier_id" className="form-label">
             Transportista <span className="required">*</span>
           </label>
-          <select
-            id="carrier_id"
-            className={`form-input ${errors.carrier_id ? "form-input-error" : "form-input-normal"}`}
-            {...register("carrier_id", { required: "El transportista es obligatorio" })}
-            disabled={loadingCarriers}
-          >
-            <option value="">Seleccione un transportista</option>
-            {carriers.map((carrier) => (
-              <option key={carrier.id} value={carrier.id}>{carrier.name}</option>
-            ))}
-          </select>
+
+          <Controller
+            name="carrier_id"
+            control={control}
+            rules={{ required: "El transportista es obligatorio" }}
+            render={({ field }) => (
+              <Select<{ value: string; label: string }>
+                {...field}
+                options={carrierOptions}
+                placeholder="Escribe para buscar transportista..."
+                isClearable
+                isSearchable
+                isLoading={loadingCarriers}
+                noOptionsMessage={() => "No se encontraron transportistas"}
+                value={carrierOptions.find((opt) => opt.value === String(field.value)) || null}
+                onChange={(selected) => field.onChange(selected?.value ?? "")}
+                classNames={getSelectClassNames(!!errors?.carrier_id)}
+                styles={searchableSelectStyles}
+              />
+            )}
+          />
 
           {errors.carrier_id && <ErrorMessage>{errors.carrier_id.message}</ErrorMessage>}
         </div>
