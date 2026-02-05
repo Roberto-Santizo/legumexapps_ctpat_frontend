@@ -2,7 +2,7 @@ import { ErrorMessage } from "../../../shared/components/ErrorMessage";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import Select from "react-select";
-import { getCarriersAPI } from "@/features/carriers/api/CarriersAPI";
+import { getCarrierSelectAPI } from "@/features/carriers/api/CarriersAPI";
 import type { TruckCreateData } from "@/features/trucks/schemas/types";
 import DriverCaptureModal from "@/features/upload-images/components/PhothoDriverCaptureModal";
 import { toUpper } from "@/shared/helpers/textTransformUppercase";
@@ -33,8 +33,8 @@ export default function CreateTruckForm({
   useEffect(() => {
     (async () => {
       try {
-        const { response } = await getCarriersAPI();
-        setCarriers(Array.isArray(response) ? response : []);
+        const carriers = await getCarrierSelectAPI();
+        setCarriers(carriers);
       } catch (error) {
         console.error("Error cargando transportistas", error);
       } finally {
