@@ -37,6 +37,18 @@ export async function getCarriersAPI(
   }
 }
 
+export async function getCarrierSelectAPI(): Promise<CarrierFormData> {
+  try {
+    const { data } = await api.get("/carriers");
+    const parsedData = getCarrierSchema.parse(data);
+    return parsedData;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      console.error("Error en getCarriersAPI:", error.response.data);
+    } 
+    throw error;
+  }
+}
 export async function getCarrierByIdAPI(id: number){
   try {
     const {data} = await api.get(`/carriers/${id}`);

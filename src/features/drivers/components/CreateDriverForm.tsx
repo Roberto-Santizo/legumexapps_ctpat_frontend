@@ -1,10 +1,12 @@
 import { ErrorMessage } from "../../../shared/components/ErrorMessage";
 import { useEffect, useState } from "react";
-import { useFormContext } from "react-hook-form";
-import { getCarriersAPI } from "@/features/carriers/api/CarriersAPI";
+import { useFormContext, Controller } from "react-hook-form";
+import { getCarrierSelectAPI } from "@/features/carriers/api/CarriersAPI";
 import type { DriverFormData } from "@/features/drivers/schemas/types";
 import DriverCaptureModal from "@/features/upload-images/components/PhothoDriverCaptureModal";
 import { toUpper } from "@/shared/helpers/textTransformUppercase";
+import Select from "react-select";
+import { searchableSelectStyles, getSelectClassNames } from "@/shared/components/SearchableSelect/searchableSelectStyles";
 
 type DriverFormProps = {
   showCarrierField?: boolean;
@@ -12,7 +14,7 @@ type DriverFormProps = {
 };
 
 export default function DriverForm({ showCarrierField = true, showPhotoFields = true}: DriverFormProps) {
-  const { register, setValue, formState: { errors } } = useFormContext<DriverFormData>();
+  const { register, setValue, control, formState: { errors } } = useFormContext<DriverFormData>();
 
   const [dpiImage, setDpiImage] = useState<string | null>(null);
   const [licenseImage, setLicenseImage] = useState<string | null>(null);
@@ -20,14 +22,17 @@ export default function DriverForm({ showCarrierField = true, showPhotoFields = 
   const [photoType, setPhotoType] = useState<"dpi" | "license" | null>(null);
   const [openCamera, setOpenCamera] = useState(false);
 
-  const [carriers, setCarriers] = useState<{ id: number; name: string }[]>([]);
+  const [carrierOptions, setCarrierOptions] = useState<{ value: string; label: string }[]>([]);
   const [loadingCarriers, setLoadingCarriers] = useState(true);
 
   useEffect(() => {
     (async () => {
       try {
-        const { response } = await getCarriersAPI();
-        setCarriers(Array.isArray(response) ? response : []);
+        const { response } = await getCarrierSelectAPI();
+        const options = Array.isArray(response)
+          ? response.map((carrier) => ({ value: String(carrier.id), label: carrier.name }))
+          : [];
+        setCarrierOptions(options);
       } catch (error) {
         console.error("Error cargando transportistas", error);
       } finally {
@@ -179,17 +184,26 @@ export default function DriverForm({ showCarrierField = true, showPhotoFields = 
             Transportista <span className="required">*</span>
           </label>
 
-          <select
-            id="carrier_id"
-            className={`form-input ${errors.carrier_id ? "form-input-error" : "form-input-normal"}`}
-            {...register("carrier_id", { required: "El transportista es obligatorio" })}
-            disabled={loadingCarriers}
-          >
-            <option value="">Seleccione un transportista</option>
-            {carriers.map((carrier) => (
-              <option key={carrier.id} value={carrier.id}>{carrier.name}</option>
-            ))}
-          </select>
+          <Controller
+            name="carrier_id"
+            control={control}
+            rules={{ required: "El transportista es obligatorio" }}
+            render={({ field }) => (
+              <Select<{ value: string; label: string }>
+                {...field}
+                options={carrierOptions}
+                placeholder="Escribe para buscar transportista..."
+                isClearable
+                isSearchable
+                isLoading={loadingCarriers}
+                noOptionsMessage={() => "No se encontraron transportistas"}
+                value={carrierOptions.find((opt) => opt.value === String(field.value)) || null}
+                onChange={(selected) => field.onChange(selected?.value ?? "")}
+                classNames={getSelectClassNames(!!errors?.carrier_id)}
+                styles={searchableSelectStyles}
+              />
+            )}
+          />
 
           {errors.carrier_id && <ErrorMessage>{errors.carrier_id.message}</ErrorMessage>}
         </div>
