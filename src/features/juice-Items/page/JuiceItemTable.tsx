@@ -65,7 +65,7 @@ export function JuiceItemTable({
                   {new Date(item.date).toLocaleDateString('es-GT')}
                 </td>
                 <td className="px-4 py-3 text-center text-sm">
-                  {item.expiration_date ? new Date(item.expiration_date).toLocaleDateString('es-GT') : '-'}
+                  {item.expiration_date ?? '-'}
                 </td>
                 <td className="px-4 py-3 text-center">
                   <div className="flex justify-center gap-3">
