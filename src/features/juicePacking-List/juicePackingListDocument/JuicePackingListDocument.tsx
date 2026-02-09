@@ -43,6 +43,7 @@ interface PackingListItem {
   tipoEmpaque: string;
   temp: string;
   bestBy: string;
+  grn: string;
 }
 
 interface GroupData {
@@ -66,23 +67,24 @@ interface GrandTotals {
 /* ===============================================================
    COMPANY HEADER COMPONENT
 ================================================================ */
-const CompanyHeader: React.FC = () => (
+const CompanyHeader: React.FC<{ companyLogo?: string | null }> = ({ companyLogo }) => (
   <View style={styles.companyHeaderContainer}>
     <View style={styles.companyInfo}>
       <Text style={styles.companyName}>AGROINDUSTRIA LEGUMEX S.A.</Text>
       <Text style={styles.companyAddress}>
-        12 Avenida Sector Las Majadas 6-15 Zona 2, 
+        12 Avenida Sector Las Majadas 6-15 Zona 2,
       </Text>
       <Text style={styles.companyAddress}>El Tejar, Chimaltenango</Text>
       <Text style={styles.companyPhone}>Tel: (502) 7849 Fax: 7849-0995</Text>
     </View>
 
     <View style={styles.logoContainer}>
-      {/* Cambiar la URL del logo aquí */}
-      <Image
-        src="https://legumexappsapi-storage.s3.us-east-1.amazonaws.com/resources/LOGO_LX.png"
-        style={styles.logo}
-      />
+      {companyLogo && (
+        <Image
+          src={companyLogo}
+          style={styles.logo}
+        />
+      )}
     </View>
   </View>
 );
@@ -234,35 +236,35 @@ const ContainerInfoSection: React.FC<{ info: ContainerInfo }> = ({ info }) => (
 /* ===============================================================
    TABLE HEADER COMPONENT
 ================================================================ */
-const TableHeader: React.FC = () => (
+const TableHeader: React.FC<{ showGrn?: boolean }> = ({ showGrn }) => (
   <View style={styles.tableHeaderRow} fixed>
-    {/* FECHA - 7% */}
+    {/* FECHA */}
     <View style={[styles.headerCell, { width: "7%" }]}>
       <Text>FECHA</Text>
     </View>
 
-    {/* PRODUCTO - 22% */}
-    <View style={[styles.headerCell, { width: "22%" }]}>
+    {/* PRODUCTO */}
+    <View style={[styles.headerCell, { width: showGrn ? "17%" : "22%" }]}>
       <Text>PRODUCTO</Text>
     </View>
 
-    {/* TICKET NUMERO - 6% */}
+    {/* TICKET NUMERO */}
     <View style={[styles.headerCell, { width: "6%" }]}>
       <Text>TICKET{"\n"}NUMERO</Text>
     </View>
 
-    {/* CODIGO - 9% */}
+    {/* CODIGO */}
     <View style={[styles.headerCell, { width: "9%" }]}>
       <Text>CODIGO</Text>
     </View>
 
-    {/* TOTAL DE CAJAS - 7% */}
+    {/* TOTAL DE CAJAS */}
     <View style={[styles.headerCell, { width: "7%" }]}>
       <Text>TOTAL DE{"\n"}CAJAS</Text>
     </View>
 
-    {/* PESO (BRUTO / NETO) - 14% */}
-    <View style={styles.pesoHeaderContainer}>
+    {/* PESO (BRUTO / NETO) */}
+    <View style={[styles.pesoHeaderContainer, showGrn ? { width: "12%" } : { width: "14%" }]}>
       <Text style={styles.pesoHeaderTitle}>PESO</Text>
       <View style={styles.pesoSubHeaders}>
         <Text style={styles.pesoSubHeaderCell}>BRUTO</Text>
@@ -270,47 +272,58 @@ const TableHeader: React.FC = () => (
       </View>
     </View>
 
-    {/* CANTIDAD DE BOTELLAS - 8% */}
+    {/* CANTIDAD DE BOTELLAS */}
     <View style={[styles.headerCell, { width: "8%" }]}>
       <Text>CANTIDAD DE{"\n"}BOTELLAS</Text>
     </View>
 
-    {/* TIPO EMPAQUE - 10% */}
-    <View style={[styles.headerCell, { width: "10%" }]}>
+    {/* TIPO EMPAQUE */}
+    <View style={[styles.headerCell, { width: showGrn ? "9%" : "10%" }]}>
       <Text>TIPO{"\n"}EMPAQUE</Text>
     </View>
 
-    {/* TEMP - 6% */}
-    <View style={[styles.headerCell, { width: "6%" }]}>
+    {/* TEMP */}
+    <View style={[styles.headerCell, { width: showGrn ? "5%" : "6%" }]}>
       <Text>TEMP.</Text>
     </View>
 
-    {/* BEST BY - 11% */}
-    <View style={[styles.headerCellNoBorder, { width: "11%" }]}>
+    {/* BEST BY */}
+    <View style={[showGrn ? styles.headerCell : styles.headerCellNoBorder, { width: showGrn ? "10%" : "11%" }]}>
       <Text>BEST BY</Text>
     </View>
+
+    {/* GRN */}
+    {showGrn && (
+      <View style={[styles.headerCellNoBorder, { width: "10%" }]}>
+        <Text>GRN</Text>
+      </View>
+    )}
   </View>
 );
 
 /* ===============================================================
    TABLE ROW COMPONENT
 ================================================================ */
-const TableRow: React.FC<{ item: PackingListItem; isAlt?: boolean }> = ({
+const TableRow: React.FC<{ item: PackingListItem; isAlt?: boolean; showGrn?: boolean }> = ({
   item,
   isAlt = false,
+  showGrn = false,
 }) => (
   <View style={isAlt ? styles.tableRowAlt : styles.tableRow}>
     <Text style={styles.colFecha}>{item.fecha}</Text>
-    <Text style={styles.colProducto}>{item.producto}</Text>
+    <Text style={showGrn ? styles.colProductoGrn : styles.colProducto}>{item.producto}</Text>
     <Text style={styles.colTicket}>{item.ticketNumero}</Text>
     <Text style={styles.colCodigo}>{item.codigo}</Text>
     <Text style={styles.colTotalCajas}>{item.totalCajas}</Text>
-    <Text style={styles.colPesoBruto}>{item.pesoBruto.toFixed(2)}</Text>
-    <Text style={styles.colPesoNeto}>{item.pesoNeto.toFixed(2)}</Text>
+    <Text style={showGrn ? styles.colPesoBrutoGrn : styles.colPesoBruto}>{item.pesoBruto.toFixed(2)}</Text>
+    <Text style={showGrn ? styles.colPesoNetoGrn : styles.colPesoNeto}>{item.pesoNeto.toFixed(2)}</Text>
     <Text style={styles.colCantidadBotellas}>{item.cantidadBotellas}</Text>
-    <Text style={styles.colTipoEmpaque}>{item.tipoEmpaque}</Text>
-    <Text style={styles.colTemp}>{item.temp}</Text>
-    <Text style={styles.colBestBy}>{item.bestBy}</Text>
+    <Text style={showGrn ? styles.colTipoEmpaqueGrn : styles.colTipoEmpaque}>{item.tipoEmpaque}</Text>
+    <Text style={showGrn ? styles.colTempGrn : styles.colTemp}>{item.temp}</Text>
+    <Text style={showGrn ? styles.colBestByGrn : styles.colBestBy}>{item.bestBy}</Text>
+    {showGrn && (
+      <Text style={styles.colGrn}>{item.grn || "-"}</Text>
+    )}
   </View>
 );
 
@@ -328,50 +341,54 @@ const GroupHeader: React.FC<{ groupName: string }> = ({ groupName }) => (
 ================================================================ */
 const GroupTotalRow: React.FC<{
   totals: GroupData["totals"];
-}> = ({ totals }) => (
+  showGrn?: boolean;
+}> = ({ totals, showGrn = false }) => (
   <View style={styles.totalRow}>
-    <Text style={[styles.totalLabelCell, { width: "44%" }]}>TOTAL</Text>
+    <Text style={[styles.totalLabelCell, { width: showGrn ? "39%" : "44%" }]}>TOTAL</Text>
     <Text style={[styles.totalValueCell, { width: "7%" }]}>
       {totals.totalCajas}
     </Text>
-    <Text style={[styles.totalValueCell, { width: "7%" }]}>
+    <Text style={[styles.totalValueCell, { width: showGrn ? "6%" : "7%" }]}>
       {totals.pesoBruto.toFixed(2)}
     </Text>
-    <Text style={[styles.totalValueCell, { width: "7%" }]}>
+    <Text style={[styles.totalValueCell, { width: showGrn ? "6%" : "7%" }]}>
       {totals.pesoNeto.toFixed(2)}
     </Text>
     <Text style={[styles.totalValueCell, { width: "8%" }]}>
       {totals.cantidadBotellas}
     </Text>
-    <View style={[styles.emptyCell, { width: "10%" }]} />
-    <View style={[styles.emptyCell, { width: "6%" }]} />
-    <View style={[styles.emptyCellNoBorder, { width: "11%" }]} />
+    <View style={[styles.emptyCell, { width: showGrn ? "9%" : "10%" }]} />
+    <View style={[styles.emptyCell, { width: showGrn ? "5%" : "6%" }]} />
+    <View style={[showGrn ? styles.emptyCell : styles.emptyCellNoBorder, { width: showGrn ? "10%" : "11%" }]} />
+    {showGrn && <View style={[styles.emptyCellNoBorder, { width: "10%" }]} />}
   </View>
 );
 
 /* ===============================================================
    SUMA TOTAL ROW COMPONENT (Grand Total)
 ================================================================ */
-const SumaTotalRow: React.FC<{ grandTotals: GrandTotals }> = ({
+const SumaTotalRow: React.FC<{ grandTotals: GrandTotals; showGrn?: boolean }> = ({
   grandTotals,
+  showGrn = false,
 }) => (
   <View style={styles.sumaTotalRow}>
-    <Text style={[styles.sumaTotalLabelCell, { width: "44%" }]}>SUMA TOTAL</Text>
+    <Text style={[styles.sumaTotalLabelCell, { width: showGrn ? "39%" : "44%" }]}>SUMA TOTAL</Text>
     <Text style={[styles.sumaTotalValueCell, { width: "7%" }]}>
       {grandTotals.totalCajas}
     </Text>
-    <Text style={[styles.sumaTotalValueCell, { width: "7%" }]}>
+    <Text style={[styles.sumaTotalValueCell, { width: showGrn ? "6%" : "7%" }]}>
       {grandTotals.pesoBruto.toFixed(2)}
     </Text>
-    <Text style={[styles.sumaTotalValueCell, { width: "7%" }]}>
+    <Text style={[styles.sumaTotalValueCell, { width: showGrn ? "6%" : "7%" }]}>
       {grandTotals.pesoNeto.toFixed(2)}
     </Text>
     <Text style={[styles.sumaTotalValueCell, { width: "8%" }]}>
       {grandTotals.cantidadBotellas}
     </Text>
-    <View style={[styles.emptyCellNoBorder, { width: "10%" }]} />
-    <View style={[styles.emptyCellNoBorder, { width: "6%" }]} />
-    <View style={[styles.emptyCellNoBorder, { width: "11%" }]} />
+    <View style={[styles.emptyCellNoBorder, { width: showGrn ? "9%" : "10%" }]} />
+    <View style={[styles.emptyCellNoBorder, { width: showGrn ? "5%" : "6%" }]} />
+    <View style={[styles.emptyCellNoBorder, { width: showGrn ? "10%" : "11%" }]} />
+    {showGrn && <View style={[styles.emptyCellNoBorder, { width: "10%" }]} />}
   </View>
 );
 
@@ -391,6 +408,7 @@ interface APIPackingListItem {
   wrapper: string;
   temp: number;
   expiration_date: string;
+  grn: string;
 }
 
 interface APIGroupItem {
@@ -472,6 +490,7 @@ const transformAPIData = (apiPackingList: APIPackingList) => {
         tipoEmpaque: apiItem.wrapper,
         temp: `${apiItem.temp}°C`,
         bestBy: apiItem.expiration_date || '',
+        grn: apiItem.grn ?? '',
       })),
       totals: {
         totalCajas: groupTotals.total_boxes,
@@ -493,56 +512,85 @@ const transformAPIData = (apiPackingList: APIPackingList) => {
 };
 
 /* ===============================================================
+   JUICE PACKING LIST PAGE COMPONENT (reutilizable por variante)
+================================================================ */
+const JuicePackingListPage: React.FC<{
+  containerInfo: ContainerInfo;
+  groupsData: GroupData[];
+  grandTotals: GrandTotals;
+  showGrn?: boolean;
+  companyLogo?: string | null;
+}> = ({ containerInfo, groupsData, grandTotals, showGrn = false, companyLogo }) => (
+  <Page size="LETTER" orientation="portrait" style={styles.page}>
+    {/* Header con info de empresa y logo */}
+    <CompanyHeader companyLogo={companyLogo} />
+
+    {/* Título centrado */}
+    <TitleSection />
+
+    {/* Información del contenedor - 4 columnas */}
+    <ContainerInfoSection info={containerInfo} />
+
+    {/* Tabla principal */}
+    <View style={styles.table}>
+      {/* Encabezado de la tabla */}
+      <TableHeader showGrn={showGrn} />
+
+      {/* Grupos de datos */}
+      {groupsData.map((group, groupIndex) => (
+        <React.Fragment key={groupIndex}>
+          {/* Header del grupo (WALMART, etc.) */}
+          <GroupHeader groupName={group.groupName} />
+
+          {/* Filas de datos del grupo */}
+          {group.items.map((item, itemIndex) => (
+            <TableRow
+              key={`${groupIndex}-${itemIndex}`}
+              item={item}
+              isAlt={itemIndex % 2 === 1}
+              showGrn={showGrn}
+            />
+          ))}
+
+          {/* Fila de total del grupo */}
+          <GroupTotalRow totals={group.totals} showGrn={showGrn} />
+        </React.Fragment>
+      ))}
+
+      {/* Fila de SUMA TOTAL (grand total) */}
+      <SumaTotalRow grandTotals={grandTotals} showGrn={showGrn} />
+    </View>
+  </Page>
+);
+
+/* ===============================================================
    MAIN PDF DOCUMENT COMPONENT
 ================================================================ */
 interface PackingListTableDocumentProps {
   apiPackingList: APIPackingList;
+  companyLogo?: string | null;
 }
 
-const PackingListTableDocument: React.FC<PackingListTableDocumentProps> = ({ apiPackingList }) => {
+const PackingListTableDocument: React.FC<PackingListTableDocumentProps> = ({ apiPackingList, companyLogo }) => {
   const { containerInfo, groupsData, grandTotals } = transformAPIData(apiPackingList);
 
   return (
     <Document>
-      <Page size="LETTER" orientation="portrait" style={styles.page}>
-        {/* Header con info de empresa y logo */}
-        <CompanyHeader />
-
-        {/* Título centrado */}
-        <TitleSection />
-
-        {/* Información del contenedor - 4 columnas */}
-        <ContainerInfoSection info={containerInfo} />
-
-        {/* Tabla principal */}
-        <View style={styles.table}>
-          {/* Encabezado de la tabla */}
-          <TableHeader />
-
-          {/* Grupos de datos */}
-          {groupsData.map((group, groupIndex) => (
-            <React.Fragment key={groupIndex}>
-              {/* Header del grupo (WALMART, etc.) */}
-              <GroupHeader groupName={group.groupName} />
-
-              {/* Filas de datos del grupo */}
-              {group.items.map((item, itemIndex) => (
-                <TableRow
-                  key={`${groupIndex}-${itemIndex}`}
-                  item={item}
-                  isAlt={itemIndex % 2 === 1}
-                />
-              ))}
-
-              {/* Fila de total del grupo */}
-              <GroupTotalRow totals={group.totals} />
-            </React.Fragment>
-          ))}
-
-          {/* Fila de SUMA TOTAL (grand total) */}
-          <SumaTotalRow grandTotals={grandTotals} />
-        </View>
-      </Page>
+      {/* Página 1: Normal (sin GRN) */}
+      <JuicePackingListPage
+        containerInfo={containerInfo}
+        groupsData={groupsData}
+        grandTotals={grandTotals}
+        companyLogo={companyLogo}
+      />
+      {/* Página 2: Con GRN */}
+      <JuicePackingListPage
+        containerInfo={containerInfo}
+        groupsData={groupsData}
+        grandTotals={grandTotals}
+        showGrn
+        companyLogo={companyLogo}
+      />
     </Document>
   );
 };

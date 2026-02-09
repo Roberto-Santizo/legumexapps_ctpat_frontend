@@ -154,12 +154,32 @@ export default function CtpatForm({
             )}
           />
         )}
-
         {errors?.container_id && (
           <ErrorMessage>{errors.container_id.message}</ErrorMessage>
         )}
       </div>
-
+      
+      <div className="form-group">
+        <label htmlFor="shipping_company" className="form-label">
+          Naviera <span className="required">*</span>
+        </label>
+        <input
+          id="shipping_company"
+          type="text"
+          placeholder="CGM"
+          className={`form-input ${
+            errors?.shipping_company ? "form-input-error" : "form-input-normal"
+          }`}
+          {...register("shipping_company", {
+            setValueAs: toUpper,
+            required: "La naviera es obligatoria" 
+          })}
+        />
+        {errors?.shipping_company && (
+          <ErrorMessage>{errors.shipping_company.message}</ErrorMessage>
+        )}
+      </div>
+      
       {/* DEPARTURE SITE */}
       <div className="form-group">
         <label htmlFor="departure_site" className="form-label">

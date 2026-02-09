@@ -96,5 +96,5 @@ export type JuiceItemTableType = {
   code?: string;
   wrapper?: string;
   ticket_number?: number;
-  expiration_date: string;
+  expiration_date: string | null;
 };

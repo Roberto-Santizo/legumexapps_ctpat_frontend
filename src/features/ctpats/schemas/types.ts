@@ -23,6 +23,7 @@ export const CtpatSchema = z.object({
   departure_site: z.string(),
   planta: z.number(),
   type : z.number(),
+  shipping_company: z.string(),
   images: z.array(ImageSchema),
 });
 

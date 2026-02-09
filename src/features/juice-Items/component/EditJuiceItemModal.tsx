@@ -56,20 +56,22 @@ function EditJuiceItemFormContent({
   };
 
   // Función para convertir fecha de "M/D/YYYY" a "YYYY-MM-DD" (formato input date)
-  const convertDateToInputFormat = (dateStr: string | undefined): string => {
+  const convertDateToInputFormat = (dateStr: string | null | undefined): string => {
     if (!dateStr) return "";
+    // Si tiene parte de tiempo (ISO), removerla
+    const cleanDate = dateStr.split('T')[0];
     // Si ya está en formato YYYY-MM-DD, retornarlo
-    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(cleanDate)) return cleanDate;
 
     // Convertir de "M/D/YYYY" a "YYYY-MM-DD"
-    const parts = dateStr.split("/");
+    const parts = cleanDate.split("/");
     if (parts.length === 3) {
       const month = parts[0].padStart(2, "0");
       const day = parts[1].padStart(2, "0");
       const year = parts[2];
       return `${year}-${month}-${day}`;
     }
-    return dateStr;
+    return cleanDate;
   };
 
   // Buscar el juice_id por el nombre del producto

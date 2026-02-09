@@ -365,6 +365,75 @@ export const packingListTableStyles = StyleSheet.create({
     fontSize: 5.5,
   },
 
+  colGrn: {
+    width: "10%",
+    textAlign: "center",
+    paddingVertical: 4,
+    paddingHorizontal: 1,
+    fontSize: 5.5,
+  },
+
+  /* -- Variantes GRN (anchos reducidos para hacer espacio a la columna GRN) -- */
+  colProductoGrn: {
+    width: "17%",
+    textAlign: "center",
+    paddingVertical: 4,
+    paddingHorizontal: 2,
+    borderRightWidth: 1,
+    borderRightColor: "#e2e8f0",
+    fontSize: 5.5,
+  },
+
+  colPesoBrutoGrn: {
+    width: "6%",
+    textAlign: "center",
+    paddingVertical: 4,
+    paddingHorizontal: 1,
+    borderRightWidth: 1,
+    borderRightColor: "#e2e8f0",
+    fontSize: 5.5,
+  },
+
+  colPesoNetoGrn: {
+    width: "6%",
+    textAlign: "center",
+    paddingVertical: 4,
+    paddingHorizontal: 1,
+    borderRightWidth: 1,
+    borderRightColor: "#e2e8f0",
+    fontSize: 5.5,
+  },
+
+  colTipoEmpaqueGrn: {
+    width: "9%",
+    textAlign: "center",
+    paddingVertical: 4,
+    paddingHorizontal: 1,
+    borderRightWidth: 1,
+    borderRightColor: "#e2e8f0",
+    fontSize: 5.5,
+  },
+
+  colTempGrn: {
+    width: "5%",
+    textAlign: "center",
+    paddingVertical: 4,
+    paddingHorizontal: 1,
+    borderRightWidth: 1,
+    borderRightColor: "#e2e8f0",
+    fontSize: 5.5,
+  },
+
+  colBestByGrn: {
+    width: "10%",
+    textAlign: "center",
+    paddingVertical: 4,
+    paddingHorizontal: 1,
+    borderRightWidth: 1,
+    borderRightColor: "#e2e8f0",
+    fontSize: 5.5,
+  },
+
   /* ===============================================================
      TABLE DATA ROWS
   ================================================================ */

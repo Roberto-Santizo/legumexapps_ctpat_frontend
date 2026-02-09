@@ -7,6 +7,7 @@ import { getCtpatByIdAPI } from "@/features/ctpats/api/CtpatsAPI";
 import { getJuicePackingListAPI } from "@/features/juicePacking-List/api/JuicePacking-ListAPI";
 import { getJuicePackingListTotalsAPI } from "@/features/juicePacking-List/api/JuicePackingListTotals";
 import { getJuiceItemsGroupedAPI } from "@/features/juice-Items/api/JuiceItemAPI";
+import { getCompanyLogoAPI } from "@/assets/CompanyLogoAPI";
 import { PackingListTableDocument } from "./JuicePackingListDocument";
 
 // Detectar si es dispositivo móvil
@@ -62,7 +63,13 @@ export default function JuicePackingListDocumentWrapper() {
     staleTime: 0,
   });
 
-  const isLoading = isLoadingCtpat || isLoadingPL || isLoadingItems || isLoadingTotals;
+  // 5. Cargar el logo de la empresa
+  const { data: companyLogo, isLoading: isLoadingLogo } = useQuery({
+    queryKey: ["companyLogo"],
+    queryFn: () => getCompanyLogoAPI(),
+  });
+
+  const isLoading = isLoadingCtpat || isLoadingPL || isLoadingItems || isLoadingTotals || isLoadingLogo;
 
   if (isLoading) {
     return (
@@ -130,7 +137,7 @@ export default function JuicePackingListDocumentWrapper() {
     totals: totals || { total_boxes: 0, net_weight: 0, gross_weight: 0, bottles: 0 },
   };
 
-  const pdfDocument = <PackingListTableDocument apiPackingList={apiPackingList} />;
+  const pdfDocument = <PackingListTableDocument apiPackingList={apiPackingList} companyLogo={companyLogo} />;
 
   // Vista para MÓVIL - Usar BlobProvider para descarga/apertura
   if (isMobile) {

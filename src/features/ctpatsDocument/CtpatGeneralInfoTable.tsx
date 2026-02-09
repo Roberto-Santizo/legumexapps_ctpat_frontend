@@ -15,6 +15,7 @@ interface CtpatGeneralInfoProps {
     blNumber: string;
     driverId: string;
     licencePlate: string;
+    shipping_company: string;
   };
 }
 
@@ -41,7 +42,7 @@ export default function CtpatGeneralInfoTable({ data }: CtpatGeneralInfoProps) {
           <td className="border border-black p-1">{data.destination}</td>
 
           <td className="border border-black font-bold p-1">CARRIER / NAVIERA:</td>
-          <td className="border border-black p-1">{data.carrier}</td>
+          <td className="border border-black p-1">{data.shipping_company}</td>
         </tr>
 
         {/* Row 2 */}

@@ -6,6 +6,7 @@ interface CtpatGeneralInformationTableProps {
     departure_date: string;
     departure_hour: string;
     seal: string;
+    shipping_company: string;
 
     driver?: {
       name: string;
@@ -45,7 +46,7 @@ export default function CtpatGeneralInformationTable({
               CARRIER / Naviera
             </td>
             <td className="border p-1 w-1/4">
-              CMA CGM
+              {data.shipping_company || ""}
             </td>
           </tr>
 

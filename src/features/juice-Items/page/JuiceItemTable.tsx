@@ -12,6 +12,17 @@ type Props = {
   totals?: JuicePackingListTotal;
 };
 
+// Formatea fecha sin usar new Date: "2026-02-09T..." -> "09/02/2026", "2/9/2026" -> "2/9/2026"
+function formatDateString(dateStr: string | null | undefined): string {
+  if (!dateStr) return '-';
+  const clean = dateStr.split('T')[0];
+  const parts = clean.split('-');
+  if (parts.length === 3 && parts[0].length === 4) {
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+  return clean;
+}
+
 export function JuiceItemTable({
   items,
   onDelete,
@@ -65,7 +76,7 @@ export function JuiceItemTable({
                   {new Date(item.date).toLocaleDateString('es-GT')}
                 </td>
                 <td className="px-4 py-3 text-center text-sm">
-                  {item.expiration_date ?? '-'}
+                  {formatDateString(item.expiration_date)}
                 </td>
                 <td className="px-4 py-3 text-center">
                   <div className="flex justify-center gap-3">
