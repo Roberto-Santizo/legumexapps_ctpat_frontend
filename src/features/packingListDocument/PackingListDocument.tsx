@@ -131,10 +131,9 @@ const mapHeader = (
 
 const mapItems = (
   items: FrozenItemResponse[],
-  beginningDate: string
 ): ItemData[] =>
   items.map((item) => ({
-    fechaProduccion: beginningDate,
+    fechaProduccion: formatDateString(item.production_date),
     producto: item.product,
     noTarima: item.no_tarima,
     lote: item.lote,
@@ -480,9 +479,7 @@ const PackingListGenerator: React.FC = () => {
         if (!packingList) return;
 
         const headerMapped = mapHeader(packingList, packingTotals);
-        const beginningDate = formatDateString(packingList.beginning_date);
-
-        const itemsMapped = mapItems(frozenItems ?? [], beginningDate);
+        const itemsMapped = mapItems(frozenItems ?? []);
         const totalsMapped = calculateTotals(itemsMapped);
         const totalsTableMapped = mapTotalsTable(packingTotals);
 
