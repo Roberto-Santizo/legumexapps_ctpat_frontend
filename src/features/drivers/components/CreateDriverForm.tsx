@@ -72,10 +72,6 @@ export default function DriverForm({ showCarrierField = true, showPhotoFields = 
           className={`form-input ${errors?.identification ? "form-input-error" : "form-input-normal"}`}
           {...register("identification", { 
               required: "El número de DPI es obligatorio",
-              pattern: {
-                value: /^\d{13}$/,
-                message: "El DPI no tiene un formato válido"
-              }
           })}
         />
         {errors?.identification && <ErrorMessage>{errors.identification.message}</ErrorMessage>}
@@ -92,10 +88,6 @@ export default function DriverForm({ showCarrierField = true, showPhotoFields = 
             className={`form-input ${errors?.license ? "form-input-error" : "form-input-normal"}`}
             {...register("license", { 
                 required: "El número de licencia es obligatorio",
-                pattern: {
-                  value: /^(?:\d{6,14}|[A-Z]{1,2}-\d{6,8})$/,
-                  message: "El número de licencia no tiene un formato válido"
-                }
             })}
           />
         {errors?.license && <ErrorMessage>{errors.license.message}</ErrorMessage>}
