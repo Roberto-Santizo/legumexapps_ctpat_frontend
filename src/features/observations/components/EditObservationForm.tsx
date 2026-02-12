@@ -1,11 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import CreateObservationForm from "./CreateObservationForm";
 import type { ObservationCreateData } from "@/features/observations/schemas/types";
 import { useForm } from "react-hook-form";
 import {useMutation, useQueryClient} from "@tanstack/react-query"
 import { updateObservationAPI } from "@/features/observations/api/ObservationsAPI";
 import { toast} from "react-toastify"
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 type EditObservationFormProps = {
     data: ObservationCreateData

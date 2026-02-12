@@ -2,7 +2,7 @@ import type { DriverFormData } from "@/features/drivers/schemas/types.tsx";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm,FormProvider } from "react-hook-form";
 import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import DriverForm from "../components/CreateDriverForm.tsx";
 import { createDriverAPI } from "../api/DriversAPI.ts";
 

@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {toast} from "react-toastify"
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import type { JuiceSchemaFormData } from "@/features/juiceProduct/schemas/types";
 import CreateJuiceForm from "@/features/juiceProduct/component/CreateJuiceForm"

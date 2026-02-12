@@ -1,5 +1,5 @@
 
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import PaginationComponent from "../../../shared/components/PaginationComponent";
 import { Pencil } from "lucide-react";
 import { useState } from "react";

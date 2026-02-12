@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { PDFViewer, BlobProvider } from "@react-pdf/renderer";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { useState, useEffect } from "react";
 import { Download, Eye } from "lucide-react";
 import { getCtpatByIdAPI } from "@/features/ctpats/api/CtpatsAPI";

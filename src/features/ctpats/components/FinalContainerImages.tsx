@@ -4,7 +4,7 @@ import PhotoCaptureModal, {type BuildImagePayload,} from "@/features/upload-imag
 import { uploadImagesAPI } from "@/features/ctpats/api/CtpatsAPI";
 import { useUpdateCtpatStatus } from "@/features/ctpats/hooks/useUpdateCtpatStatus";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 
 type Props = {

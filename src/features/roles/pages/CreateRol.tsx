@@ -1,7 +1,7 @@
 import {useMutation,useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import CrearRolForm from "@/features/roles/components/CreateRolForm";
 import { createRoleAPI } from "@/features/roles/api/RolAPI";
 import type { RoleApiResponse, CreateRolFormData } from "@/features/roles/schemas/types";

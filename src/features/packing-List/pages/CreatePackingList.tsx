@@ -1,4 +1,4 @@
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";

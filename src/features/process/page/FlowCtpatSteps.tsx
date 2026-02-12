@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import {getCtpatByIdAPI} from "@/features/ctpats/api/CtpatsAPI";
 import { Spinner } from "@/shared/components/Spinner";

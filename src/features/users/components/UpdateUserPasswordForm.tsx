@@ -1,5 +1,5 @@
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 

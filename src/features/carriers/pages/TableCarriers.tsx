@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { Pencil } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getCarriersAPI } from "@/features/carriers/api/CarriersAPI";

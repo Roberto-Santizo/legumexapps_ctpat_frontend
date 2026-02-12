@@ -1,7 +1,7 @@
 import type { createCarrierFormSchema } from "@/features/carriers/schemas/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { createCarriersAPI } from "@/features/carriers/api/CarriersAPI"
 import CarrierForm from "@/features/carriers/components/CarriersForm"
 import type { CreateCarrierResponse } from "@/features/carriers/schemas/types"

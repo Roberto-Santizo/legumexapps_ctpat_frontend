@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import { ChevronRight } from "lucide-react";
 
 interface NavLinkComponentProps {

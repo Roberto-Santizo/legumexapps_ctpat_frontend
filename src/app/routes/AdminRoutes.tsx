@@ -1,6 +1,6 @@
 
 import { lazy, Suspense } from "react";
-import { Route } from "react-router-dom";
+import { Route } from "react-router";
 import AppLayout from '@/app/layouts/AppLayout';
 import { Spinner } from "../../shared/components/Spinner";
 import { ROLE_GROUPS } from "@/core/permissions/roles";

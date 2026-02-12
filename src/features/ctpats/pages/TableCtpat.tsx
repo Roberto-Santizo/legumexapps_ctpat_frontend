@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { Pencil, Eye, FileCheck, X, FilePenLine } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { Filter } from "lucide-react";
 
 import PaginationComponent from "@/shared/components/PaginationComponent.js";

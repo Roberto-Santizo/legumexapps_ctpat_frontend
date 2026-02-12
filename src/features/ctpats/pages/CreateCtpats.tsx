@@ -1,7 +1,7 @@
 import { useMutation,useQueryClient}  from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import CtpatForm from "@/features/ctpats/components/CtpatsForm";
 import { createCtpatsAPI } from "@/features/ctpats/api/CtpatsAPI";
 import type {CreateCtpatFormData,CreateCtpatAPIResponse,} from "@/features/ctpats/schemas/types";

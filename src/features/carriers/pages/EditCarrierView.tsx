@@ -1,4 +1,4 @@
-import { useParams, Navigate } from "react-router-dom";
+import { useParams, Navigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import EditCarrierForm from "@/features/carriers/components/EditCarrierForm";
 import { getCarrierByIdAPI } from "@/features/carriers/api/CarriersAPI";

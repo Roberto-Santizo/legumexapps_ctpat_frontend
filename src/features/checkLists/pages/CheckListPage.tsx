@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router"; 
 
 import { getConditionAPI } from "@/features/conditions/api/ConditionsAPI";
 import { createCheckListAPI } from "@/features/checkLists/api/CheckListAPI";

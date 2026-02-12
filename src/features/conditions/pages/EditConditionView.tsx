@@ -1,4 +1,4 @@
-import { useParams, Navigate } from "react-router-dom";
+import { useParams, Navigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import EditConditionForm from "@/features/conditions/components/EditConditionForm";
 import { getConditionByIdAPI } from "@/features/conditions/api/ConditionsAPI";

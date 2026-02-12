@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import type { UserFormDataSchema } from "@/features/users/schemas/types";
 import { useForm } from "react-hook-form";
 import {useMutation, useQueryClient } from "@tanstack/react-query";

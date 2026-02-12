@@ -1,4 +1,4 @@
-import { useParams, Navigate } from "react-router-dom";
+import { useParams, Navigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import EditContainerForm from "@/features/containers/components/EditContainerForm";
 import {getContainerByIdAPI} from "@/features/containers/api/ContainerAPI"

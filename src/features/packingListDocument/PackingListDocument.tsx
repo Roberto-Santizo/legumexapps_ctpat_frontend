@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import {Document, Page, View, Text, PDFViewer, Image, BlobProvider} from "@react-pdf/renderer";
 import { packingListDocumentSyles as styles } from "@/features/packingListDocument/packingList.styles";
 import { useEffect, useState } from "react";

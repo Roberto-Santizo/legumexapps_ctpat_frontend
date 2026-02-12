@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import CreateObservationForm from "@/features/observations/components/CreateObservationForm";
 import { createObservationAPI } from "@/features/observations/api/ObservationsAPI";
 import type { ObservationCreateData } from "@/features/observations/schemas/types";

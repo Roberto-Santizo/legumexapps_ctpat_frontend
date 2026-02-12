@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useForm, type Control } from "react-hook-form";
 import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import CloseCtpatForm from "@/features/ctpats/components/CloseCtpatForm";
 import { closeCtpatAPI } from "@/features/ctpats/api/CloseCtpat";
 import type { CloseCtpatFormData } from "@/features/ctpats/schemas/typeSignatureSchema";

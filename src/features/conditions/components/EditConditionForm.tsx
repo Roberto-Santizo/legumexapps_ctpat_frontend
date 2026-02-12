@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router'
 import { useForm} from "react-hook-form";
 import type { ConditionFormData,Condition } from "@/features/conditions/schemas/types";
 import {toast} from "react-toastify"

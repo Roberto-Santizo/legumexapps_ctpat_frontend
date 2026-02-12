@@ -4,7 +4,7 @@ import type { TruckCreateData } from "@/features/trucks/schemas/types.ts";
 import { useMutation,useQueryClient } from "@tanstack/react-query";
 import { useForm,FormProvider } from "react-hook-form";
 import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { createTruckAPI } from "../api/TruckAPI.ts";
 import CreateTruckForm from "../components/CreateTruckForm.tsx";
 

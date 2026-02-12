@@ -1,4 +1,4 @@
-import { useParams, Navigate } from "react-router-dom";
+import { useParams, Navigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import EditTruckForm from "@/features/trucks/components/EditTruckForm";
 import { getTruckByIdAPI } from "@/features/trucks/api/TruckAPI";

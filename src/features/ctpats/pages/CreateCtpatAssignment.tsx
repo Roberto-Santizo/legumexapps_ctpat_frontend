@@ -1,6 +1,6 @@
 import { useForm, FormProvider } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import CtpatTruckDriverAssignmentForm from "../components/CtpatTruckDriverAssignmentForm";
 import type { CreateCtpatAssignmentForm } from "../components/CtpatTruckDriverAssignmentForm";

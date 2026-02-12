@@ -1,7 +1,7 @@
 import { useMutation,useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import type { ConditionFormData } from "@/features/conditions/schemas/types";
 import {createConditionsAPI} from "@/features/conditions/api/ConditionsAPI"
 import ConditionForm from "@/features/conditions/components/CreateConditionForm"

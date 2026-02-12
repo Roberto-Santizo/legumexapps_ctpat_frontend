@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router";
+import { useNavigate } from "react-router";
 import { useForm, FormProvider } from "react-hook-form";
 import { useEffect } from "react";
 import { toast } from "react-toastify";

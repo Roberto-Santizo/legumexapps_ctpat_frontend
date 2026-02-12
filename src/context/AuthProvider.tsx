@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import type { ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { loginApi } from "@/features/auth/api/LoginAPI";
 import { checkStatusAPI } from "@/features/auth/api/CheckStatusAPI";
 import { AuthContext } from "./AuthContext";

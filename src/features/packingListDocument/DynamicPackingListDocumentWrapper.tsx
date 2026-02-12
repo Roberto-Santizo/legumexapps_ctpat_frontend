@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { getCtpatByIdAPI } from "@/features/ctpats/api/CtpatsAPI";
 import PackingListDocument from "./PackingListDocument";
 import JuicePackingListDocumentWrapper from "@/features/juicePacking-List/juicePackingListDocument/JuicePackingListDocumentWrapper";

@@ -73,8 +73,9 @@ export default function Header({sidebarOpen,setSidebarOpen,mobileMenuOpen,setMob
               <h1 className="text-lg font-bold text-white tracking-tight">
                 Departamento de calidad
               </h1>
-              <p className="text-xs text-slate-400 font-medium">
-                “La calidad es el reflejo del trabajo en equipo y la pasión por mejorar”
+              <p className="text-base text-slate-400 font-medium">
+                {/* “La calidad es el reflejo del trabajo en equipo y la pasión por mejorar” */}
+                " ✨ Feliz mes del amor y la amistad. Los grandes logros nacen del respeto mutuo y la colaboración.✨"
               </p>
             </div>
           </div>

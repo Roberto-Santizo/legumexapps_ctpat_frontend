@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { getCtpatByIdAPI } from "@/features/ctpats/api/CtpatsAPI";
@@ -13,7 +13,7 @@ import { getJuicePackingListAPI } from "@/features/juicePacking-List/api/JuicePa
 import { getJuicePackingListTotalsAPI } from "@/features/juicePacking-List/api/JuicePackingListTotals";
 
 import { useAuth } from "@/hooks/useAuth";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { ImagePlus } from "lucide-react";
 
 import LetterPage from "./LetterPage";

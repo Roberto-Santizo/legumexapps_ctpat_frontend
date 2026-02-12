@@ -1,4 +1,4 @@
-import { useParams, Navigate } from "react-router-dom";
+import { useParams, Navigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import {getProductByIdAPI} from "@/features/products/api/ProductsAPI"
 import EditProductForm from "@/features/products/components/EditProductForm"

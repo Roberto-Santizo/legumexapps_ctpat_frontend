@@ -7,7 +7,7 @@ import { updateTruckAPI } from "@/features/trucks/api/TruckAPI";
 import type { TruckUpdateData  } from "@/features/trucks/schemas/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 
 type TruckFormProps = {
   data: TruckUpdateData ;
