@@ -14,6 +14,7 @@ export default function CreateJuiceView() {
     const navigate = useNavigate();
   const initialValues:JuiceSchemaFormData = {
     name: "",
+    slug: "",
     code: "",
     presentation: "",
     lbs_presentation: 0,

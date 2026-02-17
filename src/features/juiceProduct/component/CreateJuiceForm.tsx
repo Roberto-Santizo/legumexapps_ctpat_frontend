@@ -21,7 +21,7 @@ export default function CreateJuiceForm({errors, register}:CreateJuiceFormProps)
           <input
             id="name"
             type="text"
-            placeholder="Strawberry Juice"
+            placeholder="HPP COLD PRESSED BERRY JUICE 6 X 33 OZ"
             className={`form-input pl-10 ${
               errors.name ? "form-input-error" : "form-input-normal"
             }`}
@@ -32,6 +32,27 @@ export default function CreateJuiceForm({errors, register}:CreateJuiceFormProps)
           />
         </div>
         {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="slug" className="form-label">
+          Nombre corto del jugo <span className="required">*</span>
+        </label>
+        <div className="input-icon-wrapper relative">
+          <input
+            id="slug"
+            type="text"
+            placeholder="COLD PRESSED BERRY"
+            className={`form-input pl-10 ${
+              errors.slug ? "form-input-error" : "form-input-normal"
+            }`}
+            {...register("slug", {
+              setValueAs: toUpper,
+              required: "El nombre del jugo es obligatorio",
+            })}
+          />
+        </div>
+        {errors.slug && <ErrorMessage>{errors.slug.message}</ErrorMessage>}
       </div>
 
       <div className="form-group">

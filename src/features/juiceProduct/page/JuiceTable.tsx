@@ -43,7 +43,8 @@ export default function JuiceTable() {
                 <thead>
                   <tr>
                     <th>Id del jugo</th>
-                    <th>Nombre del jugo</th>
+                    <th>Nombre completo del jugo</th>
+                    <th>Nombre corto del jugo</th>
                     <th>Código del jugo</th>
                     <th>Presentación</th>
                     <th>Libras por presentación</th>
@@ -56,6 +57,7 @@ export default function JuiceTable() {
                     <tr key={juice.id}>
                       <td >{juice.id}</td>
                       <td>{juice.name}</td>
+                      <td>{juice.slug}</td>
                       <td>{juice.code}</td>
                       <td>{juice.presentation}</td>
                       <td>{juice.lbs_presentation}</td>

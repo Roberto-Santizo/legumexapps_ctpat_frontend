@@ -46,7 +46,8 @@ export default function TableProducts() {
                 <thead>
                   <tr>
                     <th className="table-cell-center">ID</th>
-                    <th className="table-cell-center">Nombre</th>
+                    <th className="table-cell-center">Nombre Completo</th>
+                    <th className="table-cell-center">Nombre Corto</th>
                     <th className="table-cell-center">Código</th>
                     <th>Acciones</th>
 
@@ -57,6 +58,7 @@ export default function TableProducts() {
                     <tr key={product.id}>
                       <td >{product.id}</td>
                       <td>{product.name}</td>
+                      <td>{product.slug}</td>
                       <td>{product.code}</td>
                       <td className="table-cell-center">
                         <div className="table-actions justify-center">

@@ -9,6 +9,7 @@ export default function CreateContainer() {
   const navigate = useNavigate();
   const initialValues: ProductCreateData = {
     name: "",
+    slug: "",
     code: "",
     presentation: "",
     lbs_presentation: 0,

@@ -4,6 +4,7 @@ import { paginationSchema } from "@/shared/schemas/paginateSchemas";
 // CREATE
 export const productCreateSchema = z.object({
   name: z.string(),
+  slug: z.string(),
   code: z.string(),
   presentation: z.string(),
   lbs_presentation: z.number(),
@@ -13,12 +14,15 @@ export const productCreateSchema = z.object({
 export const productListSchema = z.object({
   id: z.number(),
   name: z.string(),
+  slug: z.string(),
   code: z.string(),
+
 });
 
 // UPDATE
 export const productUpdateSchema = z.object({
   name: z.string(),
+  slug: z.string(),
   code: z.string(),
   presentation: z.string(),
   lbs_presentation: z.number()

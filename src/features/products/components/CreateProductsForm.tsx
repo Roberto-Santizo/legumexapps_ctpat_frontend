@@ -19,7 +19,7 @@ export default function CreateProductsForm({register,errors,}: ProductFormProps)
           <input
             id="name"
             type="text"
-            placeholder="Fresa"
+            placeholder="BANANA SLICE 5X16 ONZ"
             className={`form-input pl-10 ${
               errors.name ? "form-input-error" : "form-input-normal"
             }`}
@@ -30,6 +30,27 @@ export default function CreateProductsForm({register,errors,}: ProductFormProps)
           />
         </div>
         {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="name" className="form-label">
+          Nombre corto del producto <span className="required">*</span>
+        </label>
+        <div className="input-icon-wrapper relative">
+          <input
+            id="slug"
+            type="text"
+            placeholder="BANANA SLICE"
+            className={`form-input pl-10 ${
+              errors.name ? "form-input-error" : "form-input-normal"
+            }`}
+            {...register("slug", {
+              setValueAs: toUpper,
+              required: "El nombre del producto es obligatorio",
+            })}
+          />
+        </div>
+        {errors.slug && <ErrorMessage>{errors.slug.message}</ErrorMessage>}
       </div>
 
       <div className="form-group">

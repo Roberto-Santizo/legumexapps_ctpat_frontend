@@ -18,6 +18,7 @@ export default function EditJuiceForm({data, juiceId}:EditJuiceFormProps) {
 
     const {register, handleSubmit, formState:{errors}}= useForm({defaultValues:{
     name: data.name,
+    slug: data.slug,
     code: data.code,
     presentation: data.presentation,
     lbs_presentation: data.lbs_presentation,
