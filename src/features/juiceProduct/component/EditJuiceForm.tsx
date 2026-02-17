@@ -4,12 +4,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {toast} from "react-toastify"
 import { useNavigate } from "react-router";
 
-import type { JuiceSchemaFormData } from "@/features/juiceProduct/schemas/types";
+import type { JuiceSchemaFormData, JuiceResponseData } from "@/features/juiceProduct/schemas/types";
 import CreateJuiceForm from "@/features/juiceProduct/component/CreateJuiceForm"
 import {updateJuiceAPI} from "@/features/juiceProduct/api/JuiceApi"
 
 type EditJuiceFormProps = {
-  data:JuiceSchemaFormData
+  data:JuiceResponseData
   juiceId: number
 }
 
@@ -18,7 +18,7 @@ export default function EditJuiceForm({data, juiceId}:EditJuiceFormProps) {
 
     const {register, handleSubmit, formState:{errors}}= useForm({defaultValues:{
     name: data.name,
-    slug: data.slug,
+    slug: data.slug ?? "",
     code: data.code,
     presentation: data.presentation,
     lbs_presentation: data.lbs_presentation,

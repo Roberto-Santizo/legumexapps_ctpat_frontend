@@ -13,7 +13,7 @@ export const juiceCreateSchema = z.object ({
 export const juiceResponseSchema = z.object({
     id: z.number(),
     name: z.string(),
-    slug: z.string(),
+    slug: z.string().optional(),
     code: z.string(),
     presentation: z.string(),
     lbs_presentation: z.number()
@@ -22,7 +22,7 @@ export const juiceResponseSchema = z.object({
 export const juiceSelectSchema = z.object({
   id: z.number(),
   name: z.string(),
-  slug: z.string(),
+  slug: z.string().optional(),
   code: z.string()
 });
 
@@ -30,6 +30,7 @@ export const juiceResponseById = z.object({
     
 })
 export type JuiceSchemaFormData = z.infer<typeof juiceCreateSchema>
+export type JuiceResponseData = z.infer<typeof juiceResponseSchema>
 export const CustomerResponse = paginationSchema(juiceResponseSchema);
 
 

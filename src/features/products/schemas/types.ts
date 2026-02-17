@@ -14,7 +14,7 @@ export const productCreateSchema = z.object({
 export const productListSchema = z.object({
   id: z.number(),
   name: z.string(),
-  slug: z.string(),
+  slug: z.string().optional(),
   code: z.string(),
 
 });

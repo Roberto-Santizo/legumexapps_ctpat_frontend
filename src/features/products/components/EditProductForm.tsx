@@ -17,7 +17,7 @@ export default function EditProductForm({ data, productId }: EditProductFormProp
   
   const {register,handleSubmit,formState: { errors }} = useForm({defaultValues:{
     name: data.name,
-    slug: data.slug,
+    slug: data.slug ?? "",
     code: data.code,
     presentation: data.presentation,
     lbs_presentation: data.lbs_presentation
