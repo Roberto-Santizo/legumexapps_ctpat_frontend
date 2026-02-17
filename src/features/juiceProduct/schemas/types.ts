@@ -21,6 +21,7 @@ export const juiceResponseSchema = z.object({
 
 export const juiceSelectSchema = z.object({
   id: z.number(),
+  name: z.string(),
   slug: z.string(),
   code: z.string()
 });
