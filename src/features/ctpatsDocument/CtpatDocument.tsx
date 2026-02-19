@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams } from "react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
@@ -11,10 +12,14 @@ import { getPackingListTotalsAPI } from "@/features/packing-List/api/PackingList
 // Juice APIs
 import { getJuicePackingListAPI } from "@/features/juicePacking-List/api/JuicePacking-ListAPI";
 import { getJuicePackingListTotalsAPI } from "@/features/juicePacking-List/api/JuicePackingListTotals";
+// PDF
+import { BlobProvider } from "@react-pdf/renderer";
+import { getCompanyLogoAPI } from "@/assets/CompanyLogoAPI";
+import CtpatPdfDocument from "./CtpatPdfDocument";
 
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router";
-import { ImagePlus } from "lucide-react";
+import { ImagePlus, Download, Loader2 } from "lucide-react";
 
 import LetterPage from "./LetterPage";
 import CtpatGeneralInformationTable from "@/features/ctpatsDocument/CtpatGeneralInformationTable";
@@ -34,6 +39,17 @@ export default function CtpatDocument() {
   const { user } = useAuth();
   const ctpatId = Number(id);
   const queryClient = useQueryClient();
+  const IMAGES_BASE_URL = import.meta.env.VITE_IMAGES_BACKEND_URL as string;
+
+  // Estado para la generación lazy del PDF
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
+  // Logo de empresa (necesario para el PDF)
+  const { data: companyLogo } = useQuery({
+    queryKey: ["company-logo"],
+    queryFn: () => getCompanyLogoAPI(),
+    enabled: !!id,
+  });
 
 
   // 1. Primero cargar el CTPAT para conocer el tipo de producto
@@ -148,8 +164,71 @@ export default function CtpatDocument() {
 
   return (
     <div className="space-y-10">
-      {canAccess(CTPAT_PERMISSIONS.UPLOAD_ADDITIONAL_IMAGES, user?.role) && (
-        <div className="sticky top-4 z-10 flex justify-end mb-4 px-4">
+      <div className="sticky top-4 z-10 flex justify-end mb-4 px-4 gap-3">
+        {/* Botón de descarga PDF (lazy — solo genera al hacer click) */}
+        {isGeneratingPdf ? (
+          <BlobProvider
+            document={
+              <CtpatPdfDocument
+                ctpat={ctpat}
+                images={images}
+                observations={observations}
+                checklistItems={checklistItems}
+                packingList={packingList}
+                packingListTotals={packingListTotals}
+                productType={productType}
+                companyLogo={companyLogo}
+                imagesBaseUrl={IMAGES_BASE_URL}
+              />
+            }
+          >
+            {({ blob, loading, error }) => {
+              if (loading) {
+                return (
+                  <button
+                    disabled
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-lg opacity-75 cursor-not-allowed"
+                  >
+                    <Loader2 size={20} className="animate-spin" />
+                    Generando PDF...
+                  </button>
+                );
+              }
+              if (error) {
+                return (
+                  <button
+                    onClick={() => setIsGeneratingPdf(false)}
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white font-semibold rounded-xl shadow-lg hover:bg-red-700 transition-all duration-200"
+                  >
+                    Error al generar — Reintentar
+                  </button>
+                );
+              }
+              const url = blob ? URL.createObjectURL(blob) : "";
+              return (
+                <a
+                  href={url}
+                  download={`CTPAT_${ctpat.container}.pdf`}
+                  onClick={() => setTimeout(() => setIsGeneratingPdf(false), 300)}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-200"
+                >
+                  <Download size={20} />
+                  Descargar PDF (we are working in this feature)
+                </a>
+              );
+            }}
+          </BlobProvider>
+        ) : (
+          <button
+            onClick={() => setIsGeneratingPdf(true)}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-200"
+          >
+            <Download size={20} />
+            Descargar PDF
+          </button>
+        )}
+
+        {canAccess(CTPAT_PERMISSIONS.UPLOAD_ADDITIONAL_IMAGES, user?.role) && (
           <Link
             to={`/ctpats/${id}/upload-additional-images`}
             className="inline-flex items-center gap-2 px-6 py-3 bg-orange-600 text-white font-semibold rounded-xl shadow-lg hover:bg-orange-700 transition-all duration-200"
@@ -157,8 +236,8 @@ export default function CtpatDocument() {
             <ImagePlus size={20} />
             Agregar Más Imágenes
           </Link>
-        </div>
-      )}
+        )}
+      </div>
 
       {pages.map((content, index) => (
         <LetterPage
