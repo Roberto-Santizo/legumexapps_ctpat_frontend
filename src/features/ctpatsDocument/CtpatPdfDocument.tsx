@@ -92,6 +92,8 @@ export interface CtpatPdfDocumentProps {
   productType: ProductTypeId;
   companyLogo?: string | null;
   imagesBaseUrl: string;
+  /** path → base64 data URL. When present, used instead of building a URL from imagesBaseUrl. */
+  imageBase64Cache?: Record<string, string>;
 }
 
 // ─── Constants ─────────────────────────────────────────────────────────────
@@ -322,15 +324,18 @@ function ImagesSection({
   truck,
   driver,
   imagesBaseUrl,
+  imageBase64Cache,
 }: {
   images: CtpatImage[];
   truck?: CtpatTruck;
   driver?: CtpatDriver;
   imagesBaseUrl: string;
+  imageBase64Cache?: Record<string, string>;
 }) {
   const hasImages = images && images.length > 0;
 
-  const imgUrl = (path: string) => `${imagesBaseUrl}/${path}`;
+  const imgUrl = (path: string) =>
+    imageBase64Cache?.[path] ?? `${imagesBaseUrl}/${path}`;
 
   return (
     <View break>
@@ -638,12 +643,16 @@ function DriverSection({
   ctpat,
   packingList,
   imagesBaseUrl,
+  imageBase64Cache,
 }: {
   ctpat: CtpatData;
   packingList?: PackingListData | null;
   imagesBaseUrl: string;
+  imageBase64Cache?: Record<string, string>;
 }) {
   const driver = ctpat.driver;
+  const imgUrl = (path: string) =>
+    imageBase64Cache?.[path] ?? `${imagesBaseUrl}/${path}`;
 
   return (
     <View break>
@@ -690,7 +699,7 @@ function DriverSection({
           <View style={{ ...s.driverCellLast, alignItems: "center", justifyContent: "center" }}>
             {driver?.license_image ? (
               <Image
-                src={`${imagesBaseUrl}/${driver.license_image}`}
+                src={imgUrl(driver.license_image)}
                 style={s.driverLicenseImage}
               />
             ) : (
@@ -837,11 +846,16 @@ function SignaturesSection({
   signatureC,
   signatureE,
   imagesBaseUrl,
+  imageBase64Cache,
 }: {
   signatureC?: string | null;
   signatureE?: string | null;
   imagesBaseUrl: string;
+  imageBase64Cache?: Record<string, string>;
 }) {
+  const imgUrl = (path: string) =>
+    imageBase64Cache?.[path] ?? `${imagesBaseUrl}/${path}`;
+
   const signatures = [
     { label: "Quality Control and Food Safety", img: signatureC },
     { label: "Shipping Supervisor Signature", img: signatureE },
@@ -855,7 +869,7 @@ function SignaturesSection({
           <View key={idx} style={s.signatureBox}>
             {sig.img ? (
               <Image
-                src={`${imagesBaseUrl}/${sig.img}`}
+                src={imgUrl(sig.img)}
                 style={s.signatureImg}
               />
             ) : (
@@ -883,6 +897,7 @@ export default function CtpatPdfDocument({
   productType,
   companyLogo,
   imagesBaseUrl,
+  imageBase64Cache,
 }: CtpatPdfDocumentProps) {
   return (
     <Document>
@@ -899,6 +914,7 @@ export default function CtpatPdfDocument({
           truck={ctpat.truck}
           driver={ctpat.driver}
           imagesBaseUrl={imagesBaseUrl}
+          imageBase64Cache={imageBase64Cache}
         />
 
         {/* Page 3: Packing List */}
@@ -913,6 +929,7 @@ export default function CtpatPdfDocument({
           ctpat={ctpat}
           packingList={packingList}
           imagesBaseUrl={imagesBaseUrl}
+          imageBase64Cache={imageBase64Cache}
         />
 
         {/* Page 5: Checklist */}
@@ -926,6 +943,7 @@ export default function CtpatPdfDocument({
           signatureC={ctpat.signature_c}
           signatureE={ctpat.signature_e}
           imagesBaseUrl={imagesBaseUrl}
+          imageBase64Cache={imageBase64Cache}
         />
 
         {/* Fixed footer on every page */}

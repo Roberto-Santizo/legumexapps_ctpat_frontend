@@ -16,6 +16,7 @@ import { getJuicePackingListTotalsAPI } from "@/features/juicePacking-List/api/J
 import { BlobProvider } from "@react-pdf/renderer";
 import { getCompanyLogoAPI } from "@/assets/CompanyLogoAPI";
 import CtpatPdfDocument from "./CtpatPdfDocument";
+import { preloadImagesAsBase64 } from "./utils/fetchImageAsBase64";
 
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router";
@@ -43,6 +44,8 @@ export default function CtpatDocument() {
 
   // Estado para la generación lazy del PDF
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [isPreloadingImages, setIsPreloadingImages] = useState(false);
+  const [imageBase64Cache, setImageBase64Cache] = useState<Record<string, string>>({});
 
   // Logo de empresa (necesario para el PDF)
   const { data: companyLogo } = useQuery({
@@ -139,6 +142,25 @@ export default function CtpatDocument() {
 
   const ctpat = data.response;
 
+  const handleGeneratePdf = async () => {
+    setIsPreloadingImages(true);
+    try {
+      const paths = [
+        ...images.map((img) => img.image),
+        ctpat.truck?.plate_image,
+        ctpat.driver?.license_image,
+        ctpat.driver?.identification_image,
+        ctpat.signature_c,
+        ctpat.signature_e,
+      ];
+      const cache = await preloadImagesAsBase64(paths, IMAGES_BASE_URL);
+      setImageBase64Cache(cache);
+      setIsGeneratingPdf(true);
+    } finally {
+      setIsPreloadingImages(false);
+    }
+  };
+
   const pages = [
     <CtpatGeneralInformationTable data={ctpat} packingList={packingList} />,
     <CtpatImages
@@ -166,7 +188,15 @@ export default function CtpatDocument() {
     <div className="space-y-10">
       <div className="sticky top-4 z-10 flex justify-end mb-4 px-4 gap-3">
         {/* Botón de descarga PDF (lazy — solo genera al hacer click) */}
-        {isGeneratingPdf ? (
+        {isPreloadingImages ? (
+          <button
+            disabled
+            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-lg opacity-75 cursor-not-allowed"
+          >
+            <Loader2 size={20} className="animate-spin" />
+            Preparando imágenes...
+          </button>
+        ) : isGeneratingPdf ? (
           <BlobProvider
             document={
               <CtpatPdfDocument
@@ -179,6 +209,7 @@ export default function CtpatDocument() {
                 productType={productType}
                 companyLogo={companyLogo}
                 imagesBaseUrl={IMAGES_BASE_URL}
+                imageBase64Cache={imageBase64Cache}
               />
             }
           >
@@ -213,14 +244,14 @@ export default function CtpatDocument() {
                   className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-200"
                 >
                   <Download size={20} />
-                  Descargar PDF (we are working in this feature)
+                  Descargar PDF
                 </a>
               );
             }}
           </BlobProvider>
         ) : (
           <button
-            onClick={() => setIsGeneratingPdf(true)}
+            onClick={handleGeneratePdf}
             className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-200"
           >
             <Download size={20} />
