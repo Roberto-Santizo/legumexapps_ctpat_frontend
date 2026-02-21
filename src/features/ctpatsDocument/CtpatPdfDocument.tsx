@@ -334,8 +334,10 @@ function ImagesSection({
 }) {
   const hasImages = images && images.length > 0;
 
-  const imgUrl = (path: string) =>
-    imageBase64Cache?.[path] ?? `${imagesBaseUrl}/${path}`;
+  const imgUrl = (path: string) => {
+    if (path.startsWith("data:")) return path;
+    return imageBase64Cache?.[path] ?? `${imagesBaseUrl}/${path}`;
+  };
 
   return (
     <View break>
@@ -853,8 +855,10 @@ function SignaturesSection({
   imagesBaseUrl: string;
   imageBase64Cache?: Record<string, string>;
 }) {
-  const imgUrl = (path: string) =>
-    imageBase64Cache?.[path] ?? `${imagesBaseUrl}/${path}`;
+  const imgUrl = (path: string) => {
+    if (path.startsWith("data:")) return path;
+    return imageBase64Cache?.[path] ?? `${imagesBaseUrl}/${path}`;
+  };
 
   const signatures = [
     { label: "Quality Control and Food Safety", img: signatureC },

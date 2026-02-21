@@ -145,13 +145,16 @@ export default function CtpatDocument() {
   const handleGeneratePdf = async () => {
     setIsPreloadingImages(true);
     try {
+      // Signatures may be stored as data URLs (from SignatureCanvas) — skip those from fetch
+      const isDataUrl = (s: string | null | undefined) => !!s && s.startsWith("data:");
+
       const paths = [
-        ...images.map((img) => img.image),
+        ...images.map((img) => img.image).filter((p) => !isDataUrl(p)),
         ctpat.truck?.plate_image,
         ctpat.driver?.license_image,
         ctpat.driver?.identification_image,
-        ctpat.signature_c,
-        ctpat.signature_e,
+        ...(isDataUrl(ctpat.signature_c) ? [] : [ctpat.signature_c]),
+        ...(isDataUrl(ctpat.signature_e) ? [] : [ctpat.signature_e]),
       ];
       const cache = await preloadImagesAsBase64(paths, IMAGES_BASE_URL);
       setImageBase64Cache(cache);

@@ -11,6 +11,9 @@ export default function FinalCtpatSignatures({ signatureC, signatureE }: Props) 
     { label: "Shipping Supervisor Signature", img: signatureE },
   ];
 
+  const buildImgSrc = (img: string) =>
+    img.startsWith("data:") ? img : `${baseUrl}/${img}`;
+
   return (
     <div className="p-4 text-[11px] w-full mt-6">
       <p className="font-bold text-center mb-4">FINAL SIGNATURES</p>
@@ -21,7 +24,7 @@ export default function FinalCtpatSignatures({ signatureC, signatureE }: Props) 
             <div className="w-full h-24 flex items-center justify-center  border-gray-400 bg-gray-50">
               {sig.img ? (
                 <img
-                  src={`${baseUrl}/${sig.img}`}
+                  src={buildImgSrc(sig.img)}
                   alt={sig.label}
                   className="max-h-24 object-contain"
                 />
