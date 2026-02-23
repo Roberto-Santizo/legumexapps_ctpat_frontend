@@ -431,7 +431,7 @@ function PackingListSection({
 }) {
   if (!packingList) {
     return (
-      <View break>
+      <View>
         <Text style={s.sectionTitle}>PACKING LIST</Text>
         <Text style={{ textAlign: "center", padding: 8, color: "#888888" }}>
           No hay datos de packing list disponibles.
@@ -448,7 +448,7 @@ function PackingListSection({
   const juiceTotals = !Array.isArray(packingListTotals) ? packingListTotals : null;
 
   return (
-    <View break>
+    <View>
       <View style={s.table}>
         {/* Header */}
         <View style={s.tableRow}>
@@ -673,7 +673,7 @@ function DriverSection({
     imageBase64Cache?.[path] ?? `${imagesBaseUrl}/${path}`;
 
   return (
-    <View break>
+    <View>
       <Text style={s.driverSectionTitle}>
         C-TPAT TRAILER DE EXPORTACION / FORMULARIO DE INSPECCION DE CONTENEDORES
       </Text>
@@ -777,7 +777,7 @@ function ChecklistSection({ items }: { items: ChecklistItem[] }) {
   }, {});
 
   return (
-    <View break>
+    <View>
       <View style={s.checklistMainHeader}>
         <Text>C-TPAT EXPORT TRAILER / CONTAINER INSPECTION FORM</Text>
         <Text>C-TPAT TRAILER DE EXPORTACION / FORMULARIO DE INSPECCIÓN DE CONTENEDORES</Text>
@@ -829,7 +829,7 @@ function ObservationsSection({ observations }: { observations: Observation[] }) 
   const lastIdx = list.length - 1;
 
   return (
-    <View break>
+    <View>
       <Text style={s.sectionTitle}>
         NON COMPLYING OBSERVATION: / OBSERVACIONES DE NO CUMPLIMIENTO
       </Text>
@@ -882,7 +882,7 @@ function SignaturesSection({
   ];
 
   return (
-    <View break>
+    <View>
       <Text style={s.signaturesTitle}>FINAL SIGNATURES</Text>
       <View style={s.signaturesRow}>
         {signatures.map((sig, idx) => (
