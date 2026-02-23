@@ -88,7 +88,19 @@ export default function CtpatImages({ images, truck, driver, status, onDeleteIma
                     <img
                       src={url}
                       className="w-full h-40 object-cover border"
+                      alt={img.description ?? type}
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        target.style.display = "none";
+                        const placeholder = target.nextElementSibling as HTMLElement | null;
+                        if (placeholder) placeholder.style.display = "flex";
+                      }}
                     />
+                    <div
+                      className="hidden w-full h-40 border bg-gray-100 items-center justify-center text-gray-400 text-xs"
+                    >
+                      No se pudo cargar
+                    </div>
 
                     {/* Botón eliminar - solo si CTPAT no está cerrado */}
                     {canDelete && (
@@ -118,7 +130,15 @@ export default function CtpatImages({ images, truck, driver, status, onDeleteIma
                     src={`${BASE_URL}/${truck.plate_image}`}
                     className="w-full h-40 object-cover border"
                     alt="Licence Plate"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const p = e.currentTarget.nextElementSibling as HTMLElement | null;
+                      if (p) p.style.display = "flex";
+                    }}
                   />
+                  <div className="hidden w-full h-40 border bg-gray-100 items-center justify-center text-gray-400 text-xs">
+                    No se pudo cargar
+                  </div>
                   <p className="text-center mt-1 text-[10px] italic">
                     LICENCE PLATE No. {truck.plate}
                   </p>
@@ -131,7 +151,15 @@ export default function CtpatImages({ images, truck, driver, status, onDeleteIma
                     src={`${BASE_URL}/${driver.license_image}`}
                     className="w-full h-40 object-cover border"
                     alt="Driver ID"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const p = e.currentTarget.nextElementSibling as HTMLElement | null;
+                      if (p) p.style.display = "flex";
+                    }}
                   />
+                  <div className="hidden w-full h-40 border bg-gray-100 items-center justify-center text-gray-400 text-xs">
+                    No se pudo cargar
+                  </div>
                   <p className="text-center mt-1 text-[10px] italic">
                     DRIVER ID {driver.license}
                   </p>

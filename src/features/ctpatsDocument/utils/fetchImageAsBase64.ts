@@ -1,51 +1,116 @@
 // Max pixels on the longest side for images embedded in the PDF.
-// High-res photos (e.g. 4000×3000) produce 3-5 MB base64 strings that
-// react-pdf fails to render silently. Capping at 1200px keeps print
-// quality while staying well within react-pdf's rendering limits.
 const PDF_IMAGE_MAX_PX = 1200;
 
+// Max simultaneous image fetches.
+const CONCURRENCY = 4;
+
+// Milliseconds before a single fetch is considered failed.
+const FETCH_TIMEOUT_MS = 20_000;
+
+// How many times to retry a failed fetch before giving up.
+const MAX_RETRIES = 2;
+
 /**
- * Fetches an image URL and returns it as a JPEG base64 data URL.
- * Downscales the image if it exceeds PDF_IMAGE_MAX_PX on any side.
- * Uses canvas conversion to avoid react-pdf's PNG parser (pngjs) issues.
- * Returns null if the fetch or conversion fails.
+ * Fetches an image URL with a timeout. Throws if the request exceeds
+ * FETCH_TIMEOUT_MS or the server returns a non-OK status.
  */
-export async function fetchImageAsBase64(url: string): Promise<string | null> {
+async function fetchWithTimeout(url: string): Promise<Blob> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, { signal: controller.signal });
     if (!response.ok) {
-      console.warn(`[fetchImageAsBase64] HTTP ${response.status} for: ${url}`);
-      return null;
+      throw new Error(`HTTP ${response.status}`);
     }
-    const blob = await response.blob();
-
-    // Use the browser's native decoder via createImageBitmap, then
-    // export as JPEG — react-pdf handles JPEG reliably, unlike some PNGs.
-    const bitmap = await createImageBitmap(blob);
-
-    // Downscale large images to avoid react-pdf memory/layout issues
-    let { width, height } = bitmap;
-    if (width > PDF_IMAGE_MAX_PX || height > PDF_IMAGE_MAX_PX) {
-      const scale = Math.min(PDF_IMAGE_MAX_PX / width, PDF_IMAGE_MAX_PX / height);
-      width = Math.round(width * scale);
-      height = Math.round(height * scale);
-    }
-
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return null;
-    ctx.drawImage(bitmap, 0, 0, width, height);
-    return canvas.toDataURL("image/jpeg", 0.85);
-  } catch (err) {
-    console.error(`[fetchImageAsBase64] Error loading: ${url}`, err);
-    return null;
+    return await response.blob();
+  } finally {
+    clearTimeout(timer);
   }
 }
 
 /**
- * Pre-loads multiple image paths as base64 JPEG data URLs in parallel.
+ * Converts a Blob to a JPEG base64 data URL, downscaling if needed.
+ * Uses FileReader → Image + canvas — works with JPEG, PNG, HEIC, WebP, etc.
+ */
+async function blobToJpegBase64(blob: Blob, sourceUrl: string): Promise<string | null> {
+  // Step 1: Blob → data URL (browser-native, supports any decodable format).
+  const dataUrl = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(new Error("FileReader failed"));
+    reader.readAsDataURL(blob);
+  });
+
+  // Step 2: Decode + optionally downscale via canvas.
+  // Loading from data: URL has no CORS restrictions.
+  return new Promise<string | null>((resolve) => {
+    const img = new Image();
+
+    img.onload = () => {
+      let { naturalWidth: w, naturalHeight: h } = img;
+      if (w > PDF_IMAGE_MAX_PX || h > PDF_IMAGE_MAX_PX) {
+        const scale = Math.min(PDF_IMAGE_MAX_PX / w, PDF_IMAGE_MAX_PX / h);
+        w = Math.round(w * scale);
+        h = Math.round(h * scale);
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        resolve(null);
+        return;
+      }
+      ctx.drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL("image/jpeg", 0.85));
+    };
+
+    img.onerror = () => {
+      console.warn(`[fetchImageAsBase64] Canvas decode failed for: ${sourceUrl}`);
+      resolve(null);
+    };
+
+    img.src = dataUrl;
+  });
+}
+
+/**
+ * Fetches an image URL and returns it as a JPEG base64 data URL.
+ * Retries up to MAX_RETRIES times on network/timeout errors.
+ * Returns null only when all attempts are exhausted.
+ */
+export async function fetchImageAsBase64(url: string): Promise<string | null> {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= MAX_RETRIES + 1; attempt++) {
+    try {
+      const blob = await fetchWithTimeout(url);
+      return await blobToJpegBase64(blob, url);
+    } catch (err) {
+      lastError = err;
+      if (attempt <= MAX_RETRIES) {
+        console.warn(
+          `[fetchImageAsBase64] Attempt ${attempt} failed for: ${url} — retrying…`,
+          err
+        );
+        // Small back-off between retries
+        await new Promise((r) => setTimeout(r, 500 * attempt));
+      }
+    }
+  }
+
+  console.error(
+    `[fetchImageAsBase64] All ${MAX_RETRIES + 1} attempts failed for: ${url}`,
+    lastError
+  );
+  return null;
+}
+
+/**
+ * Pre-loads multiple image paths as base64 JPEG data URLs.
+ * Runs at most CONCURRENCY fetches at a time with automatic retries,
+ * so all images are loaded even with occasional network hiccups.
  * Returns a Record<path, base64DataUrl>.
  */
 export async function preloadImagesAsBase64(
@@ -53,19 +118,26 @@ export async function preloadImagesAsBase64(
   baseUrl: string
 ): Promise<Record<string, string>> {
   const uniquePaths = [...new Set(paths.filter(Boolean))] as string[];
-
-  const results = await Promise.allSettled(
-    uniquePaths.map(async (path) => {
-      const b64 = await fetchImageAsBase64(`${baseUrl}/${path}`);
-      return { path, b64 };
-    })
-  );
-
   const cache: Record<string, string> = {};
-  for (const result of results) {
-    if (result.status === "fulfilled" && result.value.b64) {
-      cache[result.value.path] = result.value.b64;
+
+  // Shared index — safe because JS is single-threaded (idx++ is synchronous).
+  let idx = 0;
+
+  async function worker() {
+    while (idx < uniquePaths.length) {
+      const path = uniquePaths[idx++];
+      const b64 = await fetchImageAsBase64(`${baseUrl}/${path}`);
+      if (b64) cache[path] = b64;
     }
   }
+
+  await Promise.all(
+    Array.from({ length: Math.min(CONCURRENCY, uniquePaths.length) }, worker)
+  );
+
+  console.log(
+    `[preloadImagesAsBase64] ${Object.keys(cache).length} / ${uniquePaths.length} images loaded successfully`
+  );
+
   return cache;
 }
