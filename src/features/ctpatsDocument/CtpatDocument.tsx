@@ -164,14 +164,33 @@ export default function CtpatDocument() {
     }
   };
 
+  const REMAINING_IMAGE_TYPES = [
+    "CONTAINER LOAD",
+    "PRODUCTS",
+    "LOADING TEMPERATURE",
+    "FINAL CONTAINER",
+    "DRIVER IDENTIFICATION",
+  ];
+
   const pages = [
-    <CtpatGeneralInformationTable data={ctpat} packingList={packingList} />,
+    <>
+      <CtpatGeneralInformationTable data={ctpat} packingList={packingList} />
+      <CtpatImages
+        images={images}
+        truck={ctpat.truck}
+        driver={ctpat.driver}
+        status={ctpat.status}
+        onDeleteImage={handleDeleteImage}
+        filterTypes={["CONTAINER PICTURES"]}
+      />
+    </>,
     <CtpatImages
       images={images}
       truck={ctpat.truck}
       driver={ctpat.driver}
       status={ctpat.status}
       onDeleteImage={handleDeleteImage}
+      filterTypes={REMAINING_IMAGE_TYPES}
     />,
     <DynamicPackingListTable
       productType={productType}

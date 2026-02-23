@@ -319,18 +319,30 @@ function GeneralInfoSection({
 
 // ─── Section 2: Images ───────────────────────────────────────────────────
 
+const REMAINING_IMAGE_TYPES = [
+  "CONTAINER LOAD",
+  "PRODUCTS",
+  "LOADING TEMPERATURE",
+  "FINAL CONTAINER",
+  "DRIVER IDENTIFICATION",
+] as const;
+
 function ImagesSection({
   images,
   truck,
   driver,
   imagesBaseUrl,
   imageBase64Cache,
+  filterTypes,
+  addBreak = false,
 }: {
   images: CtpatImage[];
   truck?: CtpatTruck;
   driver?: CtpatDriver;
   imagesBaseUrl: string;
   imageBase64Cache?: Record<string, string>;
+  filterTypes?: readonly string[];
+  addBreak?: boolean;
 }) {
   const hasImages = images && images.length > 0;
 
@@ -339,15 +351,19 @@ function ImagesSection({
     return imageBase64Cache?.[path] ?? `${imagesBaseUrl}/${path}`;
   };
 
+  const visibleTypes = filterTypes
+    ? IMAGE_TYPES.filter((t) => filterTypes.includes(t))
+    : IMAGE_TYPES;
+
   return (
-    <View break>
-      {!hasImages && (
+    <View break={addBreak}>
+      {!hasImages && !filterTypes && (
         <Text style={{ textAlign: "center", padding: 10, color: "#888888" }}>
           Imágenes pendientes — Aún no se han cargado imágenes del contenedor
         </Text>
       )}
 
-      {IMAGE_TYPES.map((type) => {
+      {visibleTypes.map((type) => {
         const filtered = images.filter((img) => img.type === type);
         const hasTruckOrDriver =
           type === "FINAL CONTAINER" &&
@@ -909,16 +925,27 @@ export default function CtpatPdfDocument({
         {/* Fixed header on every page */}
         <PageHeader companyLogo={companyLogo} />
 
-        {/* Page 1: General Information */}
+        {/* Page 1: General Information + Container Pictures */}
         <GeneralInfoSection ctpat={ctpat} packingList={packingList} />
-
-        {/* Page 2: Images */}
         <ImagesSection
           images={images}
           truck={ctpat.truck}
           driver={ctpat.driver}
           imagesBaseUrl={imagesBaseUrl}
           imageBase64Cache={imageBase64Cache}
+          filterTypes={["CONTAINER PICTURES"]}
+          addBreak={false}
+        />
+
+        {/* Page 2: Remaining Images */}
+        <ImagesSection
+          images={images}
+          truck={ctpat.truck}
+          driver={ctpat.driver}
+          imagesBaseUrl={imagesBaseUrl}
+          imageBase64Cache={imageBase64Cache}
+          filterTypes={REMAINING_IMAGE_TYPES}
+          addBreak={true}
         />
 
         {/* Page 3: Packing List */}

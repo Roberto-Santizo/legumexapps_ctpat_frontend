@@ -33,9 +33,11 @@ interface CtpatImagesProps {
   };
   status?: number;
   onDeleteImage?: (imageId: number) => Promise<void>;
+  /** If provided, only render sections matching these types */
+  filterTypes?: string[];
 }
 
-export default function CtpatImages({ images, truck, driver, status, onDeleteImage }: CtpatImagesProps) {
+export default function CtpatImages({ images, truck, driver, status, onDeleteImage, filterTypes }: CtpatImagesProps) {
   const BASE_URL = import.meta.env.VITE_IMAGES_BACKEND_URL;
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
@@ -55,16 +57,20 @@ export default function CtpatImages({ images, truck, driver, status, onDeleteIma
   // Verificar si hay imágenes
   const hasImages = images && images.length > 0;
 
+  const visibleTypes = filterTypes
+    ? IMAGE_TYPES.filter((t) => filterTypes.includes(t))
+    : IMAGE_TYPES;
+
   return (
     <div className="text-xs mt-10">
-      {!hasImages && (
+      {!hasImages && !filterTypes && (
         <div className="text-center py-8 text-gray-500 border border-dashed border-gray-300">
           <p className="font-medium">Imágenes pendientes</p>
           <p className="text-[10px]">Aún no se han cargado imágenes del contenedor</p>
         </div>
       )}
 
-      {IMAGE_TYPES.map((type) => {
+      {visibleTypes.map((type) => {
         const filtered = images.filter((img) => img.type === type);
 
         // Para FINAL CONTAINER, verificar si hay imágenes normales O imágenes de truck/driver
