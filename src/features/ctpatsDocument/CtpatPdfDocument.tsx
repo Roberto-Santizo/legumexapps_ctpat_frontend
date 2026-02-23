@@ -381,10 +381,10 @@ function ImagesSection({
         const rows = chunkArray(allImages, 3);
 
         return (
-          <View key={type} wrap={false}>
+          <View key={type}>
             <Text style={s.imageGroupTitle}>{IMAGE_LABELS[type]}</Text>
             {rows.map((row, rIdx) => (
-              <View key={rIdx} style={s.imageRow}>
+              <View key={rIdx} style={s.imageRow} wrap={false}>
                 {row.map((item, iIdx) => (
                   <View key={iIdx} style={s.imageWrapper}>
                     <Image src={item.src} style={s.imagePdf} />
