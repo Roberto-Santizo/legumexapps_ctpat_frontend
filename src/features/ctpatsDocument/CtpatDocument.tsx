@@ -266,7 +266,7 @@ export default function CtpatDocument() {
                   className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-200"
                 >
                   <Download size={20} />
-                  Download PDF (We are still working on it)
+                  Descargar ahora
                 </a>
               );
             }}
