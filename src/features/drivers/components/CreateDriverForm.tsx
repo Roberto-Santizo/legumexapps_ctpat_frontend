@@ -201,7 +201,6 @@ export default function DriverForm({ showCarrierField = true, showPhotoFields = 
           {errors.carrier_id && <ErrorMessage>{errors.carrier_id.message}</ErrorMessage>}
         </div>
       )}
-
     </div>
   );
 }

@@ -196,8 +196,8 @@ export default function CtpatForm({
           })}
         >
           <option value="">Seleccione una opción</option>
-          <option value="AGROINDUSTRIAS LEGUMEX.S.A. EL TEJAR,CHIMALTENANGO">AGROINDUSTRIAS LEGUMEX.S.A. EL TEJAR,CHIMALTENANGO</option>
-          <option value="AGROINDUSTRIAS LEGUMEX.S.A. PARRAMOS,CHIMALTENANGO">AGROINDUSTRIAS LEGUMEX.S.A. PARRAMOS,CHIMALTENANGO</option>
+          <option value="AGROINDUSTRIA LEGUMEX.S.A. EL TEJAR,CHIMALTENANGO">AGROINDUSTRIA LEGUMEX.S.A. EL TEJAR,CHIMALTENANGO</option>
+          <option value="AGROINDUSTRIA LEGUMEX.S.A. PARRAMOS,CHIMALTENANGO">AGROINDUSTRIA LEGUMEX.S.A. PARRAMOS,CHIMALTENANGO</option>
         </select>
 
         {errors?.departure_site && (

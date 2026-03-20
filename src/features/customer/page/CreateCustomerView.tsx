@@ -15,6 +15,7 @@ export default function CreateCustomerView() {
   }
   const {register, handleSubmit, formState:{errors}}= useForm({defaultValues:initialValues})
   const queryClient = useQueryClient();
+
   const {mutate, isPending} = useMutation({
     mutationFn: createCustumerAPI,
     onError: (error) =>{
