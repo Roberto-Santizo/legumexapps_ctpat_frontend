@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams } from "react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { getCtpatByIdAPI } from "@/features/ctpats/api/CtpatsAPI";
+import { getCtpatByIdAPI, sedCtpatByEmail } from "@/features/ctpats/api/CtpatsAPI";
 import { getImagesAPI, deleteImageAPI } from "@/features/upload-images/api/getImagesAPI";
 import { getCtpatObservationsAPI } from "@/features/observations/api/ObservationsAPI";
 import { getCheckListByCtpatIdAPI } from "@/features/checkLists/api/CheckListAPI";
@@ -20,7 +20,7 @@ import { preloadImagesAsBase64 } from "./utils/fetchImageAsBase64";
 
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router";
-import { ImagePlus, Download, Loader2 } from "lucide-react";
+import { ImagePlus, Download, Loader2, Mail, X } from "lucide-react";
 
 import LetterPage from "./LetterPage";
 import CtpatGeneralInformationTable from "@/features/ctpatsDocument/CtpatGeneralInformationTable";
@@ -46,6 +46,39 @@ export default function CtpatDocument() {
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [isPreloadingImages, setIsPreloadingImages] = useState(false);
   const [imageBase64Cache, setImageBase64Cache] = useState<Record<string, string>>({});
+
+  // Estado para el formulario de envío por email
+  const [showEmailForm, setShowEmailForm] = useState(false);
+  const [emailInput, setEmailInput] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+
+  const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  const handleEmailSubmit = async () => {
+    if (!EMAIL_REGEX.test(emailInput)) {
+      setEmailError("Ingresa un correo electrónico válido.");
+      return;
+    }
+    setEmailError("");
+    setIsSendingEmail(true);
+    try {
+      await sedCtpatByEmail({ email: emailInput }, ctpatId);
+      toast.success(`Documento enviado a ${emailInput}`);
+      setEmailInput("");
+      setShowEmailForm(false);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Error al enviar el correo");
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
+
+  const handleCloseEmailForm = () => {
+    setShowEmailForm(false);
+    setEmailInput("");
+    setEmailError("");
+  };
 
   // Logo de empresa (necesario para el PDF)
   const { data: companyLogo } = useQuery({
@@ -159,6 +192,12 @@ export default function CtpatDocument() {
       const cache = await preloadImagesAsBase64(paths, IMAGES_BASE_URL);
       setImageBase64Cache(cache);
       setIsGeneratingPdf(true);
+    } catch (err) {
+      toast.error(
+        err instanceof Error
+          ? `Error al preparar imágenes: ${err.message} — Intenta de nuevo.`
+          : "Error al preparar imágenes. Intenta de nuevo."
+      );
     } finally {
       setIsPreloadingImages(false);
     }
@@ -208,7 +247,7 @@ export default function CtpatDocument() {
 
   return (
     <div className="space-y-10">
-      <div className="sticky top-4 z-10 flex justify-end mb-4 px-4 gap-3">
+      <div className="sticky top-4 z-10 flex justify-end mb-4 mt-3 px-4 gap-3">
         {/* Botón de descarga PDF (lazy — solo genera al hacer click) */}
         {isPreloadingImages ? (
           <button
@@ -278,6 +317,47 @@ export default function CtpatDocument() {
           >
             <Download size={20} />
             Descargar PDF
+          </button>
+        )}
+
+        {/* Botón / formulario de envío por email */}
+        {showEmailForm ? (
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-xl shadow-lg">
+            <Mail size={18} className="text-green-600 shrink-0" />
+            <input
+              type="email"
+              value={emailInput}
+              onChange={(e) => {
+                setEmailInput(e.target.value);
+                if (emailError) setEmailError("");
+              }}
+              onKeyDown={(e) => e.key === "Enter" && handleEmailSubmit()}
+              placeholder="correo@ejemplo.com"
+              className={`text-sm outline-none w-52 ${emailError ? "text-red-500 placeholder-red-300" : "text-gray-800"}`}
+              autoFocus
+            />
+            {emailError && (
+              <span className="text-xs text-red-500 shrink-0">{emailError}</span>
+            )}
+            <button
+              onClick={handleEmailSubmit}
+              disabled={isSendingEmail}
+              className="text-sm font-semibold text-green-600 hover:text-green-700 shrink-0 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-1"
+            >
+              {isSendingEmail && <Loader2 size={14} className="animate-spin" />}
+              {isSendingEmail ? "Enviando..." : "Enviar"}
+            </button>
+            <button onClick={handleCloseEmailForm} className="text-gray-400 hover:text-gray-600 shrink-0">
+              <X size={16} />
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setShowEmailForm(true)}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl shadow-lg hover:bg-green-700 transition-all duration-200"
+          >
+            <Mail size={20} />
+            Enviar por Email
           </button>
         )}
 

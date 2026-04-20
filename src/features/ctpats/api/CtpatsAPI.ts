@@ -1,6 +1,6 @@
 import api from "@/shared/api/axios";
 import { isAxiosError } from "axios";
-import type { CreateCtpatFormData,uploadImagesFormData  } from "@/features/ctpats/schemas/types";
+import type { CreateCtpatFormData, uploadImagesFormData, SendCtpatByEmailFormData } from "@/features/ctpats/schemas/types";
 import { getCtpatsSchema } from "@/features/ctpats/schemas/types";
 
 export async function createCtpatsAPI(formData: CreateCtpatFormData){
@@ -12,6 +12,17 @@ export async function createCtpatsAPI(formData: CreateCtpatFormData){
       throw new Error(error.response.data.error)
     }
  }
+}
+
+export async function sedCtpatByEmail(formData: SendCtpatByEmailFormData, ctpatId: number) { 
+  try {
+    const {data} = await api.post(`/ctpat/generateCtpatPdf/${ctpatId}`, formData);
+    return data
+  } catch (error) {
+    if(isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error)
+    }
+  }
 }
 
 export async function getCtpatsAPI(page: number = 1) {

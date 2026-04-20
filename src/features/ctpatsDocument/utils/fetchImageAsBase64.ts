@@ -8,7 +8,7 @@ const CONCURRENCY = 4;
 const FETCH_TIMEOUT_MS = 20_000;
 
 // How many times to retry a failed fetch before giving up.
-const MAX_RETRIES = 2;
+const MAX_RETRIES = 4;
 
 /**
  * Fetches an image URL with a timeout. Throws if the request exceeds
@@ -94,8 +94,8 @@ export async function fetchImageAsBase64(url: string): Promise<string | null> {
           `[fetchImageAsBase64] Attempt ${attempt} failed for: ${url} — retrying…`,
           err
         );
-        // Small back-off between retries
-        await new Promise((r) => setTimeout(r, 500 * attempt));
+        // Exponential back-off: 1s, 2s, 4s, 8s
+        await new Promise((r) => setTimeout(r, 1000 * Math.pow(2, attempt - 1)));
       }
     }
   }
@@ -135,9 +135,14 @@ export async function preloadImagesAsBase64(
     Array.from({ length: Math.min(CONCURRENCY, uniquePaths.length) }, worker)
   );
 
-  console.log(
-    `[preloadImagesAsBase64] ${Object.keys(cache).length} / ${uniquePaths.length} images loaded successfully`
-  );
+  const loaded = Object.keys(cache).length;
+  const failed = uniquePaths.length - loaded;
+
+  console.log(`[preloadImagesAsBase64] ${loaded} / ${uniquePaths.length} images loaded successfully`);
+
+  if (failed > 0) {
+    throw new Error(`${failed} image(s) failed to load after ${MAX_RETRIES + 1} attempts.`);
+  }
 
   return cache;
 }

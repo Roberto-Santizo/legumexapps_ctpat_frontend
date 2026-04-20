@@ -8,10 +8,16 @@ const ImageSchema = z.object({
   description: z.string(),
 });
 
+export const sendCtpatByEmail = z.object({
+  email: z.string().email()
+});
+export type SendCtpatByEmailFormData = z.infer<typeof sendCtpatByEmail>;
+
 export const ctpatResponseSchema = z.object({
   statusCode: z.literal(200),
   message: z.literal("Ctpat Creado Correctamente"),
 });
+
 export type CreateCtpatAPIResponse = {
   success: boolean;
   message: string;
