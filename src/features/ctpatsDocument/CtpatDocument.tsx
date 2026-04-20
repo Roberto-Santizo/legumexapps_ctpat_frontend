@@ -320,45 +320,47 @@ export default function CtpatDocument() {
           </button>
         )}
 
-        {/* Botón / formulario de envío por email */}
-        {showEmailForm ? (
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-xl shadow-lg">
-            <Mail size={18} className="text-green-600 shrink-0" />
-            <input
-              type="email"
-              value={emailInput}
-              onChange={(e) => {
-                setEmailInput(e.target.value);
-                if (emailError) setEmailError("");
-              }}
-              onKeyDown={(e) => e.key === "Enter" && handleEmailSubmit()}
-              placeholder="correo@ejemplo.com"
-              className={`text-sm outline-none w-52 ${emailError ? "text-red-500 placeholder-red-300" : "text-gray-800"}`}
-              autoFocus
-            />
-            {emailError && (
-              <span className="text-xs text-red-500 shrink-0">{emailError}</span>
-            )}
+        {/* Botón / formulario de envío por email — solo cuando el CTPAT está cerrado (status 7) */}
+        {ctpat.status === 7 && (
+          showEmailForm ? (
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-xl shadow-lg">
+              <Mail size={18} className="text-green-600 shrink-0" />
+              <input
+                type="email"
+                value={emailInput}
+                onChange={(e) => {
+                  setEmailInput(e.target.value);
+                  if (emailError) setEmailError("");
+                }}
+                onKeyDown={(e) => e.key === "Enter" && handleEmailSubmit()}
+                placeholder="correo@ejemplo.com"
+                className={`text-sm outline-none w-52 ${emailError ? "text-red-500 placeholder-red-300" : "text-gray-800"}`}
+                autoFocus
+              />
+              {emailError && (
+                <span className="text-xs text-red-500 shrink-0">{emailError}</span>
+              )}
+              <button
+                onClick={handleEmailSubmit}
+                disabled={isSendingEmail}
+                className="text-sm font-semibold text-green-600 hover:text-green-700 shrink-0 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-1"
+              >
+                {isSendingEmail && <Loader2 size={14} className="animate-spin" />}
+                {isSendingEmail ? "Enviando..." : "Enviar"}
+              </button>
+              <button onClick={handleCloseEmailForm} className="text-gray-400 hover:text-gray-600 shrink-0">
+                <X size={16} />
+              </button>
+            </div>
+          ) : (
             <button
-              onClick={handleEmailSubmit}
-              disabled={isSendingEmail}
-              className="text-sm font-semibold text-green-600 hover:text-green-700 shrink-0 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-1"
+              onClick={() => setShowEmailForm(true)}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl shadow-lg hover:bg-green-700 transition-all duration-200"
             >
-              {isSendingEmail && <Loader2 size={14} className="animate-spin" />}
-              {isSendingEmail ? "Enviando..." : "Enviar"}
+              <Mail size={20} />
+              Enviar por Email
             </button>
-            <button onClick={handleCloseEmailForm} className="text-gray-400 hover:text-gray-600 shrink-0">
-              <X size={16} />
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={() => setShowEmailForm(true)}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl shadow-lg hover:bg-green-700 transition-all duration-200"
-          >
-            <Mail size={20} />
-            Enviar por Email
-          </button>
+          )
         )}
 
         {canAccess(CTPAT_PERMISSIONS.UPLOAD_ADDITIONAL_IMAGES, user?.role) && (
