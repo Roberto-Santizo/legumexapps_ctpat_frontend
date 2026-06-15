@@ -2,6 +2,7 @@ import {Menu,X,Bell, Settings,User,UserCircle,LogOut,ChevronRight,} from "lucide
 import { useState, useRef, useEffect } from "react";
 import {useAuth} from "@/hooks/useAuth"
 import {useGreetingGT} from "@/shared/helpers/useGreetingGT"
+import MundialMarquee from "@/app/layouts/WorldHeadlines";
 
 type HeaderProps = {
   sidebarOpen: boolean;
@@ -66,17 +67,17 @@ export default function Header({sidebarOpen,setSidebarOpen,mobileMenuOpen,setMob
           </button>
 
           <div className="flex items-center gap-3">
-            <div >
+            {/* <div >
               <img src= {import.meta.env.VITE_IMAGE_LOGO} alt="LegumexLogo" className="w-20 h-12 text-white" />
-            </div>
+            </div> */}
             <div className="hidden sm:block">
-              <h1 className="text-lg font-bold text-white tracking-tight">
-                Departamento de calidad
+              <h1 className="text-lx font-bold text-white tracking-tight">
+                Recursos Humanos
               </h1>
-              <p className="text-base text-slate-400 font-medium">
-                {/* “La calidad es el reflejo del trabajo en equipo y la pasión por mejorar” */}
-                " ✨ El éxito es la suma de pequeños esfuerzos repetidos día tras día.✨" 
-              </p>
+              {/* <p className="text-xl text-slate-400 font-medium">
+                ⭐“Cada día es una oportunidad para hacer las cosas mejor.”⭐
+              </p> */}
+                <MundialMarquee />
             </div>
           </div>
         </div>
