@@ -72,7 +72,7 @@ export default function Header({sidebarOpen,setSidebarOpen,mobileMenuOpen,setMob
             </div> */}
             <div className="hidden sm:block">
               <h1 className="text-lx font-bold text-white tracking-tight">
-                Departamento de Calidad
+                Departamento de Calidad.
               </h1>
               {/* <p className="text-xl text-slate-400 font-medium">
                 ⭐“Cada día es una oportunidad para hacer las cosas mejor.”⭐
